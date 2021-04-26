@@ -1,126 +1,57 @@
 <template>
-  <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Register" />
+  <div>
+    <gov-back-link :to="{ name: 'dashboard' }">
+      Back to dashboard
+    </gov-back-link>
 
-    <gov-error-summary v-if="form.$errors.any()" title="Check for errors">
-      <gov-list>
-        <li
-          v-for="(error, field) in form.$errors.all()"
-          :key="field"
-          v-text="error[0]"
-        />
-      </gov-list>
-    </gov-error-summary>
+    <gov-main-wrapper>
+      <gov-grid-row>
+        <gov-grid-column width="two-thirds">
+          <gov-heading size="l">
+            Is your Organisation already listed?
+          </gov-heading>
 
-    <router-view
-      :form="form"
-      :errors="form.$errors"
-      @input="onInput($event)"
-      @clear="$delete(form.$errors.errors, $event.replace(/\./g, '_'))"
-      @submit="onSubmit"
-    />
-  </gov-width-container>
+          <gov-body>
+            Before you register an account on One Hounslow Connect, we need to
+            check if your organisation is already registered in our database.
+          </gov-body>
+          <gov-body
+            >Type the name of your organisation below to check if it is already
+            registered.</gov-body
+          >
+        </gov-grid-column>
+      </gov-grid-row>
+      <gov-grid-row>
+        <gov-grid-column width="full">
+          <organisation-search />
+        </gov-grid-column>
+      </gov-grid-row>
+      <gov-grid-row>
+        <gov-grid-column width="two-thirds">
+          <gov-body>Select your organisation and click "next"</gov-body>
+          <gov-button start :to="{ name: 'register-existing' }">
+            Next
+          </gov-button>
+          <gov-body
+            >Can’t find your organisation?
+            <gov-link :to="{ name: 'register-new' }"
+              >Register new organisation</gov-link
+            ></gov-body
+          >
+        </gov-grid-column>
+      </gov-grid-row>
+    </gov-main-wrapper>
+  </div>
 </template>
 
 <script>
-import Form from "@/classes/Form";
-import axios from "axios";
+  import OrganisationSearch from './index/forms/OrganisationSearch.vue';
 
-const http = axios.create({
-  baseURL: `${process.env.VUE_APP_API_URI}/core/v1`
-});
-http.defaults.headers.post["Content-Type"] = "application/json";
-
-export default {
-  data() {
-    return {
-      form: new Form(
-        {
-          organisation_types: [],
-          user: {
-            first_name: "",
-            last_name: "",
-            email: "",
-            phone: "",
-            password: ""
-          },
-          organisation: {
-            name: "",
-            slug: "",
-            description: "",
-            url: "",
-            email: "",
-            phone: ""
-          },
-          service: {
-            name: "",
-            slug: "",
-            type: "service",
-            intro: "",
-            description: "",
-            wait_time: null,
-            is_free: true,
-            fees_text: "",
-            fees_url: "",
-            testimonial: "",
-            video_embed: "",
-            url: "",
-            contact_name: "",
-            contact_phone: "",
-            contact_email: "",
-            criteria: {
-              age_group: "",
-              disability: "",
-              employment: "",
-              gender: "",
-              housing: "",
-              income: "",
-              language: "",
-              other: ""
-            },
-            useful_infos: [],
-            offerings: [],
-            social_medias: []
-          }
-        },
-        {},
-        http
-      )
-    };
-  },
-
-  watch: {
-    ["form.organisation.name"](newName) {
-      this.form.organisation.slug = this.slugify(newName);
+  export default {
+    components: {
+      OrganisationSearch,
     },
-
-    ["form.service.name"](newName) {
-      this.form.service.slug = this.slugify(newName);
-    },
-
-    ["form.service.is_free"](newIsFree) {
-      if (newIsFree) {
-        this.form.service.fees_text = "";
-        this.form.service.fees_url = "";
-      }
-    }
-  },
-
-  methods: {
-    onInput(data) {
-      for (const field in data) {
-        this.$set(this.form, field, data[field]);
-      }
-    },
-
-    async onSubmit() {
-      try {
-        await this.form.post("/organisation-sign-up-forms");
-        this.$router.push({ name: "register-index-success" });
-      } catch (exception) {
-        //
-      }
-    }
-  }
-};
+  };
 </script>
+
+<style lang="scss" scoped></style>
