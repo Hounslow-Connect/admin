@@ -1,111 +1,49 @@
 <template>
   <div>
-    <gov-back-link :to="{ name: 'register-index' }">
+    <gov-heading size="l">
+      Registration - step 4 of 5
+    </gov-heading>
+
+    <gov-back-link :to="{ name: 'register-new-step3' }">
       Back
     </gov-back-link>
 
-    <gov-main-wrapper>
-      <gov-grid-row>
-        <gov-grid-column width="two-thirds">
-          <gov-heading size="l">
-            Create an account
-          </gov-heading>
-
-          <gov-body>
-            First, create an account to login to the One Hounslow Connect
-            administration portal
-          </gov-body>
-
-          <ck-text-input
-            :value="form.user.first_name"
-            @input="onInput('first_name', $event)"
-            id="first_name"
-            label="First name"
-            type="text"
-            :error="errors.get('user.first_name')"
-          />
-
-          <ck-text-input
-            :value="form.user.last_name"
-            @input="onInput('last_name', $event)"
-            id="last_name"
-            label="Last name"
-            type="text"
-            :error="errors.get('user.last_name')"
-          />
-
-          <ck-text-input
-            :value="form.user.email"
-            @input="onInput('email', $event)"
-            id="email"
-            label="Email"
-            type="email"
-            :error="errors.get('user.email')"
-          />
-
-          <ck-text-input
-            :value="form.user.phone"
-            @input="onInput('phone', $event)"
-            id="phone"
-            label="Phone"
-            type="tel"
-            :error="errors.get('user.phone')"
-          />
-
-          <ck-text-input
-            :value="form.user.password"
-            @input="onInput('password', $event)"
-            id="password"
-            label="Password"
-            type="password"
-            :error="errors.get('user.password')"
-          />
-
-          <gov-body>
-            User account details are held in line with our
-            <gov-link
-              href="https://onehounslowconnect.london/privacy-policy"
-              target="_blank"
-              >privacy policy</gov-link
-            >.
-          </gov-body>
-
-          <gov-button start :to="{ name: 'register-index-organisation' }">
-            Next
-          </gov-button>
-        </gov-grid-column>
-      </gov-grid-row>
-    </gov-main-wrapper>
+    <user-account :form="form" :errors="errors" />
+    <gov-button
+      start
+      :to="{ name: 'register-new-step5' }"
+      :disabled="fieldsEmpty"
+    >
+      Next
+    </gov-button>
   </div>
 </template>
 
 <script>
-export default {
-  props: {
-    form: {
-      type: Object,
-      required: true
+  import UserAccount from '../forms/UserAccount';
+
+  export default {
+    components: {
+      UserAccount,
     },
-
-    errors: {
-      type: Object,
-      required: true
-    }
-  },
-
-  methods: {
-    onInput(field, value) {
-      this.$emit(
-        "input",
-        Object.assign(this.form, {
-          user: {
-            ...this.form.user,
-            [field]: value
-          }
-        })
-      );
-      this.$emit("clear", `user.${field}`);
-    }
-  }
-};
+    model: {
+      prop: 'form',
+      event: 'update',
+    },
+    props: {
+      form: {
+        type: Object,
+        required: true,
+      },
+      errors: {
+        type: Object,
+        required: true,
+      },
+    },
+    computed: {
+      fieldsEmpty() {
+        return Object.values(this.form.user).some((field) => field == '');
+      },
+    },
+  };
 </script>

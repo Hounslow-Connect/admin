@@ -1,0 +1,40 @@
+<template>
+  <div>
+    <gov-main-wrapper>
+      <gov-grid-row>
+        <gov-grid-column width="two-thirds">
+          <gov-heading size="l">
+            Registration complete
+          </gov-heading>
+
+          <gov-body>
+            Thank you for registering on One Hounslow Connect.
+          </gov-body>
+
+          <gov-body>
+            Your details will be verified by our team within the next 5 working
+            days.
+          </gov-body>
+
+          <gov-body>Once your account approved, you will be able:</gov-body>
+
+          <gov-list>
+            <li>to access and edit your organisation page</li>
+            <li>create new service pages</li>
+            <li>edit existing service pages</li>
+          </gov-list>
+
+          <gov-body>
+            If you haven't heard back from us within 5 working days please email
+            the team at
+            <gov-link href="mailto:onehounslowconnect@hounslow.gov.uk"
+              >onehounslowconnect@hounslow.gov.uk</gov-link
+            >
+          </gov-body>
+
+          <gov-button :to="{ name: 'dashboard' }" start>Home</gov-button>
+        </gov-grid-column>
+      </gov-grid-row>
+    </gov-main-wrapper>
+  </div>
+</template>

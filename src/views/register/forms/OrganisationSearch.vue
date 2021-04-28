@@ -84,9 +84,6 @@
         this.organisationId = organisationId;
       },
     },
-    created() {
-      this.fetchOrganisations();
-    },
   };
 </script>
 

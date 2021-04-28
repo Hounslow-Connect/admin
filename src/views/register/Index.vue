@@ -1,43 +1,13 @@
 <template>
   <div>
-    <gov-back-link :to="{ name: 'dashboard' }">
-      Back to dashboard
-    </gov-back-link>
-
     <gov-main-wrapper>
       <gov-grid-row>
         <gov-grid-column width="two-thirds">
-          <gov-heading size="l">
-            Is your Organisation already listed?
-          </gov-heading>
-
-          <gov-body>
-            Before you register an account on One Hounslow Connect, we need to
-            check if your organisation is already registered in our database.
-          </gov-body>
-          <gov-body
-            >Type the name of your organisation below to check if it is already
-            registered.</gov-body
-          >
-        </gov-grid-column>
-      </gov-grid-row>
-      <gov-grid-row>
-        <gov-grid-column width="full">
-          <organisation-search />
-        </gov-grid-column>
-      </gov-grid-row>
-      <gov-grid-row>
-        <gov-grid-column width="two-thirds">
-          <gov-body>Select your organisation and click "next"</gov-body>
-          <gov-button start :to="{ name: 'register-existing' }">
-            Next
-          </gov-button>
-          <gov-body
-            >Can’t find your organisation?
-            <gov-link :to="{ name: 'register-new' }"
-              >Register new organisation</gov-link
-            ></gov-body
-          >
+          <router-view
+            v-model="form"
+            :errors="form.$errors"
+            @completed="submitRegistration"
+          ></router-view>
         </gov-grid-column>
       </gov-grid-row>
     </gov-main-wrapper>
@@ -45,11 +15,59 @@
 </template>
 
 <script>
-  import OrganisationSearch from './index/forms/OrganisationSearch.vue';
+  import Form from '@/classes/Form';
+  import axios from 'axios';
+  const http = axios.create({
+    baseURL: `${process.env.VUE_APP_API_URI}/core/v1`,
+  });
+  http.defaults.headers.post['Content-Type'] = 'application/json';
 
   export default {
-    components: {
-      OrganisationSearch,
+    data() {
+      return {
+        form: new Form(
+          {
+            organisation_types: [],
+            user: {
+              first_name: '',
+              last_name: '',
+              email: '',
+              phone: '',
+              password: '',
+            },
+            organisation: {
+              id: '',
+              name: '',
+              slug: '',
+              description: '',
+              url: '',
+              email: '',
+              phone: '',
+            },
+          },
+          {},
+          http
+        ),
+      };
+    },
+    methods: {
+      async submitRegistration() {
+        this.form.organisation.slug = this.slugify(this.form.organisation.name);
+        try {
+          await this.form.post('/organisation-sign-up-forms');
+          this.$router.push({ name: 'register-completed' });
+        } catch (exception) {
+          const formErrors = Object.keys(exception.errors);
+          if (formErrors.includes('organisation_id')) {
+            this.$router.push({ name: 'register-index' });
+          } else if (
+            !this.form.organisation.id &&
+            formErrors.some((error) => error.startsWith('user'))
+          ) {
+            this.$router.push({ name: 'register-new-step4' });
+          }
+        }
+      },
     },
   };
 </script>
