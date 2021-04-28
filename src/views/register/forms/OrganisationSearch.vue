@@ -34,57 +34,57 @@
 </template>
 
 <script>
-  import axios from 'axios';
+import axios from "axios";
 
-  const http = axios.create({
-    baseURL: `${process.env.VUE_APP_API_URI}/core/v1`,
-  });
-  http.defaults.headers.post['Content-Type'] = 'application/json';
+const http = axios.create({
+  baseURL: `${process.env.VUE_APP_API_URI}/core/v1`
+});
+http.defaults.headers.post["Content-Type"] = "application/json";
 
-  export default {
-    data() {
-      return {
-        filters: {
-          name: '',
-        },
-        loading: false,
-        organisations: [],
-        organisationId: null,
+export default {
+  data() {
+    return {
+      filters: {
+        name: ""
+      },
+      loading: false,
+      organisations: [],
+      organisationId: null
+    };
+  },
+  computed: {
+    params() {
+      const params = {
+        per_page: 20
       };
+
+      if (this.filters.name !== "") {
+        params["filter[name]"] = this.filters.name;
+      }
+
+      return params;
+    }
+  },
+  methods: {
+    async fetchOrganisations() {
+      this.loading = true;
+
+      const response = await http.get("/organisations", {
+        params: this.params
+      });
+      this.organisations = response.data.data;
+
+      this.loading = false;
     },
-    computed: {
-      params() {
-        const params = {
-          per_page: 20,
-        };
-
-        if (this.filters.name !== '') {
-          params['filter[name]'] = this.filters.name;
-        }
-
-        return params;
-      },
+    onSearch() {
+      this.fetchOrganisations();
     },
-    methods: {
-      async fetchOrganisations() {
-        this.loading = true;
-
-        const response = await http.get('/organisations', {
-          params: this.params,
-        });
-        this.organisations = response.data.data;
-
-        this.loading = false;
-      },
-      onSearch() {
-        this.fetchOrganisations();
-      },
-      onSelect(organisationId) {
-        this.$emit('selected', { id: organisationId });
-        this.organisationId = organisationId;
-      },
-    },
-  };
+    onSelect(organisationId) {
+      this.$emit("selected", { id: organisationId });
+      this.organisationId = organisationId;
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

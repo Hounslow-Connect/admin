@@ -42,37 +42,37 @@
 </template>
 
 <script>
-  import OrganisationSearch from './forms/OrganisationSearch.vue';
+import OrganisationSearch from "./forms/OrganisationSearch.vue";
 
-  export default {
-    components: {
-      OrganisationSearch,
+export default {
+  components: {
+    OrganisationSearch
+  },
+  model: {
+    prop: "form",
+    event: "update"
+  },
+  props: {
+    form: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    organisationSelected() {
+      return this.form.organisation.id !== "";
+    }
+  },
+  methods: {
+    onSelected({ id }) {
+      this.form.organisation.id = id;
     },
-    model: {
-      prop: 'form',
-      event: 'update',
-    },
-    props: {
-      form: {
-        type: Object,
-        required: true,
-      },
-    },
-    computed: {
-      organisationSelected() {
-        return this.form.organisation.id !== '';
-      },
-    },
-    methods: {
-      onSelected({ id }) {
-        this.form.organisation.id = id;
-      },
-      resetOrganisation() {
-        this.form.organisation.id = '';
-        this.$router.push({ name: 'register-new-step2' });
-      },
-    },
-  };
+    resetOrganisation() {
+      this.form.organisation.id = "";
+      this.$router.push({ name: "register-new-step2" });
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

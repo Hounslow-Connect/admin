@@ -62,21 +62,21 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      form: {
-        type: Object,
-        required: true,
-      },
-
-      errors: {
-        type: Object,
-        required: true,
-      },
+export default {
+  props: {
+    form: {
+      type: Object,
+      required: true
     },
 
-    methods: {},
-  };
+    errors: {
+      type: Object,
+      required: true
+    }
+  },
+
+  methods: {}
+};
 </script>
 
 <style lang="scss" scoped></style>

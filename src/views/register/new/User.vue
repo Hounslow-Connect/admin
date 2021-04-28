@@ -20,30 +20,30 @@
 </template>
 
 <script>
-  import UserAccount from '../forms/UserAccount';
+import UserAccount from "../forms/UserAccount";
 
-  export default {
-    components: {
-      UserAccount,
+export default {
+  components: {
+    UserAccount
+  },
+  model: {
+    prop: "form",
+    event: "update"
+  },
+  props: {
+    form: {
+      type: Object,
+      required: true
     },
-    model: {
-      prop: 'form',
-      event: 'update',
-    },
-    props: {
-      form: {
-        type: Object,
-        required: true,
-      },
-      errors: {
-        type: Object,
-        required: true,
-      },
-    },
-    computed: {
-      fieldsEmpty() {
-        return Object.values(this.form.user).some((field) => field == '');
-      },
-    },
-  };
+    errors: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    fieldsEmpty() {
+      return Object.values(this.form.user).some(field => field == "");
+    }
+  }
+};
 </script>

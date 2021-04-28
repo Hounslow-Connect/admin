@@ -74,34 +74,34 @@
 </template>
 
 <script>
-  export default {
-    model: {
-      prop: 'form',
-      event: 'update',
+export default {
+  model: {
+    prop: "form",
+    event: "update"
+  },
+  props: {
+    form: {
+      type: Object,
+      required: true
     },
-    props: {
-      form: {
-        type: Object,
-        required: true,
-      },
-      errors: {
-        type: Object,
-        required: true,
-      },
-    },
+    errors: {
+      type: Object,
+      required: true
+    }
+  },
 
-    methods: {
-      onInput(organisationType) {
-        if (this.form.organisation_types.includes(organisationType)) {
-          this.form.organisation_types = this.form.organisation_types.filter(
-            (type) => type !== organisationType
-          );
-        } else {
-          const organisationTypes = this.form.organisation_types.slice();
-          organisationTypes.push(organisationType);
-          this.form.organisation_types = organisationTypes;
-        }
-      },
-    },
-  };
+  methods: {
+    onInput(organisationType) {
+      if (this.form.organisation_types.includes(organisationType)) {
+        this.form.organisation_types = this.form.organisation_types.filter(
+          type => type !== organisationType
+        );
+      } else {
+        const organisationTypes = this.form.organisation_types.slice();
+        organisationTypes.push(organisationType);
+        this.form.organisation_types = organisationTypes;
+      }
+    }
+  }
+};
 </script>

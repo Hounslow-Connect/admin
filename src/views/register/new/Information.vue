@@ -17,12 +17,12 @@
 </template>
 
 <script>
-  import InformationCopy from '../components/InformationCopy';
-  export default {
-    components: {
-      InformationCopy,
-    },
-  };
+import InformationCopy from "../components/InformationCopy";
+export default {
+  components: {
+    InformationCopy
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>
