@@ -15,6 +15,14 @@
       <li>access information</li>
       <li>images and videos</li>
     </gov-list>
+    <gov-body
+      >Keeping these details up-to-date will help make the platform as relevant
+      as possible to Hounslow residents.</gov-body
+    >
+    <gov-body
+      >We'll help by emailing you every so often to remind you to check in on
+      your listings.</gov-body
+    >
   </div>
 </template>
 

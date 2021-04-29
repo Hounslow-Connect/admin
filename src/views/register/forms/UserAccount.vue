@@ -10,11 +10,11 @@
 
     <gov-hint>
       By signing up you agree to our
-      <gov-link :to="{ name: 'admin-index-cms-frontend-terms-and-conditions' }"
+      <gov-link target="_blank" :href="termsAndConditionsUrl"
         >T&amp;Cs</gov-link
       >
       and
-      <gov-link :to="{ name: 'admin-index-cms-frontend-privacy-policy' }"
+      <gov-link target="_blank" :href="privacyPolicyUrl"
         >Privacy Policy</gov-link
       >
     </gov-hint>
@@ -75,7 +75,14 @@ export default {
     }
   },
 
-  methods: {}
+  computed: {
+    termsAndConditionsUrl() {
+      return `${process.env.VUE_APP_FRONTEND_URI}/terms-and-conditions`;
+    },
+    privacyPolicyUrl() {
+      return `${process.env.VUE_APP_FRONTEND_URI}/privacy-policy`;
+    }
+  }
 };
 </script>
 
