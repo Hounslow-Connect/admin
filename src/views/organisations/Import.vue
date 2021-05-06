@@ -66,118 +66,117 @@
   </gov-width-container>
 </template>
 <script>
-  import Form from '@/classes/Form';
-  import SpreadsheetImportForm from '@/components/SpreadsheetImportForm';
-  import SpreadsheetImportErrors from '@/components/SpreadsheetImportErrors';
+import Form from "@/classes/Form";
+import SpreadsheetImportForm from "@/components/SpreadsheetImportForm";
+import SpreadsheetImportErrors from "@/components/SpreadsheetImportErrors";
 
-  export default {
-    name: 'OrganisationsImport',
-    components: {
-      Form,
-      SpreadsheetImportForm,
-      SpreadsheetImportErrors,
+export default {
+  name: "OrganisationsImport",
+  components: {
+    Form,
+    SpreadsheetImportForm,
+    SpreadsheetImportErrors
+  },
+
+  data() {
+    return {
+      file: null,
+
+      uploadRows: null,
+
+      invalidRows: [],
+
+      duplicateRows: [],
+
+      ignoreDuplicateIds: [],
+
+      form: new Form({
+        spreadsheet: null,
+        ignore_duplicates: null
+      }),
+
+      fields: {
+        index: "Index",
+        id: "ID",
+        name: "Name",
+        description: "Description",
+        email: "Email",
+        phone: "Phone",
+        url: "Url"
+      }
+    };
+  },
+
+  computed: {
+    formResponse() {
+      return this.uploadRows
+        ? "Imported " +
+            this.uploadRows +
+            (this.uploadRows === 1 ? " Organisation" : " Organisations")
+        : null;
     },
+    exampleSpreadsheetDownloadLink() {
+      return `${process.env.VUE_APP_API_URI}/downloads/organisations_import_example.xls`;
+    }
+  },
 
-    data() {
-      return {
-        file: null,
-
-        uploadRows: null,
-
-        invalidRows: [],
-
-        duplicateRows: [],
-
-        ignoreDuplicateIds: [],
-
-        form: new Form({
-          spreadsheet: null,
-          ignore_duplicates: null,
-        }),
-
-        fields: {
-          index: 'Index',
-          id: 'ID',
-          name: 'Name',
-          description: 'Description',
-          email: 'Email',
-          phone: 'Phone',
-          url: 'Url',
+  methods: {
+    resetForm(event) {
+      this.form.$errors.clear(event);
+    },
+    async onSubmit() {
+      this.form.spreadsheet = this.file;
+      this.form.ignore_duplicates = this.duplicateRows.reduce(
+        (duplicateIds, duplicateRow) => {
+          return duplicateIds.concat(
+            duplicateRow.originals
+              .filter(original => {
+                return original.ignored;
+              })
+              .map(original => {
+                return original.id;
+              })
+          );
         },
-      };
+        []
+      );
+      this.uploadRows = null;
+      this.duplicateRows = [];
+      this.invalidRows = [];
+
+      this.form
+        .post("/organisations/import")
+        .then(response => {
+          this.uploadRows = response.data.imported_row_count;
+          this.file = null;
+        })
+        .catch(error => {
+          this.invalidRows = error.data.errors
+            ? error.data.errors.spreadsheet
+            : [];
+          this.duplicateRows =
+            error.data.duplicates.map(duplicateRow => {
+              for (let i = 0; i < duplicateRow.originals.length; i++) {
+                duplicateRow.originals[i].ignored = false;
+              }
+              return duplicateRow;
+            }) || [];
+          this.file = null;
+        });
     },
-
-    computed: {
-      formResponse() {
-        return this.uploadRows
-          ? 'Imported ' +
-              this.uploadRows +
-              (this.uploadRows === 1 ? ' Organisation' : ' Organisations')
-          : null;
-      },
-      exampleSpreadsheetDownloadLink() {
-        return `${process.env.VUE_APP_API_URI}/downloads/organisations_import_example.xls`;
-      },
-    },
-
-    methods: {
-      resetForm(event) {
-        this.form.$errors.clear(event);
-      },
-      async onSubmit() {
-        this.form.spreadsheet = this.file;
-        this.form.ignore_duplicates = this.duplicateRows.reduce(
-          (duplicateIds, duplicateRow) => {
-            return duplicateIds.concat(
-              duplicateRow.originals
-                .filter((original) => {
-                  return original.ignored;
-                })
-                .map((original) => {
-                  return original.id;
-                })
-            );
-          },
-          []
-        );
-        this.uploadRows = null;
-        this.duplicateRows = [];
-        this.invalidRows = [];
-
-        this.form
-          .post('/organisations/import')
-          .then((response) => {
-            this.uploadRows = response.data.imported_row_count;
-            this.file = null;
-          })
-          .catch((error) => {
-            this.invalidRows = error.data.errors
-              ? error.data.errors.spreadsheet
-              : [];
-            this.duplicateRows =
-              error.data.duplicates.map((duplicateRow) => {
-                for (let i = 0; i < duplicateRow.originals.length; i++) {
-                  duplicateRow.originals[i].ignored = false;
-                }
-                return duplicateRow;
-              }) || [];
-            this.file = null;
-          });
-      },
-      ignoreDuplicate(duplicateId) {
-        for (let i = 0; i < this.duplicateRows.length; i++) {
-          for (let j = 0; j < this.duplicateRows[i].originals.length; j++) {
-            if (this.duplicateRows[i].originals[j].id === duplicateId) {
-              this.duplicateRows[i].originals[j].ignored = !this.duplicateRows[
-                i
-              ].originals[j].ignored;
-              return;
-            }
+    ignoreDuplicate(duplicateId) {
+      for (let i = 0; i < this.duplicateRows.length; i++) {
+        for (let j = 0; j < this.duplicateRows[i].originals.length; j++) {
+          if (this.duplicateRows[i].originals[j].id === duplicateId) {
+            this.duplicateRows[i].originals[j].ignored = !this.duplicateRows[i]
+              .originals[j].ignored;
+            return;
           }
         }
-      },
-    },
-  };
+      }
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

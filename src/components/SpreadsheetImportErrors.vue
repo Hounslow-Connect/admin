@@ -1,6 +1,12 @@
 <template>
   <gov-error-summary title="Invalid rows">
-    <p><gov-hint>Scroll the table left and right to see all columns. Fix the listed errors and resubmit. Some large text fields have been shortened for display, indicated by (...).</gov-hint></p>
+    <p>
+      <gov-hint
+        >Scroll the table left and right to see all columns. Fix the listed
+        errors and resubmit. Some large text fields have been shortened for
+        display, indicated by (...).</gov-hint
+      >
+    </p>
     <div class="responsive-table-wrapper">
       <gov-table>
         <template slot="header">
@@ -17,33 +23,50 @@
           </gov-table-row>
         </template>
         <template slot="body">
-          <gov-table-row v-for="(error, rowIndex) in combinedRows" :key="`OrganisiationImportErrorRow-${rowIndex}`">
+          <gov-table-row
+            v-for="(error, rowIndex) in combinedRows"
+            :key="`OrganisiationImportErrorRow-${rowIndex}`"
+          >
             <gov-table-cell
               v-for="(field, index) in fields"
-              :key="`OrganisiationImportErrorField-${index}`">{{trimString(error.row[index])}}
+              :key="`OrganisiationImportErrorField-${index}`"
+              >{{ trimString(error.row[index]) }}
               <gov-error-message
                 v-if="error.errors && error.errors[index]"
-                :for="`OrganisiationImportErrorField-${index}`">{{error.errors[index][0]}}</gov-error-message>
+                :for="`OrganisiationImportErrorField-${index}`"
+                >{{ error.errors[index][0] }}</gov-error-message
+              >
             </gov-table-cell>
             <gov-table-cell>
               <gov-list v-if="error.originals">
-              <li v-for="(original, index) in error.originals"
-              :key="`OrganisiationImportDuplicate-${index}`">
-              <gov-grid-row>
-                <gov-grid-column width="two-thirds">
-                  <gov-link :to="{
-                    name: 'organisations-show',
-                    params: { organisation: original.id }
-                  }">
-                  {{original.name}}
-                </gov-link>
-              </gov-grid-column>
-              <gov-grid-column width="one-third">
-                <gov-button v-if="original.id" :success="!!original.ignored" @click="ignoreDuplicate(original)">{{!!original.ignored? 'Ignored' : 'Ignore'}}</gov-button>
-                <gov-error-message v-else>Repeated row</gov-error-message>
-              </gov-grid-column>
-              </gov-grid-row>
-              </li>
+                <li
+                  v-for="(original, index) in error.originals"
+                  :key="`OrganisiationImportDuplicate-${index}`"
+                >
+                  <gov-grid-row>
+                    <gov-grid-column width="two-thirds">
+                      <gov-link
+                        :to="{
+                          name: 'organisations-show',
+                          params: { organisation: original.id }
+                        }"
+                      >
+                        {{ original.name }}
+                      </gov-link>
+                    </gov-grid-column>
+                    <gov-grid-column width="one-third">
+                      <gov-button
+                        v-if="original.id"
+                        :success="!!original.ignored"
+                        @click="ignoreDuplicate(original)"
+                        >{{
+                          !!original.ignored ? "Ignored" : "Ignore"
+                        }}</gov-button
+                      >
+                      <gov-error-message v-else>Repeated row</gov-error-message>
+                    </gov-grid-column>
+                  </gov-grid-row>
+                </li>
               </gov-list>
             </gov-table-cell>
           </gov-table-row>
