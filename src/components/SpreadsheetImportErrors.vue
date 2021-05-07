@@ -85,11 +85,17 @@ export default {
     },
     invalidRows: {
       type: Array,
-      required: false
+      required: false,
+      default() {
+        return [];
+      }
     },
     duplicateRows: {
       type: Array,
-      required: false
+      required: false,
+      default() {
+        return [];
+      }
     }
   },
   computed: {

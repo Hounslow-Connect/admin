@@ -152,6 +152,12 @@ let router = new Router({
       meta: { auth: true }
     },
     {
+      path: "/services/import",
+      name: "services-import",
+      component: () => import("@/views/services/Import"),
+      meta: { auth: true }
+    },
+    {
       path: "/services/:service/created",
       name: "services-post-create",
       component: () => import("@/views/services/PostCreate"),

@@ -66,6 +66,14 @@
               <gov-button @click="onAddService" type="submit" success expand
                 >Add service</gov-button
               >
+              <gov-button
+                v-if="auth.isSuperAdmin"
+                :to="{ name: 'services-import' }"
+                type="submit"
+                success
+                expand
+                >Bulk import</gov-button
+              >
             </gov-grid-column>
           </gov-grid-row>
 
