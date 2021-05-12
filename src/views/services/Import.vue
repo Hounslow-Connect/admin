@@ -144,7 +144,7 @@ export default {
         : null;
     },
     exampleSpreadsheetDownloadLink() {
-      return `${process.env.VUE_APP_API_URI}/downloads/services_import_example.xls`;
+      return `${process.env.VUE_APP_API_URI}/downloads/services_import_example.xlsx`;
     }
   },
 
