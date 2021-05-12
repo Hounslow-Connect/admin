@@ -233,7 +233,7 @@
 </template>
 
 <script>
-import SocialMediasInput from "@/views/services/inputs/SocialMediasInput";
+import SocialMediasInput from "@/components/SocialMediasInput";
 
 export default {
   name: "AdditionalInfoTab",

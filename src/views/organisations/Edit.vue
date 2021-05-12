@@ -34,6 +34,7 @@
               :url.sync="form.url"
               :email.sync="form.email"
               :phone.sync="form.phone"
+              :social_medias.sync="form.social_medias"
               @update:logo_file_id="form.logo_file_id = $event"
               @clear="form.$errors.clear($event)"
             />
@@ -87,7 +88,8 @@ export default {
         url: this.organisation.url,
         email: this.organisation.email || "",
         phone: this.organisation.phone || "",
-        logo_file_id: null
+        logo_file_id: null,
+        social_medias: this.organisation.social_medias
       });
 
       this.loading = false;
@@ -121,6 +123,13 @@ export default {
             delete data.logo_file_id;
           } else if (data.logo_file_id === false) {
             data.logo_file_id = null;
+          }
+
+          if (
+            JSON.stringify(data.social_medias) ===
+            JSON.stringify(this.organisation.social_medias)
+          ) {
+            delete data.social_medias;
           }
         }
       );
