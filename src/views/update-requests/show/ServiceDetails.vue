@@ -4,8 +4,8 @@
     <gov-body>
       For service
       <gov-link
-        :to="{ name: 'services-show', params: { service: original.id } }"
-        v-text="original.name"
+        :to="{ name: 'services-show', params: { service: original ? original.id : null } }"
+        v-text="original ? original.name : ''"
       />.
     </gov-body>
 
@@ -19,38 +19,40 @@
 
         <gov-table-row v-if="service.hasOwnProperty('type')">
           <gov-table-header top scope="row">Type</gov-table-header>
-          <gov-table-cell break>{{ original.type | ucfirst }}</gov-table-cell>
+          <gov-table-cell break>{{ 'type' | originalExists(original) | ucfirst }}</gov-table-cell>
           <gov-table-cell break>{{ service.type | ucfirst }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('url')">
           <gov-table-header top scope="row">URL</gov-table-header>
-          <gov-table-cell break>{{ original.url }}</gov-table-cell>
+          <gov-table-cell break>{{ 'url' | originalExists(original) }}</gov-table-cell>
           <gov-table-cell break>{{ service.url }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('name')">
           <gov-table-header top scope="row">Name</gov-table-header>
-          <gov-table-cell>{{ original.name }}</gov-table-cell>
+          <gov-table-cell>{{ 'name' | originalExists(original) }}</gov-table-cell>
           <gov-table-cell>{{ service.name }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('slug')">
           <gov-table-header top scope="row">Slug</gov-table-header>
-          <gov-table-cell>{{ original.slug }}</gov-table-cell>
+          <gov-table-cell>{{ 'slug' | originalExists(original) }}</gov-table-cell>
           <gov-table-cell>{{ service.slug }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('organisation_id')">
           <gov-table-header top scope="row">Organisation</gov-table-header>
-          <gov-table-cell>
+          <gov-table-cell
+              v-if="original !== null"
+          >
             <gov-link
               :to="{
                 name: 'organisations-show',
                 params: { organisation: original.organisation_id }
               }"
             >
-              {{ original.organisation.name }}
+              {{ 'organisation.name' | originalExists(original) }}
             </gov-link>
           </gov-table-cell>
           <gov-table-cell>
@@ -67,19 +69,19 @@
 
         <gov-table-row v-if="service.hasOwnProperty('intro')">
           <gov-table-header top scope="row">Intro</gov-table-header>
-          <gov-table-cell>{{ original.intro }}</gov-table-cell>
+          <gov-table-cell>{{ original.intro | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.intro }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('status')">
           <gov-table-header top scope="row">Status</gov-table-header>
-          <gov-table-cell>{{ original.status | status }}</gov-table-cell>
+          <gov-table-cell>{{ original.status | originalExists | status }}</gov-table-cell>
           <gov-table-cell>{{ service.status | status }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('is_free')">
           <gov-table-header top scope="row">Is free</gov-table-header>
-          <gov-table-cell>{{ original.is_free | isFree }}</gov-table-cell>
+          <gov-table-cell>{{ original.is_free | originalExists  |  isFree }}</gov-table-cell>
           <gov-table-cell>{{ service.is_free | isFree }}</gov-table-cell>
         </gov-table-row>
 
@@ -161,49 +163,49 @@
 
         <gov-table-row v-if="service.hasOwnProperty('fees_url')">
           <gov-table-header top scope="row">Fees URL</gov-table-header>
-          <gov-table-cell break>{{ original.fees_url }}</gov-table-cell>
+          <gov-table-cell break>{{ original.fees_url | originalExists }}</gov-table-cell>
           <gov-table-cell break>{{ service.fees_url }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('fees_text')">
           <gov-table-header top scope="row">Fees text</gov-table-header>
-          <gov-table-cell>{{ original.fees_text }}</gov-table-cell>
+          <gov-table-cell>{{ original.fees_text | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.fees_text }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('wait_time')">
           <gov-table-header top scope="row">Wait time</gov-table-header>
-          <gov-table-cell>{{ original.wait_time }}</gov-table-cell>
+          <gov-table-cell>{{ original.wait_time | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.wait_time }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('description')">
           <gov-table-header top scope="row">Description</gov-table-header>
-          <gov-table-cell v-html="toHtml(original.description)" />
+          <gov-table-cell v-html="toHtml(original.description )" />
           <gov-table-cell v-html="toHtml(service.description)" />
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('testimonial')">
           <gov-table-header top scope="row">Testimonial</gov-table-header>
-          <gov-table-cell>{{ original.testimonial }}</gov-table-cell>
+          <gov-table-cell>{{ original.testimonial | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.testimonial }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('video_embed')">
           <gov-table-header top scope="row">Video embed</gov-table-header>
-          <gov-table-cell>{{ original.video_embed }}</gov-table-cell>
+          <gov-table-cell>{{ original.video_embed | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.video_embed }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('contact_name')">
           <gov-table-header top scope="row">Contact name</gov-table-header>
-          <gov-table-cell>{{ original.contact_name }}</gov-table-cell>
+          <gov-table-cell>{{ original.contact_name | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.contact_name }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('referral_url')">
           <gov-table-header top scope="row">Referral URL</gov-table-header>
-          <gov-table-cell break>{{ original.referral_url }}</gov-table-cell>
+          <gov-table-cell break>{{ original.referral_url | originalExists }}</gov-table-cell>
           <gov-table-cell break>{{ service.referral_url }}</gov-table-cell>
         </gov-table-row>
 
@@ -279,7 +281,7 @@
 
         <gov-table-row v-if="service.hasOwnProperty('contact_phone')">
           <gov-table-header top scope="row">Contact phone</gov-table-header>
-          <gov-table-cell>{{ original.contact_phone }}</gov-table-cell>
+          <gov-table-cell>{{ original.contact_phone | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.contact_phone }}</gov-table-cell>
         </gov-table-row>
 
@@ -489,18 +491,25 @@ export default {
       this.loading = true;
 
       await this.fetchOriginal();
+
       await this.fetchTaxonomies();
 
       this.loading = false;
     },
 
     async fetchOriginal() {
-      const {
-        data: { data: original }
-      } = await http.get(`/services/${this.service.id}`, {
-        params: { include: "organisation" }
-      });
-      this.original = original;
+      // If this is an update request for a NEW service, then there's no original to check for.
+      if (this.service.id !== null) {
+        const {
+          data: {data: original}
+        } = await http.get(`/services/${this.service.id}`, {
+          params: {include: "organisation"}
+        });
+        this.original = original;
+      }
+      else {
+        this.original = null;
+      }
     },
 
     async fetchTaxonomies() {
@@ -550,6 +559,15 @@ export default {
 
     isFree(isFree) {
       return isFree ? "Yes" : "No";
+    },
+
+    originalExists(entity, fieldName) {
+      let value = '';
+      if (entity !== null) {
+          value = entity.hasOwnProperty(fieldName) ? entity[fieldName] : '';
+      }
+
+      return value;
     },
 
     socialMediaType(type) {
