@@ -39,6 +39,13 @@
             :service="updateRequest.data"
           />
 
+          <service-details
+              v-else-if="(updateRequest.updateable_type === 'new_service_created_by_org_admin')"
+              :update-request-id="updateRequest.id"
+              :requested-at="updateRequest.created_at"
+              :service="updateRequest.data"
+          />
+
           <location-details
             v-else-if="updateRequest.updateable_type === 'locations'"
             :update-request-id="updateRequest.id"
