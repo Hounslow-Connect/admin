@@ -18,7 +18,7 @@
         @input="onUrlInput({ index, value: $event })"
         :id="`social_medias.${index}.url`"
         label="Link to your page:"
-        hint="Copy the link from your browser, e.g. https://www.twitter.com/example or https://www.facebook.com/example"
+        :hint="linkHint(socialMedia.type)"
         type="url"
         :error="errors.get(`social_medias.${index}.url`)"
       />
@@ -62,6 +62,13 @@ export default {
         { text: "YouTube", value: "youtube" },
         { text: "Other", value: "other" }
       ],
+      exampleSocialMediaUrls: {
+        twitter: "https://twitter.com/example",
+        facebook: "https://www.facebook.com/example",
+        instagram: "https://www.instagram.com/example",
+        youtube: "https://www.youtube.com/channel/example-channelId",
+        other: "the public link from your social media account"
+      },
       socialMediasIndex: 1
     };
   },
@@ -96,6 +103,11 @@ export default {
       let socialMedias = this.cloneSocialMedias();
       socialMedias[index].url = value;
       this.$emit("input", socialMedias);
+    },
+    linkHint(type) {
+      return `Copy the link from your browser, e.g. ${
+        this.exampleSocialMediaUrls[type || "other"]
+      }`;
     }
   }
 };
