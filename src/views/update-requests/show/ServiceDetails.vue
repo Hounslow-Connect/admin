@@ -1,12 +1,15 @@
 <template>
   <ck-loader v-if="loading" />
   <div v-else>
-    <gov-body>
+    <gov-body v-if="service.id">
       For service
       <gov-link
-        :to="{ name: 'services-show', params: { service: original ? original.id : null } }"
-        v-text="original ? original.name : ''"
+          :to="{ name: 'services-show', params: { service: original.id } }"
+          v-text="original.name"
       />.
+    </gov-body>
+    <gov-body v-else>
+      For a new service.
     </gov-body>
 
     <gov-table>
@@ -19,25 +22,25 @@
 
         <gov-table-row v-if="service.hasOwnProperty('type')">
           <gov-table-header top scope="row">Type</gov-table-header>
-          <gov-table-cell break>{{ 'type' | originalExists(original) | ucfirst }}</gov-table-cell>
+          <gov-table-cell break>{{ original.type | originalExists | ucfirst }}</gov-table-cell>
           <gov-table-cell break>{{ service.type | ucfirst }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('url')">
           <gov-table-header top scope="row">URL</gov-table-header>
-          <gov-table-cell break>{{ 'url' | originalExists(original) }}</gov-table-cell>
+          <gov-table-cell break>{{ original.url | originalExists }}</gov-table-cell>
           <gov-table-cell break>{{ service.url }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('name')">
           <gov-table-header top scope="row">Name</gov-table-header>
-          <gov-table-cell>{{ 'name' | originalExists(original) }}</gov-table-cell>
+          <gov-table-cell>{{ original.name | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.name }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('slug')">
           <gov-table-header top scope="row">Slug</gov-table-header>
-          <gov-table-cell>{{ 'slug' | originalExists(original) }}</gov-table-cell>
+          <gov-table-cell>{{ original.slug | originalExists }}</gov-table-cell>
           <gov-table-cell>{{ service.slug }}</gov-table-cell>
         </gov-table-row>
 
@@ -46,13 +49,13 @@
           <gov-table-cell
               v-if="original !== null"
           >
-            <gov-link
+            <gov-link v-if="service.hasOwnProperty('organisation_id')"
               :to="{
                 name: 'organisations-show',
                 params: { organisation: original.organisation_id }
               }"
             >
-              {{ 'organisation.name' | originalExists(original) }}
+              {{ original.organisation.name | originalExists }}
             </gov-link>
           </gov-table-cell>
           <gov-table-cell>
@@ -62,7 +65,7 @@
                 params: { organisation: service.organisation_id }
               }"
             >
-              {{ service.organisation.name }}
+              {{ service.organisation.name || '' }}
             </gov-link>
           </gov-table-cell>
         </gov-table-row>
@@ -467,7 +470,7 @@ export default {
   data() {
     return {
       loading: false,
-      original: null,
+      original: {},
       taxonomies: [],
       flattenedTaxonomies: []
     };
@@ -508,7 +511,7 @@ export default {
         this.original = original;
       }
       else {
-        this.original = null;
+        this.original = {};
       }
     },
 
@@ -561,13 +564,8 @@ export default {
       return isFree ? "Yes" : "No";
     },
 
-    originalExists(entity, fieldName) {
-      let value = '';
-      if (entity !== null) {
-          value = entity.hasOwnProperty(fieldName) ? entity[fieldName] : '';
-      }
-
-      return value;
+    originalExists(field) {
+      return field || '';
     },
 
     socialMediaType(type) {
