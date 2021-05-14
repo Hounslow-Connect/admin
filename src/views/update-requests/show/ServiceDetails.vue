@@ -1,7 +1,7 @@
 <template>
   <ck-loader v-if="loading" />
   <div v-else>
-    <gov-body v-if="service.id">
+    <gov-body v-if="original.id">
       For service
       <gov-link
           :to="{ name: 'services-show', params: { service: original.id } }"
@@ -46,16 +46,14 @@
 
         <gov-table-row v-if="service.hasOwnProperty('organisation_id')">
           <gov-table-header top scope="row">Organisation</gov-table-header>
-          <gov-table-cell
-              v-if="original !== null"
-          >
-            <gov-link v-if="service.hasOwnProperty('organisation_id')"
+          <gov-table-cell>
+            <gov-link
               :to="{
                 name: 'organisations-show',
                 params: { organisation: original.organisation_id }
               }"
             >
-              {{ original.organisation.name | originalExists }}
+              {{ original.organisation.name }}
             </gov-link>
           </gov-table-cell>
           <gov-table-cell>
@@ -513,6 +511,7 @@ export default {
       else {
         this.original = {};
       }
+
     },
 
     async fetchTaxonomies() {
