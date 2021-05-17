@@ -78,7 +78,7 @@
       the appropriate platform from the dropdown and add the relevant URL.
     </gov-body>
 
-    <social-medias-input
+    <ck-social-medias-input
       :social-medias="social_medias"
       @input="$emit('update:social_medias', $event)"
       :errors="errors"
@@ -88,13 +88,13 @@
 
 <script>
 import CkImageInput from "@/components/Ck/CkImageInput";
-import SocialMediasInput from "@/components/SocialMediasInput";
+import CkSocialMediasInput from "@/components/Ck/CkSocialMediasInput";
 
 export default {
   name: "OrganisationForm",
   components: {
     CkImageInput,
-    SocialMediasInput
+    CkSocialMediasInput
   },
   props: {
     errors: {

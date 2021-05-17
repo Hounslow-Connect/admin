@@ -3,7 +3,7 @@
     <vue-headful title="One Hounslow Connect - Import Organisations" />
 
     <gov-back-link :to="{ name: 'organisations-index' }"
-      >Back to organisations</gov-back-link
+      >Back to Organisations</gov-back-link
     >
     <gov-main-wrapper>
       <gov-grid-row>

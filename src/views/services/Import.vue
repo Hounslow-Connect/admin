@@ -2,7 +2,9 @@
   <gov-width-container>
     <vue-headful title="One Hounslow Connect - Import Services" />
 
-    <gov-back-link :to="{ name: 'dashboard' }">Back to dashboard</gov-back-link>
+    <gov-back-link :to="{ name: 'services-index' }"
+      >Back to Services</gov-back-link
+    >
     <gov-main-wrapper>
       <gov-grid-row>
         <gov-grid-column width="full">

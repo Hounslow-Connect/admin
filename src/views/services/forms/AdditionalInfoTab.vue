@@ -220,7 +220,7 @@
           accounts of the overall organisation.
         </gov-body>
 
-        <social-medias-input
+        <ck-social-medias-input
           :social-medias="social_medias"
           @input="$emit('update:social_medias', $event)"
           :errors="errors"
@@ -233,11 +233,11 @@
 </template>
 
 <script>
-import SocialMediasInput from "@/components/SocialMediasInput";
+import CkSocialMediasInput from "@/components/Ck/CkSocialMediasInput";
 
 export default {
   name: "AdditionalInfoTab",
-  components: { SocialMediasInput },
+  components: { CkSocialMediasInput },
   props: {
     errors: {
       required: true
