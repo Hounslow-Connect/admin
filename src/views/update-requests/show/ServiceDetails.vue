@@ -1,7 +1,7 @@
 <template>
   <ck-loader v-if="loading" />
   <div v-else>
-    <gov-body v-if="service.id">
+    <gov-body v-if="original">
       For service
       <gov-link
         :to="{ name: 'services-show', params: { service: original.id } }"
@@ -66,7 +66,7 @@
                 params: { organisation: original.organisation_id }
               }"
             >
-              {{ original.organisation.name | originalExists }}
+              {{ original.organisation.name }}
             </gov-link>
           </gov-table-cell>
           <gov-table-cell>
