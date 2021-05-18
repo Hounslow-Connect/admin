@@ -20,7 +20,7 @@
             >From</gov-table-header
           >
           <gov-table-header scope="column">{{
-            original ? 'To' : 'New'
+            original ? "To" : "New"
           }}</gov-table-header>
         </gov-table-row>
 
@@ -63,7 +63,7 @@
               v-if="original.hasOwnProperty('organisation_id')"
               :to="{
                 name: 'organisations-show',
-                params: { organisation: original.organisation_id },
+                params: { organisation: original.organisation_id }
               }"
             >
               {{ original.organisation.name | originalExists }}
@@ -73,10 +73,10 @@
             <gov-link
               :to="{
                 name: 'organisations-show',
-                params: { organisation: service.organisation_id },
+                params: { organisation: service.organisation_id }
               }"
             >
-              {{ service.organisation.name || '' }}
+              {{ service.organisation.name || "" }}
             </gov-link>
           </gov-table-cell>
         </gov-table-row>
@@ -111,35 +111,35 @@
             <gov-list v-if="original.hasOwnProperty('criteria')">
               <li v-if="original.criteria.hasOwnProperty('age_group')">
                 <span class="govuk-!-font-weight-bold">Age group:</span>
-                {{ original.criteria.age_group || '-' }}
+                {{ original.criteria.age_group || "-" }}
               </li>
               <li v-if="original.criteria.hasOwnProperty('disability')">
                 <span class="govuk-!-font-weight-bold">Disability:</span>
-                {{ original.criteria.disability || '-' }}
+                {{ original.criteria.disability || "-" }}
               </li>
               <li v-if="original.criteria.hasOwnProperty('employment')">
                 <span class="govuk-!-font-weight-bold">Employment:</span>
-                {{ original.criteria.employment || '-' }}
+                {{ original.criteria.employment || "-" }}
               </li>
               <li v-if="original.criteria.hasOwnProperty('gender')">
                 <span class="govuk-!-font-weight-bold">Gender:</span>
-                {{ original.criteria.gender || '-' }}
+                {{ original.criteria.gender || "-" }}
               </li>
               <li v-if="original.criteria.hasOwnProperty('housing')">
                 <span class="govuk-!-font-weight-bold">Housing:</span>
-                {{ original.criteria.housing || '-' }}
+                {{ original.criteria.housing || "-" }}
               </li>
               <li v-if="original.criteria.hasOwnProperty('income')">
                 <span class="govuk-!-font-weight-bold">Income:</span>
-                {{ original.criteria.income || '-' }}
+                {{ original.criteria.income || "-" }}
               </li>
               <li v-if="original.criteria.hasOwnProperty('language')">
                 <span class="govuk-!-font-weight-bold">Language:</span>
-                {{ original.criteria.language || '-' }}
+                {{ original.criteria.language || "-" }}
               </li>
               <li v-if="original.criteria.hasOwnProperty('other')">
                 <span class="govuk-!-font-weight-bold">Other:</span>
-                {{ original.criteria.other || '-' }}
+                {{ original.criteria.other || "-" }}
               </li>
             </gov-list>
           </gov-table-cell>
@@ -499,167 +499,167 @@
 </template>
 
 <script>
-  import http from '@/http';
-  import CkCarousel from '@/components/Ck/CkCarousel';
+import http from "@/http";
+import CkCarousel from "@/components/Ck/CkCarousel";
 
-  export default {
-    name: 'ServiceDetails',
+export default {
+  name: "ServiceDetails",
 
-    props: {
-      updateRequestId: {
-        required: true,
-        type: String,
-      },
-
-      requestedAt: {
-        required: true,
-        type: String,
-      },
-
-      service: {
-        required: true,
-        type: Object,
-      },
-
-      logoDataUri: {
-        required: false,
-        type: String,
-      },
-
-      galleryItemsDataUris: {
-        required: false,
-        type: Array,
-      },
+  props: {
+    updateRequestId: {
+      required: true,
+      type: String
     },
 
-    components: { CkCarousel },
-
-    data() {
-      return {
-        loading: false,
-        original: null,
-        taxonomies: [],
-        flattenedTaxonomies: [],
-      };
+    requestedAt: {
+      required: true,
+      type: String
     },
 
-    methods: {
-      taxonomyName(taxonomy) {
-        let name = taxonomy.name;
+    service: {
+      required: true,
+      type: Object
+    },
 
-        if (taxonomy.parent_id !== null) {
-          const parent = this.flattenedTaxonomies.find((flattenedTaxonomy) => {
-            return flattenedTaxonomy.id === taxonomy.parent_id;
-          });
-          name = `${this.taxonomyName(parent)} / ${name}`;
-        }
+    logoDataUri: {
+      required: false,
+      type: String
+    },
 
-        return name;
-      },
+    galleryItemsDataUris: {
+      required: false,
+      type: Array
+    }
+  },
 
-      async fetchAll() {
-        this.loading = true;
+  components: { CkCarousel },
 
-        await this.fetchOriginal();
+  data() {
+    return {
+      loading: false,
+      original: null,
+      taxonomies: [],
+      flattenedTaxonomies: []
+    };
+  },
 
-        await this.fetchTaxonomies();
+  methods: {
+    taxonomyName(taxonomy) {
+      let name = taxonomy.name;
 
-        this.loading = false;
-      },
+      if (taxonomy.parent_id !== null) {
+        const parent = this.flattenedTaxonomies.find(flattenedTaxonomy => {
+          return flattenedTaxonomy.id === taxonomy.parent_id;
+        });
+        name = `${this.taxonomyName(parent)} / ${name}`;
+      }
 
-      async fetchOriginal() {
-        // If this is an update request for a NEW service, then there's no original to check for.
-        if (this.service.id !== null) {
-          const {
-            data: { data: original },
-          } = await http.get(`/services/${this.service.id}`, {
-            params: { include: 'organisation' },
-          });
-          this.original = original;
-        } else {
-          this.original = null;
-        }
-      },
+      return name;
+    },
 
-      async fetchTaxonomies() {
+    async fetchAll() {
+      this.loading = true;
+
+      await this.fetchOriginal();
+
+      await this.fetchTaxonomies();
+
+      this.loading = false;
+    },
+
+    async fetchOriginal() {
+      // If this is an update request for a NEW service, then there's no original to check for.
+      if (this.service.id !== null) {
         const {
-          data: { data: taxonomies },
-        } = await http.get('/taxonomies/categories');
-        this.taxonomies = taxonomies;
-        this.setFlattenedTaxonomies();
-      },
+          data: { data: original }
+        } = await http.get(`/services/${this.service.id}`, {
+          params: { include: "organisation" }
+        });
+        this.original = original;
+      } else {
+        this.original = null;
+      }
+    },
 
-      setFlattenedTaxonomies(taxonomies = null) {
-        if (taxonomies === null) {
-          this.flattenedTaxonomies = [];
-          taxonomies = this.taxonomies;
+    async fetchTaxonomies() {
+      const {
+        data: { data: taxonomies }
+      } = await http.get("/taxonomies/categories");
+      this.taxonomies = taxonomies;
+      this.setFlattenedTaxonomies();
+    },
+
+    setFlattenedTaxonomies(taxonomies = null) {
+      if (taxonomies === null) {
+        this.flattenedTaxonomies = [];
+        taxonomies = this.taxonomies;
+      }
+
+      taxonomies.forEach(taxonomy => {
+        this.flattenedTaxonomies.push(taxonomy);
+
+        if (taxonomy.children.length > 0) {
+          this.setFlattenedTaxonomies(taxonomy.children);
+        }
+      });
+    },
+
+    findTaxonomy(id) {
+      return this.flattenedTaxonomies.find(taxonomy => taxonomy.id === id);
+    },
+
+    imageUrls(service) {
+      return service.gallery_items.map(galleryItem => {
+        if (galleryItem.hasOwnProperty("url")) {
+          return galleryItem.url;
         }
 
-        taxonomies.forEach((taxonomy) => {
-          this.flattenedTaxonomies.push(taxonomy);
+        return this.apiUrl(
+          `/services/${service.id}/gallery-items/${galleryItem.file_id}?update_request_id=${this.updateRequestId}`
+        );
+      });
+    }
+  },
 
-          if (taxonomy.children.length > 0) {
-            this.setFlattenedTaxonomies(taxonomy.children);
-          }
-        });
-      },
-
-      findTaxonomy(id) {
-        return this.flattenedTaxonomies.find((taxonomy) => taxonomy.id === id);
-      },
-
-      imageUrls(service) {
-        return service.gallery_items.map((galleryItem) => {
-          if (galleryItem.hasOwnProperty('url')) {
-            return galleryItem.url;
-          }
-
-          return this.apiUrl(
-            `/services/${service.id}/gallery-items/${galleryItem.file_id}?update_request_id=${this.updateRequestId}`
-          );
-        });
-      },
+  filters: {
+    status(status) {
+      return status === "active" ? "Enabled" : "Disabled";
     },
 
-    filters: {
-      status(status) {
-        return status === 'active' ? 'Enabled' : 'Disabled';
-      },
-
-      isFree(isFree) {
-        return isFree ? 'Yes' : 'No';
-      },
-
-      originalExists(field) {
-        return field || '';
-      },
-
-      socialMediaType(type) {
-        switch (type) {
-          case 'twitter':
-            return 'Twitter';
-          case 'facebook':
-            return 'Facebook';
-          case 'instagram':
-            return 'Instagram';
-          case 'youtube':
-            return 'YouTube';
-          case 'other':
-            return 'Other';
-        }
-      },
-
-      referralMethod(referralMethod) {
-        return referralMethod.charAt(0).toUpperCase() + referralMethod.slice(1);
-      },
-
-      showReferralDisclaimer(showReferralDisclaimer) {
-        return showReferralDisclaimer ? 'Show' : 'Hide';
-      },
+    isFree(isFree) {
+      return isFree ? "Yes" : "No";
     },
 
-    created() {
-      this.fetchAll();
+    originalExists(field) {
+      return field || "";
     },
-  };
+
+    socialMediaType(type) {
+      switch (type) {
+        case "twitter":
+          return "Twitter";
+        case "facebook":
+          return "Facebook";
+        case "instagram":
+          return "Instagram";
+        case "youtube":
+          return "YouTube";
+        case "other":
+          return "Other";
+      }
+    },
+
+    referralMethod(referralMethod) {
+      return referralMethod.charAt(0).toUpperCase() + referralMethod.slice(1);
+    },
+
+    showReferralDisclaimer(showReferralDisclaimer) {
+      return showReferralDisclaimer ? "Show" : "Hide";
+    }
+  },
+
+  created() {
+    this.fetchAll();
+  }
+};
 </script>

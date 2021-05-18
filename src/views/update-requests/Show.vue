@@ -105,109 +105,109 @@
 </template>
 
 <script>
-  import http from '@/http';
-  import OrganisationDetails from '@/views/update-requests/show/OrganisationDetails';
-  import OrganisationSignUpFormDetails from '@/views/update-requests/show/OrganisationSignUpFormDetails';
-  import ServiceDetails from '@/views/update-requests/show/ServiceDetails';
-  import LocationDetails from '@/views/update-requests/show/LocationDetails';
-  import ServiceLocationDetails from '@/views/update-requests/show/ServiceLocationDetails';
+import http from "@/http";
+import OrganisationDetails from "@/views/update-requests/show/OrganisationDetails";
+import OrganisationSignUpFormDetails from "@/views/update-requests/show/OrganisationSignUpFormDetails";
+import ServiceDetails from "@/views/update-requests/show/ServiceDetails";
+import LocationDetails from "@/views/update-requests/show/LocationDetails";
+import ServiceLocationDetails from "@/views/update-requests/show/ServiceLocationDetails";
 
-  export default {
-    name: 'ShowUpdateRequest',
-    components: {
-      OrganisationDetails,
-      OrganisationSignUpFormDetails,
-      ServiceDetails,
-      LocationDetails,
-      ServiceLocationDetails,
+export default {
+  name: "ShowUpdateRequest",
+  components: {
+    OrganisationDetails,
+    OrganisationSignUpFormDetails,
+    ServiceDetails,
+    LocationDetails,
+    ServiceLocationDetails
+  },
+  data() {
+    return {
+      loading: false,
+      updateRequest: null,
+      approve: null,
+      submitting: false
+    };
+  },
+  methods: {
+    async fetchUpdateRequests() {
+      this.loading = true;
+
+      const { data } = await http.get(
+        `/update-requests/${this.$route.params.updateRequest}`
+      );
+      this.updateRequest = data;
+      this.updateRequest.data.id = data.updateable_id;
+
+      // If the update request is for a service, and the organisation has been
+      // updated, then eager load the organisation and append to the data.
+      if (
+        ((this.updateRequest.updateable_type === "services" ||
+          this.updateRequest.updateable_type ===
+            "new_service_created_by_org_admin") &&
+          this.updateRequest.data.hasOwnProperty("organisation_id")) ||
+        (this.updateRequest.updateable_type === "organisation_sign_up_form" &&
+          this.updateRequest.data.hasOwnProperty("organisation") &&
+          this.updateRequest.data.organisation.id)
+      ) {
+        const organisationId =
+          this.updateRequest.data.organisation_id ||
+          this.updateRequest.data.organisation.id;
+        const {
+          data: { data: organisation }
+        } = await http.get(`/organisations/${organisationId}`);
+        this.updateRequest.data.organisation = organisation;
+      }
+
+      this.loading = false;
     },
-    data() {
-      return {
-        loading: false,
-        updateRequest: null,
-        approve: null,
-        submitting: false,
-      };
-    },
-    methods: {
-      async fetchUpdateRequests() {
-        this.loading = true;
+    async onSubmit() {
+      try {
+        this.submitting = true;
 
-        const { data } = await http.get(
-          `/update-requests/${this.$route.params.updateRequest}`
-        );
-        this.updateRequest = data;
-        this.updateRequest.data.id = data.updateable_id;
+        if (this.approve) {
+          await http.put(`/update-requests/${this.updateRequest.id}/approve`);
 
-        // If the update request is for a service, and the organisation has been
-        // updated, then eager load the organisation and append to the data.
-        if (
-          ((this.updateRequest.updateable_type === 'services' ||
-            this.updateRequest.updateable_type ===
-              'new_service_created_by_org_admin') &&
-            this.updateRequest.data.hasOwnProperty('organisation_id')) ||
-          (this.updateRequest.updateable_type === 'organisation_sign_up_form' &&
-            this.updateRequest.data.hasOwnProperty('organisation') &&
-            this.updateRequest.data.organisation.id)
-        ) {
-          const organisationId =
-            this.updateRequest.data.organisation_id ||
-            this.updateRequest.data.organisation.id;
-          const {
-            data: { data: organisation },
-          } = await http.get(`/organisations/${organisationId}`);
-          this.updateRequest.data.organisation = organisation;
-        }
-
-        this.loading = false;
-      },
-      async onSubmit() {
-        try {
-          this.submitting = true;
-
-          if (this.approve) {
-            await http.put(`/update-requests/${this.updateRequest.id}/approve`);
-
-            switch (this.updateRequest.updateable_type) {
-              case 'services':
-                this.$router.push({
-                  name: 'services-show',
-                  params: { service: this.updateRequest.updateable_id },
-                });
-                break;
-              case 'organisations':
-                this.$router.push({
-                  name: 'organisations-show',
-                  params: { organisation: this.updateRequest.updateable_id },
-                });
-                break;
-              case 'locations':
-                this.$router.push({
-                  name: 'locations-show',
-                  params: { location: this.updateRequest.updateable_id },
-                });
-                break;
-              case 'service_locations':
-                this.$router.push({
-                  name: 'service-locations-show',
-                  params: { serviceLocation: this.updateRequest.updateable_id },
-                });
-                break;
-              default:
-                this.$router.push({ name: 'update-requests-index' });
-                break;
-            }
-          } else {
-            await http.delete(`/update-requests/${this.updateRequest.id}`);
-            this.$router.push({ name: 'update-requests-index' });
+          switch (this.updateRequest.updateable_type) {
+            case "services":
+              this.$router.push({
+                name: "services-show",
+                params: { service: this.updateRequest.updateable_id }
+              });
+              break;
+            case "organisations":
+              this.$router.push({
+                name: "organisations-show",
+                params: { organisation: this.updateRequest.updateable_id }
+              });
+              break;
+            case "locations":
+              this.$router.push({
+                name: "locations-show",
+                params: { location: this.updateRequest.updateable_id }
+              });
+              break;
+            case "service_locations":
+              this.$router.push({
+                name: "service-locations-show",
+                params: { serviceLocation: this.updateRequest.updateable_id }
+              });
+              break;
+            default:
+              this.$router.push({ name: "update-requests-index" });
+              break;
           }
-        } catch (error) {
-          this.submitting = false;
+        } else {
+          await http.delete(`/update-requests/${this.updateRequest.id}`);
+          this.$router.push({ name: "update-requests-index" });
         }
-      },
-    },
-    created() {
-      this.fetchUpdateRequests();
-    },
-  };
+      } catch (error) {
+        this.submitting = false;
+      }
+    }
+  },
+  created() {
+    this.fetchUpdateRequests();
+  }
+};
 </script>
