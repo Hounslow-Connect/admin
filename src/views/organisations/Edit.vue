@@ -100,9 +100,9 @@
             <gov-button v-if="form.$submitting" disabled type="submit"
               >Requesting...</gov-button
             >
-            <gov-button v-else @click="onSubmit" type="submit"
-              >Request update</gov-button
-            >
+            <gov-button v-else @click="onSubmit" type="submit">{{
+              updateButtonText
+            }}</gov-button>
             <ck-submit-error v-if="form.$errors.any()" />
           </gov-grid-column>
         </gov-grid-row>
@@ -131,6 +131,11 @@
           { id: 'taxonomies', heading: 'Taxonomies', active: false },
         ],
       };
+    },
+    computed: {
+      updateButtonText() {
+        return this.auth.isGlobalAdmin ? 'Update' : 'Request update';
+      },
     },
     methods: {
       async fetchOrganisation() {
@@ -207,29 +212,26 @@
           }
         );
         const updateRequestId = response.id;
-        try {
-          const { data } = await http.get(
-            `/update-requests/${updateRequestId}`
-          );
-          let next = {};
-          if (data.approved_at) {
-            next = {
-              name: 'organisations-show',
-              params: {
-                organisation: this.organisation.id,
-              },
-              query: { updated: true },
-            };
-          } else {
-            next = {
-              name: 'organisations-updated',
-              params: { organisation: this.organisation.id },
-            };
+        let next = {
+          name: 'organisations-updated',
+          params: { organisation: this.organisation.id },
+        };
+
+        if (this.auth.isGlobalAdmin) {
+          try {
+            const { data } = await http.get(
+              `/update-requests/${updateRequestId}`
+            );
+
+            if (data.approved_at) {
+              next.name = 'organisations-show';
+              next.query = { updated: true };
+            }
+          } catch (err) {
+            console.log(err);
           }
-          this.$router.push(next);
-        } catch (err) {
-          console.log(err);
         }
+        this.$router.push(next);
       },
       onTabChange({ index }) {
         this.tabs.forEach((tab) => (tab.active = false));

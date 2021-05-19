@@ -12,7 +12,7 @@
       <gov-back-link
         :to="{
           name: 'services-show-locations',
-          params: { service: serviceLocation.service_id }
+          params: { service: serviceLocation.service_id },
         }"
         >Back to service</gov-back-link
       >
@@ -20,6 +20,11 @@
         <gov-grid-row>
           <gov-grid-column width="two-thirds">
             <gov-heading size="m">View service location</gov-heading>
+
+            <gov-inset-text v-if="updated"
+              >Service Location {{ serviceLocation.name || '' }} has been
+              updated</gov-inset-text
+            >
 
             <service-location-details :service-location="serviceLocation" />
 
@@ -46,7 +51,7 @@
             <gov-button
               :to="{
                 name: 'service-locations-edit',
-                params: { serviceLocation: serviceLocation.id }
+                params: { serviceLocation: serviceLocation.id },
               }"
             >
               Edit service location
@@ -59,37 +64,39 @@
 </template>
 
 <script>
-import http from "@/http";
-import ServiceLocationDetails from "@/views/service-locations/show/ServiceLocationDetails";
+  import http from '@/http';
+  import ServiceLocationDetails from '@/views/service-locations/show/ServiceLocationDetails';
 
-export default {
-  name: "ShowServiceLocation",
-  components: { ServiceLocationDetails },
-  data() {
-    return {
-      loading: false,
-      serviceLocation: null
-    };
-  },
-  methods: {
-    async fetchServiceLocation() {
-      this.loading = true;
-      const response = await http.get(
-        `/service-locations/${this.$route.params.serviceLocation}`,
-        { params: { include: "location" } }
-      );
-      this.serviceLocation = response.data.data;
-      this.loading = false;
+  export default {
+    name: 'ShowServiceLocation',
+    components: { ServiceLocationDetails },
+    data() {
+      return {
+        loading: false,
+        serviceLocation: null,
+        updated: false,
+      };
     },
-    onDelete() {
-      this.$router.push({
-        name: "services-show",
-        params: { service: this.serviceLocation.service_id }
-      });
-    }
-  },
-  created() {
-    this.fetchServiceLocation();
-  }
-};
+    methods: {
+      async fetchServiceLocation() {
+        this.loading = true;
+        const response = await http.get(
+          `/service-locations/${this.$route.params.serviceLocation}`,
+          { params: { include: 'location' } }
+        );
+        this.serviceLocation = response.data.data;
+        this.loading = false;
+      },
+      onDelete() {
+        this.$router.push({
+          name: 'services-show',
+          params: { service: this.serviceLocation.service_id },
+        });
+      },
+    },
+    created() {
+      this.updated = this.$route.query.updated || false;
+      this.fetchServiceLocation();
+    },
+  };
 </script>
