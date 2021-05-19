@@ -11,7 +11,7 @@
       <gov-back-link
         :to="{
           name: 'organisations-show',
-          params: { organisation: organisation.id }
+          params: { organisation: organisation.id },
         }"
         >Back to organisation</gov-back-link
       >
@@ -112,116 +112,138 @@
 </template>
 
 <script>
-import http from "@/http";
-import Form from "@/classes/Form";
-import OrganisationTab from "./OrganisationTab";
-import OrganisationForm from "./forms/OrganisationForm";
-import CkCategoryTaxonomyInput from "@/components/Ck/CkCategoryTaxonomyInput";
+  import http from '@/http';
+  import Form from '@/classes/Form';
+  import OrganisationTab from './OrganisationTab';
+  import OrganisationForm from './forms/OrganisationForm';
+  import CkCategoryTaxonomyInput from '@/components/Ck/CkCategoryTaxonomyInput';
 
-export default {
-  name: "EditOrganisation",
-  components: { OrganisationForm, OrganisationTab, CkCategoryTaxonomyInput },
-  data() {
-    return {
-      loading: false,
-      organisation: null,
-      form: null,
-      tabs: [
-        { id: "details", heading: "Details", active: true },
-        { id: "taxonomies", heading: "Taxonomies", active: false }
-      ]
-    };
-  },
-  methods: {
-    async fetchOrganisation() {
-      this.loading = true;
-
-      const response = await http.get(
-        `/organisations/${this.$route.params.organisation}`
-      );
-      this.organisation = response.data.data;
-      this.form = new Form({
-        name: this.organisation.name,
-        slug: this.organisation.slug,
-        description: this.organisation.description,
-        url: this.organisation.url,
-        email: this.organisation.email || "",
-        phone: this.organisation.phone || "",
-        logo_file_id: null,
-        social_medias: this.organisation.social_medias,
-        category_taxonomies: this.organisation.category_taxonomies.map(
-          taxonomy => taxonomy.id
-        )
-      });
-
-      this.loading = false;
+  export default {
+    name: 'EditOrganisation',
+    components: { OrganisationForm, OrganisationTab, CkCategoryTaxonomyInput },
+    data() {
+      return {
+        loading: false,
+        organisation: null,
+        form: null,
+        tabs: [
+          { id: 'details', heading: 'Details', active: true },
+          { id: 'taxonomies', heading: 'Taxonomies', active: false },
+        ],
+      };
     },
-    async onSubmit() {
-      await this.form.put(
-        `/organisations/${this.organisation.id}`,
-        (config, data) => {
-          // Remove any unchanged values.
-          if (data.name === this.organisation.name) {
-            delete data.name;
-          }
-          if (data.slug === this.organisation.slug) {
-            delete data.slug;
-          }
-          if (data.description === this.organisation.description) {
-            delete data.description;
-          }
-          if (data.url === this.organisation.url) {
-            delete data.url;
-          }
-          if (data.email === (this.organisation.email || "-")) {
-            delete data.email;
-          }
-          if (data.phone === (this.organisation.phone || "-")) {
-            delete data.phone;
-          }
+    methods: {
+      async fetchOrganisation() {
+        this.loading = true;
 
-          // Remove the logo from the request if null, or delete if false.
-          if (data.logo_file_id === null) {
-            delete data.logo_file_id;
-          } else if (data.logo_file_id === false) {
-            data.logo_file_id = null;
-          }
+        const response = await http.get(
+          `/organisations/${this.$route.params.organisation}`
+        );
+        this.organisation = response.data.data;
+        this.form = new Form({
+          name: this.organisation.name,
+          slug: this.organisation.slug,
+          description: this.organisation.description,
+          url: this.organisation.url,
+          email: this.organisation.email || '',
+          phone: this.organisation.phone || '',
+          logo_file_id: null,
+          social_medias: this.organisation.social_medias,
+          category_taxonomies: this.organisation.category_taxonomies.map(
+            (taxonomy) => taxonomy.id
+          ),
+        });
 
-          if (
-            JSON.stringify(data.social_medias) ===
-            JSON.stringify(this.organisation.social_medias)
-          ) {
-            delete data.social_medias;
-          }
+        this.loading = false;
+      },
+      async onSubmit() {
+        const response = await this.form.put(
+          `/organisations/${this.organisation.id}`,
+          (config, data) => {
+            // Remove any unchanged values.
+            if (data.name === this.organisation.name) {
+              delete data.name;
+            }
+            if (data.slug === this.organisation.slug) {
+              delete data.slug;
+            }
+            if (data.description === this.organisation.description) {
+              delete data.description;
+            }
+            if (data.url === this.organisation.url) {
+              delete data.url;
+            }
+            if (data.email === (this.organisation.email || '-')) {
+              delete data.email;
+            }
+            if (data.phone === (this.organisation.phone || '-')) {
+              delete data.phone;
+            }
 
-          if (
-            JSON.stringify(data.category_taxonomies) ===
-            JSON.stringify(
-              this.organisation.category_taxonomies.map(taxonomy => taxonomy.id)
-            )
-          ) {
-            delete data.category_taxonomies;
+            // Remove the logo from the request if null, or delete if false.
+            if (data.logo_file_id === null) {
+              delete data.logo_file_id;
+            } else if (data.logo_file_id === false) {
+              data.logo_file_id = null;
+            }
+
+            if (
+              JSON.stringify(data.social_medias) ===
+              JSON.stringify(this.organisation.social_medias)
+            ) {
+              delete data.social_medias;
+            }
+
+            if (
+              JSON.stringify(data.category_taxonomies) ===
+              JSON.stringify(
+                this.organisation.category_taxonomies.map(
+                  (taxonomy) => taxonomy.id
+                )
+              )
+            ) {
+              delete data.category_taxonomies;
+            }
           }
+        );
+        const updateRequestId = response.id;
+        try {
+          const { data } = await http.get(
+            `/update-requests/${updateRequestId}`
+          );
+          let next = {};
+          if (data.approved_at) {
+            next = {
+              name: 'organisations-show',
+              params: {
+                organisation: this.organisation.id,
+              },
+              query: { updated: true },
+            };
+          } else {
+            next = {
+              name: 'organisations-updated',
+              params: { organisation: this.organisation.id },
+            };
+          }
+          this.$router.push(next);
+        } catch (err) {
+          console.log(err);
         }
-      );
-      this.$router.push({
-        name: "organisations-updated",
-        params: { organisation: this.organisation.id }
-      });
-    },
-    onTabChange({ index }) {
-      this.tabs.forEach(tab => (tab.active = false));
-      const tabId = this.tabs[index].id;
-      this.tabs.find(tab => tab.id === tabId).active = true;
-    },
-    isTabActive(id) {
-      const tab = this.tabs.find(tab => tab.id === id);
+      },
+      onTabChange({ index }) {
+        this.tabs.forEach((tab) => (tab.active = false));
+        const tabId = this.tabs[index].id;
+        this.tabs.find((tab) => tab.id === tabId).active = true;
+      },
+      isTabActive(id) {
+        const tab = this.tabs.find((tab) => tab.id === id);
 
-      return tab === undefined ? false : tab.active;
-    }
-  },
-  created() {
-    this.fetchOrganisation();
-  }
-};
+        return tab === undefined ? false : tab.active;
+      },
+    },
+    created() {
+      this.fetchOrganisation();
+    },
+  };
 </script>

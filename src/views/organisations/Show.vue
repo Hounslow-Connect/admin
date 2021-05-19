@@ -13,6 +13,11 @@
         <gov-grid-column width="two-thirds">
           <gov-heading size="m">View organisation</gov-heading>
 
+          <gov-inset-text v-if="updated"
+            >Organisation {{ organisation.name }} has been
+            updated</gov-inset-text
+          >
+
           <ck-organisation-details :organisation="organisation" />
 
           <template v-if="auth.isSuperAdmin">
@@ -38,7 +43,7 @@
           <gov-button
             :to="{
               name: 'organisations-edit',
-              params: { organisation: organisation.id }
+              params: { organisation: organisation.id },
             }"
           >
             Edit organisation
@@ -50,32 +55,34 @@
 </template>
 
 <script>
-import http from "@/http";
+  import http from '@/http';
 
-export default {
-  name: "ShowOrganisation",
-  data() {
-    return {
-      loading: false,
-      organisation: null
-    };
-  },
-  methods: {
-    fetchOrganisation() {
-      this.loading = true;
-      http
-        .get(`/organisations/${this.$route.params.organisation}`)
-        .then(({ data }) => {
-          this.organisation = data.data;
-          this.loading = false;
-        });
+  export default {
+    name: 'ShowOrganisation',
+    data() {
+      return {
+        loading: false,
+        updated: false,
+        organisation: null,
+      };
     },
-    onDelete() {
-      this.$router.push({ name: "organisations-index" });
-    }
-  },
-  created() {
-    this.fetchOrganisation();
-  }
-};
+    methods: {
+      fetchOrganisation() {
+        this.loading = true;
+        http
+          .get(`/organisations/${this.$route.params.organisation}`)
+          .then(({ data }) => {
+            this.organisation = data.data;
+            this.loading = false;
+          });
+      },
+      onDelete() {
+        this.$router.push({ name: 'organisations-index' });
+      },
+    },
+    created() {
+      this.updated = this.$route.query.updated || false;
+      this.fetchOrganisation();
+    },
+  };
 </script>
