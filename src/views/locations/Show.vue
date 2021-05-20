@@ -51,37 +51,37 @@
 </template>
 
 <script>
-  import LocationDetails from '@/views/locations/show/LocationDetails';
-  import http from '@/http';
+import LocationDetails from "@/views/locations/show/LocationDetails";
+import http from "@/http";
 
-  export default {
-    name: 'ShowLocation',
-    components: { LocationDetails },
-    data() {
-      return {
-        loading: false,
-        location: null,
-        updated: false,
-      };
-    },
-    methods: {
-      async fetchLocation() {
-        this.loading = true;
+export default {
+  name: "ShowLocation",
+  components: { LocationDetails },
+  data() {
+    return {
+      loading: false,
+      location: null,
+      updated: false
+    };
+  },
+  methods: {
+    async fetchLocation() {
+      this.loading = true;
 
-        const response = await http.get(
-          `/locations/${this.$route.params.location}`
-        );
-        this.location = response.data.data;
+      const response = await http.get(
+        `/locations/${this.$route.params.location}`
+      );
+      this.location = response.data.data;
 
-        this.loading = false;
-      },
-      onDelete() {
-        this.$router.push({ name: 'locations-index' });
-      },
+      this.loading = false;
     },
-    created() {
-      this.updated = this.$route.query.updated || false;
-      this.fetchLocation();
-    },
-  };
+    onDelete() {
+      this.$router.push({ name: "locations-index" });
+    }
+  },
+  created() {
+    this.updated = this.$route.query.updated || false;
+    this.fetchLocation();
+  }
+};
 </script>

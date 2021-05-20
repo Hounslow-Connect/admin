@@ -21,8 +21,8 @@
         <gov-table-header top scope="row">Permissions</gov-table-header>
         <gov-table-cell>
           <gov-list>
-            <li>Super admin: {{ superAdmin ? 'Yes' : 'No' }}</li>
-            <li>Global admin: {{ globalAdmin ? 'Yes' : 'No' }}</li>
+            <li>Super admin: {{ superAdmin ? "Yes" : "No" }}</li>
+            <li>Global admin: {{ globalAdmin ? "Yes" : "No" }}</li>
             <li>
               <template v-if="organisationAdmin.length === 0"
                 >Organisation admin: No</template
@@ -36,7 +36,7 @@
                   <gov-link
                     :to="{
                       name: 'organisations-show',
-                      params: { organisation: role.organisation_id },
+                      params: { organisation: role.organisation_id }
                     }"
                     v-text="role.organisation.name"
                   />
@@ -56,7 +56,7 @@
                   <gov-link
                     :to="{
                       name: 'services-show',
-                      params: { service: role.service_id },
+                      params: { service: role.service_id }
                     }"
                     v-text="role.service.name"
                   />
@@ -76,7 +76,7 @@
                   <gov-link
                     :to="{
                       name: 'services-show',
-                      params: { service: role.service_id },
+                      params: { service: role.service_id }
                     }"
                     v-text="role.service.name"
                   />
@@ -91,54 +91,54 @@
 </template>
 
 <script>
-  export default {
-    name: 'CkUserDetails',
-    props: {
-      user: {
-        type: Object,
-        required: true,
-      },
-    },
-    data() {
-      return {
-        superAdmin: false,
-        globalAdmin: false,
-        organisationAdmin: [],
-        serviceAdmin: [],
-        serviceWorker: [],
-      };
-    },
-    methods: {
-      sortRoles() {
-        this.superAdmin = false;
-        this.globalAdmin = false;
-        this.organisationAdmin = [];
-        this.serviceAdmin = [];
-        this.serviceWorker = [];
+export default {
+  name: "CkUserDetails",
+  props: {
+    user: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    return {
+      superAdmin: false,
+      globalAdmin: false,
+      organisationAdmin: [],
+      serviceAdmin: [],
+      serviceWorker: []
+    };
+  },
+  methods: {
+    sortRoles() {
+      this.superAdmin = false;
+      this.globalAdmin = false;
+      this.organisationAdmin = [];
+      this.serviceAdmin = [];
+      this.serviceWorker = [];
 
-        this.user.roles.forEach((role) => {
-          if (role.role === 'Super Admin') {
-            this.superAdmin = true;
-          } else if (role.role === 'Global Admin') {
-            this.globalAdmin = true;
-          } else if (role.hasOwnProperty('organisation_id')) {
-            this.organisationAdmin.push(role);
-          } else if (
-            role.hasOwnProperty('service_id') &&
-            role.role === 'Service Admin'
-          ) {
-            this.serviceAdmin.push(role);
-          } else if (
-            role.hasOwnProperty('service_id') &&
-            role.role === 'Service Worker'
-          ) {
-            this.serviceWorker.push(role);
-          }
-        });
-      },
-    },
-    created() {
-      this.sortRoles();
-    },
-  };
+      this.user.roles.forEach(role => {
+        if (role.role === "Super Admin") {
+          this.superAdmin = true;
+        } else if (role.role === "Global Admin") {
+          this.globalAdmin = true;
+        } else if (role.hasOwnProperty("organisation_id")) {
+          this.organisationAdmin.push(role);
+        } else if (
+          role.hasOwnProperty("service_id") &&
+          role.role === "Service Admin"
+        ) {
+          this.serviceAdmin.push(role);
+        } else if (
+          role.hasOwnProperty("service_id") &&
+          role.role === "Service Worker"
+        ) {
+          this.serviceWorker.push(role);
+        }
+      });
+    }
+  },
+  created() {
+    this.sortRoles();
+  }
+};
 </script>
