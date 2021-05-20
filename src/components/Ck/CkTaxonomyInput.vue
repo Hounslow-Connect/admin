@@ -2,7 +2,7 @@
   <ck-loader v-if="loading" />
   <div v-else>
     <gov-form-group>
-      <gov-label for="filter[name]">Taxonomy name</gov-label>
+      <gov-label for="filter[name]">Search by taxonomy name</gov-label>
       <gov-input
         v-model="filters.name"
         id="filter[name]"
@@ -12,7 +12,7 @@
     </gov-form-group>
 
     <!-- Level: 1 -->
-    <gov-form-group>
+    <gov-form-group v-if="filteredTaxonomyIds.length">
       <gov-checkboxes :invalid="error">
         <gov-checkbox
           v-for="taxonomy in taxonomies"
@@ -109,6 +109,9 @@
       />
     </gov-form-group>
     <!-- /Level: 1 -->
+    <gov-inset-text v-else>
+      No matching taxonomies found
+    </gov-inset-text>
   </div>
 </template>
 
