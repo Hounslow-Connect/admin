@@ -15,8 +15,9 @@
         <gov-section-break size="l" />
 
         <gov-form-group :invalid="errors.has('category_taxonomies')">
-          <ck-category-taxonomy-input
+          <ck-taxonomy-input
             :value="category_taxonomies"
+            root="categories"
             @input="$emit('update:category_taxonomies', $event)"
             :error="errors.get('category_taxonomies')"
             @clear="$emit('clear', 'category_taxonomies')"
@@ -35,11 +36,11 @@
   </div>
 </template>
 <script>
-import CkCategoryTaxonomyInput from "@/components/Ck/CkCategoryTaxonomyInput";
+import CkTaxonomyInput from "@/components/Ck/CkTaxonomyInput";
 
 export default {
   name: "TaxonomiesTab",
-  components: { CkCategoryTaxonomyInput },
+  components: { CkTaxonomyInput },
   props: {
     errors: {
       required: true

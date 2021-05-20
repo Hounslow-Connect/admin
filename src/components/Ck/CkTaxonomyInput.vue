@@ -1,23 +1,22 @@
 <template>
   <ck-loader v-if="loading" />
+  <div v-else>
+    <gov-form-group>
+      <gov-label for="filter[name]">Taxonomy name</gov-label>
+      <gov-input
+        v-model="filters.name"
+        id="filter[name]"
+        name="filter[name]"
+        type="search"
+      />
+    </gov-form-group>
 
-  <!-- Level: 1 -->
-  <gov-form-group v-else>
-    <gov-checkboxes :invalid="error">
-      <gov-checkbox
-        v-for="taxonomy in taxonomies"
-        :key="taxonomy.id"
-        :value="value.includes(taxonomy.id)"
-        @input="onInput({ taxonomy, enabled: $event })"
-        :id="taxonomy.id"
-        :name="taxonomy.id"
-        :label="taxonomy.name"
-        :disabled="disabled"
-      >
-        <!-- Level: 2 -->
+    <!-- Level: 1 -->
+    <gov-form-group>
+      <gov-checkboxes :invalid="error">
         <gov-checkbox
-          class="govuk-checkboxes__item--nested"
-          v-for="taxonomy in taxonomy.children"
+          v-for="taxonomy in taxonomies"
+          v-if="filteredTaxonomyIds.includes(taxonomy.id)"
           :key="taxonomy.id"
           :value="value.includes(taxonomy.id)"
           @input="onInput({ taxonomy, enabled: $event })"
@@ -26,10 +25,11 @@
           :label="taxonomy.name"
           :disabled="disabled"
         >
-          <!-- Level: 3 -->
+          <!-- Level: 2 -->
           <gov-checkbox
             class="govuk-checkboxes__item--nested"
             v-for="taxonomy in taxonomy.children"
+            v-if="filteredTaxonomyIds.includes(taxonomy.id)"
             :key="taxonomy.id"
             :value="value.includes(taxonomy.id)"
             @input="onInput({ taxonomy, enabled: $event })"
@@ -38,10 +38,11 @@
             :label="taxonomy.name"
             :disabled="disabled"
           >
-            <!-- Level: 4 -->
+            <!-- Level: 3 -->
             <gov-checkbox
               class="govuk-checkboxes__item--nested"
               v-for="taxonomy in taxonomy.children"
+              v-if="filteredTaxonomyIds.includes(taxonomy.id)"
               :key="taxonomy.id"
               :value="value.includes(taxonomy.id)"
               @input="onInput({ taxonomy, enabled: $event })"
@@ -50,10 +51,11 @@
               :label="taxonomy.name"
               :disabled="disabled"
             >
-              <!-- Level: 5 -->
+              <!-- Level: 4 -->
               <gov-checkbox
                 class="govuk-checkboxes__item--nested"
                 v-for="taxonomy in taxonomy.children"
+                v-if="filteredTaxonomyIds.includes(taxonomy.id)"
                 :key="taxonomy.id"
                 :value="value.includes(taxonomy.id)"
                 @input="onInput({ taxonomy, enabled: $event })"
@@ -62,10 +64,11 @@
                 :label="taxonomy.name"
                 :disabled="disabled"
               >
-                <!-- Level: 6 -->
+                <!-- Level: 5 -->
                 <gov-checkbox
                   class="govuk-checkboxes__item--nested"
                   v-for="taxonomy in taxonomy.children"
+                  v-if="filteredTaxonomyIds.includes(taxonomy.id)"
                   :key="taxonomy.id"
                   :value="value.includes(taxonomy.id)"
                   @input="onInput({ taxonomy, enabled: $event })"
@@ -73,29 +76,47 @@
                   :name="taxonomy.id"
                   :label="taxonomy.name"
                   :disabled="disabled"
-                />
-                <!-- /Level: 6 -->
+                >
+                  <!-- Level: 6 -->
+                  <gov-checkbox
+                    class="govuk-checkboxes__item--nested"
+                    v-for="taxonomy in taxonomy.children"
+                    v-if="filteredTaxonomyIds.includes(taxonomy.id)"
+                    :key="taxonomy.id"
+                    :value="value.includes(taxonomy.id)"
+                    @input="onInput({ taxonomy, enabled: $event })"
+                    :id="taxonomy.id"
+                    :name="taxonomy.id"
+                    :label="taxonomy.name"
+                    :disabled="disabled"
+                  />
+                  <!-- /Level: 6 -->
+                </gov-checkbox>
+                <!-- /Level: 5 -->
               </gov-checkbox>
-              <!-- /Level: 5 -->
+              <!-- /Level: 4 -->
             </gov-checkbox>
-            <!-- /Level: 4 -->
+            <!-- /Level: 3 -->
           </gov-checkbox>
-          <!-- /Level: 3 -->
+          <!-- /Level: 2 -->
         </gov-checkbox>
-        <!-- /Level: 2 -->
-      </gov-checkbox>
-    </gov-checkboxes>
+      </gov-checkboxes>
 
-    <gov-error-message v-if="error" v-text="error" for="category_taxonomies" />
-  </gov-form-group>
-  <!-- /Level: 1 -->
+      <gov-error-message
+        v-if="error"
+        v-text="error"
+        for="category_taxonomies"
+      />
+    </gov-form-group>
+    <!-- /Level: 1 -->
+  </div>
 </template>
 
 <script>
 import http from "@/http";
 
 export default {
-  name: "CategoryTaxonomyInput",
+  name: "TaxonomyInput",
   props: {
     value: {
       required: true,
@@ -103,6 +124,13 @@ export default {
     },
     error: {
       required: true
+    },
+    root: {
+      required: true,
+      type: String,
+      validator: function(value) {
+        return ["categories", "organisations"].indexOf(value) !== -1;
+      }
     },
     disabled: {
       required: false,
@@ -120,13 +148,40 @@ export default {
       taxonomies: [],
       flattenedTaxonomies: [],
       loading: false,
-      enabledTaxonomies: []
+      enabledTaxonomies: [],
+      filters: {
+        name: ""
+      }
     };
+  },
+  computed: {
+    filteredTaxonomyIds() {
+      if (this.filters.name.length > 2) {
+        const filteredTaxonomyIds = this.flattenedTaxonomies.reduce(
+          (filteredTaxonomies, taxonomy) => {
+            if (
+              taxonomy.name
+                .toLowerCase()
+                .includes(this.filters.name.toLowerCase())
+            ) {
+              filteredTaxonomies = filteredTaxonomies.concat(
+                this.getTaxonomyAndAncestorsIds(taxonomy)
+              );
+            }
+            return filteredTaxonomies;
+          },
+          []
+        );
+        return [...new Set(filteredTaxonomyIds)];
+      } else {
+        return this.flattenedTaxonomies.map(taxonomy => taxonomy.id);
+      }
+    }
   },
   methods: {
     async fetchTaxonomies() {
       this.loading = true;
-      const { data } = await http.get("/taxonomies/categories");
+      const { data } = await http.get(`/taxonomies/${this.root}`);
       this.taxonomies = data.data;
       this.setFlattenedTaxonomies();
       this.loading = false;
@@ -182,6 +237,21 @@ export default {
           }
         }
       }
+    },
+    getTaxonomyAndAncestorsIds(taxonomy) {
+      let ids = [taxonomy.id];
+      if (taxonomy.parent_id) {
+        const parent = this.flattenedTaxonomies.find(
+          tax => tax.id === taxonomy.parent_id
+        );
+        ids = ids.concat(this.getTaxonomyAndAncestorsIds(parent));
+      }
+      return ids;
+    },
+    filteredTaxonomies(taxonomies) {
+      return taxonomies.filter(taxonomy =>
+        this.filteredTaxonomyIds.includes(taxonomy.id)
+      );
     }
   },
   created() {

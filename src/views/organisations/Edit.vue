@@ -77,7 +77,8 @@
                 <gov-form-group
                   :invalid="form.$errors.has('category_taxonomies')"
                 >
-                  <ck-category-taxonomy-input
+                  <ck-taxonomy-input
+                    root="categories"
                     :value.sync="form.category_taxonomies"
                     @input="$emit('update:category_taxonomies', $event)"
                     :error="form.$errors.get('category_taxonomies')"
@@ -116,11 +117,11 @@ import http from "@/http";
 import Form from "@/classes/Form";
 import OrganisationTab from "./OrganisationTab";
 import OrganisationForm from "./forms/OrganisationForm";
-import CkCategoryTaxonomyInput from "@/components/Ck/CkCategoryTaxonomyInput";
+import CkTaxonomyInput from "@/components/Ck/CkTaxonomyInput";
 
 export default {
   name: "EditOrganisation",
-  components: { OrganisationForm, OrganisationTab, CkCategoryTaxonomyInput },
+  components: { OrganisationForm, OrganisationTab, CkTaxonomyInput },
   data() {
     return {
       loading: false,
