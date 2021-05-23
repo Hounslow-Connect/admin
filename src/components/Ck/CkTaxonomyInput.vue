@@ -10,6 +10,7 @@
         type="search"
       />
     </gov-form-group>
+    <gov-button @click="filters.name = ''">Clear</gov-button>
 
     <!-- Level: 1 -->
     <gov-form-group v-if="filteredTaxonomyIds.length">
@@ -25,6 +26,10 @@
           :label="taxonomy.name"
           :disabled="disabled"
         >
+          <gov-hint :for="taxonomy.id" v-if="taxonomyCollections[taxonomy.id]"
+            >Found in
+            {{ taxonomyCollections[taxonomy.id].join(", ") }}</gov-hint
+          >
           <!-- Level: 2 -->
           <gov-checkbox
             class="govuk-checkboxes__item--nested"
@@ -38,6 +43,10 @@
             :label="taxonomy.name"
             :disabled="disabled"
           >
+            <gov-hint :for="taxonomy.id" v-if="taxonomyCollections[taxonomy.id]"
+              >Found in
+              {{ taxonomyCollections[taxonomy.id].join(", ") }}</gov-hint
+            >
             <!-- Level: 3 -->
             <gov-checkbox
               class="govuk-checkboxes__item--nested"
@@ -51,6 +60,12 @@
               :label="taxonomy.name"
               :disabled="disabled"
             >
+              <gov-hint
+                :for="taxonomy.id"
+                v-if="taxonomyCollections[taxonomy.id]"
+                >Found in
+                {{ taxonomyCollections[taxonomy.id].join(", ") }}</gov-hint
+              >
               <!-- Level: 4 -->
               <gov-checkbox
                 class="govuk-checkboxes__item--nested"
@@ -64,6 +79,12 @@
                 :label="taxonomy.name"
                 :disabled="disabled"
               >
+                <gov-hint
+                  :for="taxonomy.id"
+                  v-if="taxonomyCollections[taxonomy.id]"
+                  >Found in
+                  {{ taxonomyCollections[taxonomy.id].join(", ") }}</gov-hint
+                >
                 <!-- Level: 5 -->
                 <gov-checkbox
                   class="govuk-checkboxes__item--nested"
@@ -77,6 +98,12 @@
                   :label="taxonomy.name"
                   :disabled="disabled"
                 >
+                  <gov-hint
+                    :for="taxonomy.id"
+                    v-if="taxonomyCollections[taxonomy.id]"
+                    >Found in
+                    {{ taxonomyCollections[taxonomy.id].join(", ") }}</gov-hint
+                  >
                   <!-- Level: 6 -->
                   <gov-checkbox
                     class="govuk-checkboxes__item--nested"
@@ -90,6 +117,12 @@
                     :label="taxonomy.name"
                     :disabled="disabled"
                   />
+                  <gov-hint
+                    :for="taxonomy.id"
+                    v-if="taxonomyCollections[taxonomy.id]"
+                    >Found in
+                    {{ taxonomyCollections[taxonomy.id].join(", ") }}</gov-hint
+                  >
                   <!-- /Level: 6 -->
                 </gov-checkbox>
                 <!-- /Level: 5 -->
@@ -149,6 +182,7 @@ export default {
   data() {
     return {
       taxonomies: [],
+      taxonomyCollections: {},
       flattenedTaxonomies: [],
       loading: false,
       enabledTaxonomies: [],
@@ -184,9 +218,13 @@ export default {
   methods: {
     async fetchTaxonomies() {
       this.loading = true;
-      const { data } = await http.get(`/taxonomies/${this.root}`);
-      this.taxonomies = data.data;
+      const { data: taxonomies } = await http.get(`/taxonomies/${this.root}`);
+      this.taxonomies = taxonomies.data;
+      const { data: collections } = await http.get(
+        `/collections/${this.root}/all`
+      );
       this.setFlattenedTaxonomies();
+      this.setTaxonomyCollections(collections.data);
       this.loading = false;
     },
     setFlattenedTaxonomies(taxonomies = null) {
@@ -201,6 +239,15 @@ export default {
         if (taxonomy.children.length > 0) {
           this.setFlattenedTaxonomies(taxonomy.children);
         }
+      });
+    },
+    setTaxonomyCollections(collections) {
+      collections.forEach(collection => {
+        collection.category_taxonomies.forEach(taxonomy => {
+          this.taxonomyCollections[taxonomy.id] =
+            this.taxonomyCollections[taxonomy.id] || [];
+          this.taxonomyCollections[taxonomy.id].push(collection.name);
+        });
       });
     },
     onInput({ taxonomy, enabled }) {
@@ -263,3 +310,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.govuk-hint {
+  padding: 8px 15px 5px;
+  margin: 0;
+}
+</style>
