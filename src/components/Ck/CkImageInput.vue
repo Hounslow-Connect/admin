@@ -38,7 +38,7 @@
 
     <gov-error-message
       v-if="form.$errors.any()"
-      v-text="form.$errors.any(['is_private', 'mime_type', 'file'])"
+      v-text="form.$errors.get(['is_private', 'mime_type', 'file'])"
       :for="id"
     />
 
@@ -54,97 +54,98 @@
 </template>
 
 <script>
-import Form from "@/classes/Form";
+  import Form from '@/classes/Form';
 
-export default {
-  name: "CkImageInput",
-  props: {
-    label: {
-      required: true,
-      type: String
-    },
-    hint: {
-      required: false,
-      type: String
-    },
-    accept: {
-      required: false,
-      default: null
-    },
-    id: {
-      required: true,
-      type: String
-    },
-    existingUrl: {
-      required: false,
-      type: String
-    },
-    private: {
-      required: false,
-      type: Boolean,
-      default: false
-    }
-  },
-
-  data() {
-    return {
-      removeExisting: false,
-      form: new Form({
-        is_private: this.private,
-        mime_type: null,
-        file: null
-      })
-    };
-  },
-
-  methods: {
-    async onChange($event) {
-      // If null, then simply emit null.
-      if ($event === null) {
-        this.form.mime_type = null;
-        this.form.file = null;
-
-        this.$emit("input", { file_id: null, image: null });
-
-        return;
-      }
-
-      // Destructure the payload with the variables we need.
-      const { mime_type, content } = $event;
-
-      /*
-       * Reset remove existing flag to false since the user has interacted with
-       * the search input.
-       */
-      this.removeExisting = false;
-
-      // Set the variables in the form.
-      this.form.mime_type = mime_type;
-      this.form.file = content;
-
-      // Upload the file and retrieve the ID.
-      const {
-        data: { id }
-      } = await this.form.post("/files");
-
-      // Emit the file ID.
-      this.$emit("input", { file_id: id, image: this.form.file });
+  export default {
+    name: 'CkImageInput',
+    props: {
+      label: {
+        required: true,
+        type: String,
+      },
+      hint: {
+        required: false,
+        type: String,
+      },
+      accept: {
+        required: false,
+        default: null,
+      },
+      id: {
+        required: true,
+        type: String,
+      },
+      existingUrl: {
+        required: false,
+        type: String,
+      },
+      private: {
+        required: false,
+        type: Boolean,
+        default: false,
+      },
     },
 
-    onRemove() {
-      // For uploaded file.
-      if (this.form.file) {
-        this.$refs.file.$el.value = "";
-        this.form.mime_type = null;
-        this.form.file = null;
-        this.$emit("input", { file_id: null, image: null });
-        return;
-      }
+    data() {
+      return {
+        removeExisting: false,
+        form: new Form({
+          is_private: this.private,
+          mime_type: null,
+          file: null,
+        }),
+      };
+    },
 
-      // For existing file.
-      this.removeExisting = true;
-      this.$emit("input", { file_id: false, image: null });
-    }
-  }
-};
+    methods: {
+      async onChange($event) {
+        // If null, then simply emit null.
+        if ($event === null) {
+          this.form.mime_type = null;
+          this.form.file = null;
+
+          this.$emit('input', { file_id: null, image: null });
+
+          return;
+        }
+
+        // Destructure the payload with the variables we need.
+        const { mime_type, content } = $event;
+
+        /*
+         * Reset remove existing flag to false since the user has interacted with
+         * the search input.
+         */
+        this.removeExisting = false;
+
+        // Set the variables in the form.
+        this.form.mime_type = mime_type;
+        this.form.file = content;
+
+        // Upload the file and retrieve the ID.
+        const {
+          data: { id },
+        } = await this.form.post('/files');
+
+        // Emit the file ID.
+        this.$emit('input', { file_id: id, image: this.form.file });
+      },
+
+      onRemove() {
+        // For uploaded file.
+        if (this.form.file) {
+          this.$refs.file.$el.value = '';
+          this.form.mime_type = null;
+          this.form.file = null;
+          this.form.$errors.clear();
+          this.$emit('input', { file_id: null, image: null });
+          return;
+        }
+
+        // For existing file.
+        this.removeExisting = true;
+        this.$emit('input', { file_id: false, image: null });
+      },
+    },
+  };
 </script>

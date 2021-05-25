@@ -36,40 +36,68 @@
         :error="errors.get('cms.frontend.home.personas_content')"
         id="cms.frontend.home.personas_content"
       />
+      <ck-banner-input
+        v-for="(banner, index) in frontend.home.banners"
+        :key="`home-banner-${index}`"
+        v-model="frontend.home.banners[index]"
+        :errors="errors.get('cms.frontend.home.banners')"
+      />
+      <gov-button @click="onAddBanner">
+        <template v-if="frontend.home.banners.length === 0"
+          >Add Home Banner</template
+        >
+        <template v-else>Add another</template>
+      </gov-button>
     </gov-grid-column>
   </gov-grid-row>
 </template>
 
 <script>
-export default {
-  name: "CmsFrontendHome",
+  import CkBannerInput from '@/components/Ck/CkBannerInput';
 
-  model: {
-    prop: "frontend",
-    event: "input"
-  },
+  export default {
+    name: 'CmsFrontendHome',
 
-  props: {
-    frontend: {
-      type: Object,
-      required: true
+    components: {
+      CkBannerInput,
     },
 
-    errors: {
-      type: Object,
-      required: true
-    }
-  },
+    model: {
+      prop: 'frontend',
+      event: 'input',
+    },
 
-  methods: {
-    onInput({ field, value }) {
-      const frontend = { ...this.frontend };
+    props: {
+      frontend: {
+        type: Object,
+        required: true,
+      },
 
-      frontend.home[field] = value;
+      errors: {
+        type: Object,
+        required: true,
+      },
+    },
 
-      this.$emit("input", frontend);
-      this.$emit("clear", `frontend.home.${field}`);
-    }
-  }
-};
+    methods: {
+      onAddBanner() {
+        let banners = this.frontend.home.banners.slice();
+        banners.push({
+          title: '',
+          content: '',
+          button_text: '',
+          button_url: '',
+        });
+        this.frontend.home.banners = banners;
+      },
+      onInput({ field, value }) {
+        const frontend = { ...this.frontend };
+
+        frontend.home[field] = value;
+
+        this.$emit('input', frontend);
+        this.$emit('clear', `frontend.home.${field}`);
+      },
+    },
+  };
 </script>
