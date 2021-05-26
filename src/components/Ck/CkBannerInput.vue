@@ -50,6 +50,7 @@
       id="banner.button_url"
       type="url"
     />
+    <slot />
   </gov-inset-text>
 </template>
 

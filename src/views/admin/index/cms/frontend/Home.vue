@@ -41,7 +41,11 @@
         :key="`home-banner-${index}`"
         v-model="frontend.home.banners[index]"
         :errors="errors.get('cms.frontend.home.banners')"
-      />
+      >
+        <gov-button @click="onRemoveBanner(index)" type="button" error
+          >Remove banner</gov-button
+        >
+      </ck-banner-input>
       <gov-button @click="onAddBanner">
         <template v-if="frontend.home.banners.length === 0"
           >Add Home Banner</template
@@ -89,6 +93,9 @@
           button_url: '',
         });
         this.frontend.home.banners = banners;
+      },
+      onRemoveBanner(index) {
+        this.frontend.home.banners.splice(index, 1);
       },
       onInput({ field, value }) {
         const frontend = { ...this.frontend };
