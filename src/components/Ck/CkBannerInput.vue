@@ -55,53 +55,53 @@
 </template>
 
 <script>
-  import CkImageInput from './CkImageInput';
+import CkImageInput from "./CkImageInput";
 
-  export default {
-    components: {
-      CkImageInput,
+export default {
+  components: {
+    CkImageInput
+  },
+
+  model: {
+    prop: "banner",
+    event: "update"
+  },
+
+  props: {
+    banner: {
+      type: Object,
+      default() {
+        return {
+          title: "",
+          content: "",
+          button_text: "",
+          button_url: ""
+        };
+      }
     },
-
-    model: {
-      prop: 'banner',
-      event: 'update',
+    errors: {
+      type: Object,
+      default() {
+        return {};
+      }
     },
+    showImageInput: {
+      type: Boolean,
+      default: false
+    }
+  },
 
-    props: {
-      banner: {
-        type: Object,
-        default() {
-          return {
-            title: '',
-            content: '',
-            button_text: '',
-            button_url: '',
-          };
-        },
-      },
-      errors: {
-        type: Object,
-        default() {
-          return {};
-        },
-      },
-      showImageInput: {
-        type: Boolean,
-        default: false,
-      },
-    },
+  methods: {
+    onInput({ field, value }) {
+      const banner = { ...this.banner };
 
-    methods: {
-      onInput({ field, value }) {
-        const banner = { ...this.banner };
+      banner[field] = value;
 
-        banner[field] = value;
-
-        this.$emit('update', banner);
-        this.$emit('clear', `banner.${field}`);
-      },
-    },
-  };
+      this.$emit("update", banner);
+      this.$emit("clear", `banner.${field}`);
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

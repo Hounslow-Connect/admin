@@ -57,54 +57,54 @@
 </template>
 
 <script>
-  import CkBannerInput from '@/components/Ck/CkBannerInput';
+import CkBannerInput from "@/components/Ck/CkBannerInput";
 
-  export default {
-    name: 'CmsFrontendHome',
+export default {
+  name: "CmsFrontendHome",
 
-    components: {
-      CkBannerInput,
+  components: {
+    CkBannerInput
+  },
+
+  model: {
+    prop: "frontend",
+    event: "input"
+  },
+
+  props: {
+    frontend: {
+      type: Object,
+      required: true
     },
 
-    model: {
-      prop: 'frontend',
-      event: 'input',
+    errors: {
+      type: Object,
+      required: true
+    }
+  },
+
+  methods: {
+    onAddBanner() {
+      let banners = this.frontend.home.banners.slice();
+      banners.push({
+        title: "",
+        content: "",
+        button_text: "",
+        button_url: ""
+      });
+      this.frontend.home.banners = banners;
     },
-
-    props: {
-      frontend: {
-        type: Object,
-        required: true,
-      },
-
-      errors: {
-        type: Object,
-        required: true,
-      },
+    onRemoveBanner(index) {
+      this.frontend.home.banners.splice(index, 1);
     },
+    onInput({ field, value }) {
+      const frontend = { ...this.frontend };
 
-    methods: {
-      onAddBanner() {
-        let banners = this.frontend.home.banners.slice();
-        banners.push({
-          title: '',
-          content: '',
-          button_text: '',
-          button_url: '',
-        });
-        this.frontend.home.banners = banners;
-      },
-      onRemoveBanner(index) {
-        this.frontend.home.banners.splice(index, 1);
-      },
-      onInput({ field, value }) {
-        const frontend = { ...this.frontend };
+      frontend.home[field] = value;
 
-        frontend.home[field] = value;
-
-        this.$emit('input', frontend);
-        this.$emit('clear', `frontend.home.${field}`);
-      },
-    },
-  };
+      this.$emit("input", frontend);
+      this.$emit("clear", `frontend.home.${field}`);
+    }
+  }
+};
 </script>

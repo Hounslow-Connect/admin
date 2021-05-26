@@ -13,7 +13,7 @@
         hint="Banner configuration will be shown when enabled"
         :options="[
           { value: false, label: 'Disabled' },
-          { value: true, label: 'Enabled' },
+          { value: true, label: 'Enabled' }
         ]"
         :error="null"
       />
@@ -30,41 +30,41 @@
 </template>
 
 <script>
-  import CkBannerInput from '@/components/Ck/CkBannerInput';
+import CkBannerInput from "@/components/Ck/CkBannerInput";
 
-  export default {
-    name: 'CmsFrontendBanner',
+export default {
+  name: "CmsFrontendBanner",
 
-    components: {
-      CkBannerInput,
+  components: {
+    CkBannerInput
+  },
+
+  model: {
+    prop: "frontend",
+    event: "input"
+  },
+
+  props: {
+    frontend: {
+      type: Object,
+      required: true
     },
 
-    model: {
-      prop: 'frontend',
-      event: 'input',
-    },
+    errors: {
+      type: Object,
+      required: true
+    }
+  },
 
-    props: {
-      frontend: {
-        type: Object,
-        required: true,
-      },
+  methods: {
+    onInput({ field, value }) {
+      const frontend = { ...this.frontend };
 
-      errors: {
-        type: Object,
-        required: true,
-      },
-    },
+      frontend.banner[field] = value;
 
-    methods: {
-      onInput({ field, value }) {
-        const frontend = { ...this.frontend };
-
-        frontend.banner[field] = value;
-
-        this.$emit('input', frontend);
-        this.$emit('clear', `frontend.banner.${field}`);
-      },
-    },
-  };
+      this.$emit("input", frontend);
+      this.$emit("clear", `frontend.banner.${field}`);
+    }
+  }
+};
 </script>
