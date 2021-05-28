@@ -9,160 +9,68 @@
         </gov-body>
         <gov-section-break size="l" />
 
-        <!-- Age group -->
-        <criteria-input
-          :value="age_group"
-          @input="
-            $emit('update:age_group', $event);
-            $emit('clear', 'criteria.age_group');
-          "
-          :error="errors.get('criteria.age_group')"
-          id="criteria.age_group"
-          label="Age of service user (if applicable)"
-          :hint="
-            `E.g “This ${type} is for people 16+” or “This ${type} is aimed at people nearing retirement”`
-          "
-        />
-        <!-- /Age group -->
+        <service-eligibility-input
+          v-for="parent in serviceEligibilities"
+          :key="parent.id"
+          :serviceEligibilities="parent.children"
+          :value="eligibility_types"
+          :errors="errors"
+        >
+          <gov-heading size="m" tag="h3">{{ parent.name }}</gov-heading>
+        </service-eligibility-input>
 
-        <!-- Disability -->
-        <criteria-input
-          :value="disability"
-          @input="
-            $emit('update:disability', $event);
-            $emit('clear', 'criteria.disability');
-          "
-          :error="errors.get('criteria.disability')"
-          id="criteria.disability"
-          label="Disability Requirements / Restrictions (if applicable)"
-          :hint="
-            `e.g. &quot;This ${type} is for those with MS and their carers&quot;, or &quot;For all people with disabilities and their carers&quot;`
-          "
+        <gov-error-message
+          v-if="errors.has('eligibility_types')"
+          v-text="errors.get('eligibility_types')"
+          for="eligibility_types"
         />
-        <!-- /Disability -->
-
-        <!-- Gender -->
-        <criteria-input
-          :value="gender"
-          @input="
-            $emit('update:gender', $event);
-            $emit('clear', 'criteria.gender');
-          "
-          :error="errors.get('criteria.gender')"
-          id="criteria.gender"
-          label="Gender Specific (if applicable)"
-          hint='e.g. "Women only"'
-        />
-        <!-- /Gender -->
-
-        <!-- Housing -->
-        <criteria-input
-          :value="housing"
-          @input="
-            $emit('update:housing', $event);
-            $emit('clear', 'criteria.housing');
-          "
-          :error="errors.get('criteria.housing')"
-          id="criteria.housing"
-          label="Specific Housing status/needs (if applicable)"
-          hint='e.g. "For people who are homeless or at risk of homelessness"'
-        />
-        <!-- /Housing -->
-
-        <!-- Income -->
-        <criteria-input
-          :value="income"
-          @input="
-            $emit('update:income', $event);
-            $emit('clear', 'criteria.income');
-          "
-          :error="errors.get('criteria.income')"
-          id="criteria.income"
-          label="Income level (if applicable)"
-          :hint="
-            `e.g. &quot;This ${type} is aimed at people claiming benefits or with Income support&quot;`
-          "
-        />
-        <!-- /Income -->
-
-        <!-- Language -->
-        <criteria-input
-          :value="language"
-          @input="
-            $emit('update:language', $event);
-            $emit('clear', 'criteria.language');
-          "
-          :error="errors.get('criteria.language')"
-          id="criteria.language"
-          label="Language accessability (if applicable)"
-          :hint="
-            `E.g. “Instructors speak English, but open to all”, or “This ${type} is available in a number of languages - please contact for more information”`
-          "
-        />
-        <!-- /Language -->
-
-        <!-- Other -->
-        <criteria-input
-          :value="other"
-          @input="
-            $emit('update:other', $event);
-            $emit('clear', 'criteria.other');
-          "
-          :error="errors.get('criteria.other')"
-          id="criteria.other"
-          :label="
-            `Any other notes as to who the ${type} is aimed at/not appropriate for?`
-          "
-          :hint="
-            `E.g. “This ${type} is open to all”, or “This ${type} is aimed at people living in Chessington”`
-          "
-        />
-        <!-- /Other -->
-
-        <slot />
       </gov-grid-column>
     </gov-grid-row>
   </div>
 </template>
 
 <script>
-  import CriteriaInput from '@/views/services/inputs/CriteriaInput';
+  import http from '@/http';
+  import ServiceEligibilityInput from '../inputs/ServiceEligibilityInput';
 
   export default {
     name: 'EligibilityTab',
-    components: { CriteriaInput },
+    components: { ServiceEligibilityInput },
+
     props: {
-      errors: {
+      eligibility_types: {
         required: true,
+        type: Array,
       },
       type: {
         required: true,
         type: String,
       },
-      age_group: {
+      errors: {
         required: true,
       },
-      disability: {
-        required: true,
+    },
+
+    data() {
+      return {
+        loading: false,
+        serviceEligibilities: [],
+      };
+    },
+
+    methods: {
+      async fetchServiceEligibilites() {
+        this.loading = true;
+        const { data: serviceEligibilities } = await http.get(
+          '/taxonomies/service-eligibilities'
+        );
+        this.serviceEligibilities = serviceEligibilities.data;
+        this.loading = false;
       },
-      employment: {
-        required: true,
-      },
-      gender: {
-        required: true,
-      },
-      housing: {
-        required: true,
-      },
-      income: {
-        required: true,
-      },
-      language: {
-        required: true,
-      },
-      other: {
-        required: true,
-      },
+    },
+
+    created() {
+      this.fetchServiceEligibilites();
     },
   };
 </script>

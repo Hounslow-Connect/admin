@@ -2,7 +2,7 @@
   <div>
     <gov-checkbox
       v-for="taxonomy in taxonomies"
-      v-if="filteredTaxonomyIds.includes(taxonomy.id)"
+      v-if="showCheckBox(taxonomy)"
       :class="{ 'govuk-checkboxes__item--nested': nested }"
       :key="taxonomy.id"
       :value="checked.includes(taxonomy.id)"
@@ -43,7 +43,7 @@
         type: Array,
       },
       filteredTaxonomyIds: {
-        type: Array,
+        type: [Array, Boolean],
         default() {
           return [];
         },
@@ -65,6 +65,11 @@
     },
 
     methods: {
+      showCheckBox(taxonomy) {
+        return Array.isArray(this.filteredTaxonomyIds)
+          ? this.filteredTaxonomyIds.includes(taxonomy.id)
+          : this.filteredTaxonomyIds;
+      },
       onTaxonomyUpdate({ taxonomy, enabled }) {
         this.$emit('update', { taxonomy, enabled });
       },

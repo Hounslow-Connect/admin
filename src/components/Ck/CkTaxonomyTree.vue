@@ -32,7 +32,7 @@
         required: true,
       },
       filteredTaxonomyIds: {
-        type: Array,
+        type: [Array, Boolean],
         default() {
           return [];
         },

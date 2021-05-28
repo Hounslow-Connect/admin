@@ -101,14 +101,7 @@
                   "
                   :errors="form.$errors"
                   :type="form.type"
-                  :age_group.sync="form.criteria.age_group"
-                  :disability.sync="form.criteria.disability"
-                  :employment.sync="form.criteria.employment"
-                  :gender.sync="form.criteria.gender"
-                  :housing.sync="form.criteria.housing"
-                  :income.sync="form.criteria.income"
-                  :language.sync="form.criteria.language"
-                  :other.sync="form.criteria.other"
+                  :eligibility_types.sync="form.eligibility_types"
                 >
                   <gov-button @click="onNext" start>Next</gov-button>
                 </eligibility-tab>
@@ -332,6 +325,9 @@
             image: null,
           })),
           category_taxonomies: this.service.category_taxonomies.map(
+            (taxonomy) => taxonomy.id
+          ),
+          eligibility_types: this.service.eligibility_types.map(
             (taxonomy) => taxonomy.id
           ),
           logo_file_id: null,

@@ -21,7 +21,7 @@
         :taxonomyCollections="taxonomyCollections"
         :error="error"
         :disabled="disabled"
-        @update="onInput"
+        @update="onUpdate"
       />
 
       <gov-error-message
@@ -145,7 +145,7 @@
           });
         });
       },
-      onInput({ taxonomy, enabled }) {
+      onUpdate({ taxonomy, enabled }) {
         if (enabled) {
           this.onChecked(taxonomy);
         } else {
@@ -158,31 +158,12 @@
       onChecked(taxonomy) {
         if (!this.enabledTaxonomies.includes(taxonomy.id)) {
           this.enabledTaxonomies.push(taxonomy.id);
-
-          if (this.hierarchy) {
-            if (taxonomy.parent_id !== null) {
-              const parent = this.flattenedTaxonomies.find(
-                (flattenedTaxonomy) => {
-                  return flattenedTaxonomy.id === taxonomy.parent_id;
-                }
-              );
-              this.onInput({ taxonomy: parent, enabled: true });
-            }
-          }
         }
       },
       onUnchecked(taxonomy) {
         if (this.enabledTaxonomies.includes(taxonomy.id)) {
           const index = this.enabledTaxonomies.indexOf(taxonomy.id);
           this.enabledTaxonomies.splice(index, 1);
-
-          if (this.hierarchy) {
-            if (taxonomy.children.length > 0) {
-              taxonomy.children.forEach((taxonomy) =>
-                this.onInput({ taxonomy, enabled: false })
-              );
-            }
-          }
         }
       },
       getTaxonomyAndAncestorsIds(taxonomy) {
