@@ -1,6 +1,6 @@
 <template>
   <div>
-    <gov-heading size="l">Who is your {{ type }} for?</gov-heading>
+    <gov-heading size="l">Who is eligible for your {{ type }}?</gov-heading>
     <gov-grid-row>
       <gov-grid-column width="one-half">
         <gov-body>
@@ -126,43 +126,43 @@
 </template>
 
 <script>
-import CriteriaInput from "@/views/services/inputs/CriteriaInput";
+  import CriteriaInput from '@/views/services/inputs/CriteriaInput';
 
-export default {
-  name: "WhoForTab",
-  components: { CriteriaInput },
-  props: {
-    errors: {
-      required: true
+  export default {
+    name: 'EligibilityTab',
+    components: { CriteriaInput },
+    props: {
+      errors: {
+        required: true,
+      },
+      type: {
+        required: true,
+        type: String,
+      },
+      age_group: {
+        required: true,
+      },
+      disability: {
+        required: true,
+      },
+      employment: {
+        required: true,
+      },
+      gender: {
+        required: true,
+      },
+      housing: {
+        required: true,
+      },
+      income: {
+        required: true,
+      },
+      language: {
+        required: true,
+      },
+      other: {
+        required: true,
+      },
     },
-    type: {
-      required: true,
-      type: String
-    },
-    age_group: {
-      required: true
-    },
-    disability: {
-      required: true
-    },
-    employment: {
-      required: true
-    },
-    gender: {
-      required: true
-    },
-    housing: {
-      required: true
-    },
-    income: {
-      required: true
-    },
-    language: {
-      required: true
-    },
-    other: {
-      required: true
-    }
-  }
-};
+  };
 </script>
