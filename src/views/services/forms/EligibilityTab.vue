@@ -10,11 +10,13 @@
         <gov-section-break size="l" />
 
         <service-eligibility-input
-          v-for="parent in serviceEligibilities"
+          v-for="parent in eligibilityTypes"
           :key="parent.id"
-          :serviceEligibilities="parent.children"
-          :value="eligibility_types"
+          :eligibilityTaxonomy="parent"
+          :serviceEligibilityTypes="serviceEligibilityTypes"
           :errors="errors"
+          @update:taxonomies="updateServiceEligibilityTaxonomies"
+          @update:custom="updateServiceEligibilityCustom"
         >
           <gov-heading size="m" tag="h3">{{ parent.name }}</gov-heading>
         </service-eligibility-input>
@@ -38,9 +40,9 @@
     components: { ServiceEligibilityInput },
 
     props: {
-      eligibility_types: {
+      serviceEligibilityTypes: {
         required: true,
-        type: Array,
+        type: Object,
       },
       type: {
         required: true,
@@ -54,18 +56,45 @@
     data() {
       return {
         loading: false,
-        serviceEligibilities: [],
+        eligibilityTypes: [],
       };
     },
 
     methods: {
       async fetchServiceEligibilites() {
         this.loading = true;
-        const { data: serviceEligibilities } = await http.get(
+        const { data: eligibilityTypes } = await http.get(
           '/taxonomies/service-eligibilities'
         );
-        this.serviceEligibilities = serviceEligibilities.data;
+        this.eligibilityTypes = eligibilityTypes.data;
         this.loading = false;
+      },
+      updateServiceEligibilityTaxonomies(checkedServiceEligibilities) {
+        const updatedServiceEligibilityTypes = {
+          ...this.serviceEligibilityTypes,
+        };
+
+        updatedServiceEligibilityTypes.taxonomies = Array.from(
+          new Set(
+            checkedServiceEligibilities.concat(
+              this.serviceEligibilityTypes.taxonomies
+            )
+          )
+        );
+        this.$emit(
+          'update:serviceEligibilityTypes',
+          updatedServiceEligibilityTypes
+        );
+      },
+      updateServiceEligibilityCustom({ customTaxonomy, customValue }) {
+        const updatedServiceEligibilityTypes = {
+          ...this.serviceEligibilityTypes,
+        };
+        updatedServiceEligibilityTypes.custom[customTaxonomy] = customValue;
+        this.$emit(
+          'update:serviceEligibilityTypes',
+          updatedServiceEligibilityTypes
+        );
       },
     },
 

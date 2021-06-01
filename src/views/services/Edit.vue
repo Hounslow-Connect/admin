@@ -101,7 +101,7 @@
                   "
                   :errors="form.$errors"
                   :type="form.type"
-                  :eligibility_types.sync="form.eligibility_types"
+                  :serviceEligibilityTypes.sync="form.eligibility_types"
                 >
                   <gov-button @click="onNext" start>Next</gov-button>
                 </eligibility-tab>
@@ -327,9 +327,7 @@
           category_taxonomies: this.service.category_taxonomies.map(
             (taxonomy) => taxonomy.id
           ),
-          eligibility_types: this.service.eligibility_types.map(
-            (taxonomy) => taxonomy.id
-          ),
+          eligibility_types: this.service.eligibility_types,
           logo_file_id: null,
           logo: null,
         });
@@ -481,6 +479,12 @@
               )
             ) {
               delete data.category_taxonomies;
+            }
+            if (
+              JSON.stringify(data.eligibility_types) ===
+              JSON.stringify(this.service.eligibility_types)
+            ) {
+              delete data.eligibility_types;
             }
 
             // Remove the logo from the request if null, or delete if false.

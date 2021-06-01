@@ -2,11 +2,21 @@
   <gov-form-group>
     <slot />
     <ck-taxonomy-tree
-      :taxonomies="serviceEligibilities"
-      :checked="value"
+      :taxonomies="eligibilityTaxonomy.children"
+      :checked="serviceEligibilityTypes.taxonomies"
       :error="errors"
       :filteredTaxonomyIds="true"
-      @update="onUpdate"
+      @update="onUpdateTaxonomies"
+    />
+    <ck-text-input
+      :value="serviceEligibilityTypes.custom[customEligibilitySlug] || ''"
+      @input="onUpdateCustom"
+      id="custom"
+      label="Custom value"
+      :hint="
+        `If the service eligibility does not fit into the ${eligibilityTaxonomy.name} taxonomies, enter a custom value here`
+      "
+      :error="errors.get('custom')"
     />
   </gov-form-group>
 </template>
@@ -20,50 +30,67 @@
     },
 
     props: {
-      serviceEligibilities: {
+      eligibilityTaxonomy: {
         required: true,
-        type: Array,
+        type: Object,
       },
-      value: {
+      serviceEligibilityTypes: {
         required: true,
-        type: Array,
+        type: Object,
+      },
+      customEligibility: {
+        type: String,
+        default: '',
       },
       errors: {
         required: true,
       },
     },
 
-    data() {
-      return {
-        enabledserviceEligibilities: [],
-      };
+    computed: {
+      customEligibilitySlug() {
+        // @todo This should not be guessed, it should be supplied by the API
+        return this.eligibilityTaxonomy.name.toLowerCase().replaceAll(' ', '_');
+      },
     },
 
     methods: {
-      onUpdate({ taxonomy, enabled }) {
+      onUpdateTaxonomies({ taxonomy, enabled }) {
+        let updatedServiceEligibilityTaxonomies;
         if (enabled) {
-          this.onChecked(taxonomy);
+          updatedServiceEligibilityTaxonomies = this.onChecked(taxonomy);
         } else {
-          this.onUnchecked(taxonomy);
+          updatedServiceEligibilityTaxonomies = this.onUnchecked(taxonomy);
         }
 
-        this.$emit('input', this.enabledserviceEligibilities);
+        this.$emit('update:taxonomies', updatedServiceEligibilityTaxonomies);
         this.$emit('clear');
       },
       onChecked(taxonomy) {
-        if (!this.enabledserviceEligibilities.includes(taxonomy.id)) {
-          this.enabledserviceEligibilities.push(taxonomy.id);
+        const serviceEligibilityTaxonomies = this.serviceEligibilityTypes.taxonomies.slice();
+        if (!serviceEligibilityTaxonomies.includes(taxonomy.id)) {
+          serviceEligibilityTaxonomies.push(taxonomy.id);
         }
+        return serviceEligibilityTaxonomies;
       },
       onUnchecked(taxonomy) {
-        if (this.enabledserviceEligibilities.includes(taxonomy.id)) {
-          const index = this.enabledserviceEligibilities.indexOf(taxonomy.id);
-          this.enabledserviceEligibilities.splice(index, 1);
+        const serviceEligibilityTaxonomies = this.serviceEligibilityTypes.taxonomies.slice();
+        if (serviceEligibilityTaxonomies.includes(taxonomy.id)) {
+          const index = serviceEligibilityTaxonomies.indexOf(taxonomy.id);
+          serviceEligibilityTaxonomies.splice(index, 1);
         }
+        return serviceEligibilityTaxonomies;
+      },
+      onUpdateCustom(customEligibity) {
+        this.$emit('update:custom', {
+          customTaxonomy: this.customEligibilitySlug,
+          customValue: customEligibity,
+        });
+        this.$emit('clear');
       },
     },
     created() {
-      this.enabledserviceEligibilities = this.value;
+      this.serviceEligibilityTaxonomies = this.serviceEligibilityTypes.taxonomies.slice();
     },
   };
 </script>
