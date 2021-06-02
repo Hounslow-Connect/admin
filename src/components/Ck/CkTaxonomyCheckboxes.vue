@@ -23,6 +23,7 @@
         :checked="checked"
         :filteredTaxonomyIds="filteredTaxonomyIds"
         :taxonomyCollections="taxonomyCollections"
+        :disabled="disabled"
         :nested="true"
         @update="onChildUpdate"
       />
