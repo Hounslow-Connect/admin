@@ -121,15 +121,15 @@ export default {
           this.superAdmin = true;
         } else if (role.role === "Global Admin") {
           this.globalAdmin = true;
-        } else if (role.hasOwnProperty("organisation_id")) {
+        } else if (role.hasOwnProperty("organisation")) {
           this.organisationAdmin.push(role);
         } else if (
-          role.hasOwnProperty("service_id") &&
+          role.hasOwnProperty("service") &&
           role.role === "Service Admin"
         ) {
           this.serviceAdmin.push(role);
         } else if (
-          role.hasOwnProperty("service_id") &&
+          role.hasOwnProperty("service") &&
           role.role === "Service Worker"
         ) {
           this.serviceWorker.push(role);

@@ -39,16 +39,6 @@
             :service="updateRequest.data"
           />
 
-          <service-details
-            v-else-if="
-              updateRequest.updateable_type ===
-                'new_service_created_by_org_admin'
-            "
-            :update-request-id="updateRequest.id"
-            :requested-at="updateRequest.created_at"
-            :service="updateRequest.data"
-          />
-
           <location-details
             v-else-if="updateRequest.updateable_type === 'locations'"
             :update-request-id="updateRequest.id"
@@ -142,9 +132,7 @@ export default {
       // If the update request is for a service, and the organisation has been
       // updated, then eager load the organisation and append to the data.
       if (
-        ((this.updateRequest.updateable_type === "services" ||
-          this.updateRequest.updateable_type ===
-            "new_service_created_by_org_admin") &&
+        (this.updateRequest.updateable_type === "services" &&
           this.updateRequest.data.hasOwnProperty("organisation_id")) ||
         (this.updateRequest.updateable_type === "organisation_sign_up_form" &&
           this.updateRequest.data.hasOwnProperty("organisation") &&

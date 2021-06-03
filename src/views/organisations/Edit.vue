@@ -17,81 +17,26 @@
       >
       <gov-main-wrapper>
         <gov-grid-row>
-          <gov-grid-column width="full">
+          <gov-grid-column width="one-half">
             <gov-heading size="xl">Organisations</gov-heading>
             <gov-heading size="m">Edit organisation</gov-heading>
-
-            <gov-error-summary
-              v-if="form.$errors.any()"
-              title="Check for errors"
+            <gov-body
+              >General details about the organisation. To be found when
+              searching or linked from a service page.</gov-body
             >
-              <gov-list>
-                <li
-                  v-for="(error, field) in form.$errors.all()"
-                  :key="field"
-                  v-text="error[0]"
-                />
-              </gov-list>
-            </gov-error-summary>
 
-            <gov-tabs @tab-changed="onTabChange" :tabs="tabs" no-router>
-              <organisation-tab
-                title="Details"
-                :active="isTabActive('details')"
-              >
-                <template v-slot:intro
-                  >General details about the organisation. To be found when
-                  searching or linked from a service page.</template
-                >
-
-                <organisation-form
-                  :errors="form.$errors"
-                  :id="organisation.id"
-                  :name.sync="form.name"
-                  :slug.sync="form.slug"
-                  :description.sync="form.description"
-                  :url.sync="form.url"
-                  :email.sync="form.email"
-                  :phone.sync="form.phone"
-                  :social_medias.sync="form.social_medias"
-                  @update:logo_file_id="form.logo_file_id = $event"
-                  @clear="form.$errors.clear($event)"
-                />
-              </organisation-tab>
-
-              <organisation-tab
-                title="Taxonomies"
-                :active="isTabActive('taxonomies')"
-              >
-                <template v-slot:intro>
-                  <gov-body>
-                    These are a list of ‘tags’ that are applied to an
-                    organisation. These tags help the organisation be found in
-                    categories and keyword searches.
-                  </gov-body>
-                  <gov-body>
-                    On creation of a new organisation, the admin team will
-                    select the tags that they feel represent the organisation.
-                  </gov-body>
-                </template>
-                <gov-form-group
-                  :invalid="form.$errors.has('category_taxonomies')"
-                >
-                  <ck-taxonomy-input
-                    root="categories"
-                    :value.sync="form.category_taxonomies"
-                    @input="$emit('update:category_taxonomies', $event)"
-                    :error="form.$errors.get('category_taxonomies')"
-                    @clear="form.$errors.clear($event)"
-                  />
-                  <gov-error-message
-                    v-if="form.$errors.has('category_taxonomies')"
-                    v-text="form.$errors.get('category_taxonomies')"
-                    :for="category_taxonomies"
-                  />
-                </gov-form-group>
-              </organisation-tab>
-            </gov-tabs>
+            <organisation-form
+              :errors="form.$errors"
+              :id="organisation.id"
+              :name.sync="form.name"
+              :slug.sync="form.slug"
+              :description.sync="form.description"
+              :url.sync="form.url"
+              :email.sync="form.email"
+              :phone.sync="form.phone"
+              @update:logo_file_id="form.logo_file_id = $event"
+              @clear="form.$errors.clear($event)"
+            />
 
             <gov-warning-text>
               Please be aware, by submitting these changes, any pending updates
@@ -101,9 +46,9 @@
             <gov-button v-if="form.$submitting" disabled type="submit"
               >Requesting...</gov-button
             >
-            <gov-button v-else @click="onSubmit" type="submit">{{
-              updateButtonText
-            }}</gov-button>
+            <gov-button v-else @click="onSubmit" type="submit"
+              >Request update</gov-button
+            >
             <ck-submit-error v-if="form.$errors.any()" />
           </gov-grid-column>
         </gov-grid-row>
@@ -115,28 +60,17 @@
 <script>
 import http from "@/http";
 import Form from "@/classes/Form";
-import OrganisationTab from "./OrganisationTab";
-import OrganisationForm from "./forms/OrganisationForm";
-import CkTaxonomyInput from "@/components/Ck/CkTaxonomyInput";
+import OrganisationForm from "@/views/organisations/forms/OrganisationForm";
 
 export default {
   name: "EditOrganisation",
-  components: { OrganisationForm, OrganisationTab, CkTaxonomyInput },
+  components: { OrganisationForm },
   data() {
     return {
       loading: false,
       organisation: null,
-      form: null,
-      tabs: [
-        { id: "details", heading: "Details", active: true },
-        { id: "taxonomies", heading: "Taxonomies", active: false }
-      ]
+      form: null
     };
-  },
-  computed: {
-    updateButtonText() {
-      return this.auth.isGlobalAdmin ? "Update" : "Request update";
-    }
   },
   methods: {
     async fetchOrganisation() {
@@ -153,17 +87,13 @@ export default {
         url: this.organisation.url,
         email: this.organisation.email || "",
         phone: this.organisation.phone || "",
-        logo_file_id: null,
-        social_medias: this.organisation.social_medias,
-        category_taxonomies: this.organisation.category_taxonomies.map(
-          taxonomy => taxonomy.id
-        )
+        logo_file_id: null
       });
 
       this.loading = false;
     },
     async onSubmit() {
-      const response = await this.form.put(
+      await this.form.put(
         `/organisations/${this.organisation.id}`,
         (config, data) => {
           // Remove any unchanged values.
@@ -192,55 +122,12 @@ export default {
           } else if (data.logo_file_id === false) {
             data.logo_file_id = null;
           }
-
-          if (
-            JSON.stringify(data.social_medias) ===
-            JSON.stringify(this.organisation.social_medias)
-          ) {
-            delete data.social_medias;
-          }
-
-          if (
-            JSON.stringify(data.category_taxonomies) ===
-            JSON.stringify(
-              this.organisation.category_taxonomies.map(taxonomy => taxonomy.id)
-            )
-          ) {
-            delete data.category_taxonomies;
-          }
         }
       );
-      const updateRequestId = response.id;
-      let next = {
+      this.$router.push({
         name: "organisations-updated",
         params: { organisation: this.organisation.id }
-      };
-
-      if (this.auth.isGlobalAdmin) {
-        try {
-          const { data } = await http.get(
-            `/update-requests/${updateRequestId}`
-          );
-
-          if (data.approved_at) {
-            next.name = "organisations-show";
-            next.query = { updated: true };
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      this.$router.push(next);
-    },
-    onTabChange({ index }) {
-      this.tabs.forEach(tab => (tab.active = false));
-      const tabId = this.tabs[index].id;
-      this.tabs.find(tab => tab.id === tabId).active = true;
-    },
-    isTabActive(id) {
-      const tab = this.tabs.find(tab => tab.id === id);
-
-      return tab === undefined ? false : tab.active;
+      });
     }
   },
   created() {

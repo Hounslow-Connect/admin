@@ -2,7 +2,7 @@
   <div>
     <gov-heading size="l">Taxonomies (Tags)</gov-heading>
     <gov-grid-row>
-      <gov-grid-column width="full">
+      <gov-grid-column width="one-half">
         <gov-body>
           These are a list of ‘tags’ that are applied to a {{ type }}. These
           tags help the {{ type }} be found in categories and keyword searches.
@@ -15,9 +15,8 @@
         <gov-section-break size="l" />
 
         <gov-form-group :invalid="errors.has('category_taxonomies')">
-          <ck-taxonomy-input
+          <category-taxonomy-input
             :value="category_taxonomies"
-            root="categories"
             @input="$emit('update:category_taxonomies', $event)"
             :error="errors.get('category_taxonomies')"
             @clear="$emit('clear', 'category_taxonomies')"
@@ -36,11 +35,11 @@
   </div>
 </template>
 <script>
-import CkTaxonomyInput from "@/components/Ck/CkTaxonomyInput";
+import CategoryTaxonomyInput from "@/views/services/inputs/CategoryTaxonomyInput";
 
 export default {
   name: "TaxonomiesTab",
-  components: { CkTaxonomyInput },
+  components: { CategoryTaxonomyInput },
   props: {
     errors: {
       required: true

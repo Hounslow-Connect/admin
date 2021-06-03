@@ -35,21 +35,6 @@
           />
         </gov-table-cell>
       </gov-table-row>
-      <gov-table-row>
-        <gov-table-header scope="row" top>Social links</gov-table-header>
-        <gov-table-cell break>
-          <gov-list>
-            <li
-              v-for="(socialMedia, index) in organisation.social_medias"
-              :key="index"
-            >
-              ({{ humanReadableSocialMedia(socialMedia.type) }})
-              {{ socialMedia.url }}
-            </li>
-            <li v-if="organisation.social_medias.length === 0">-</li>
-          </gov-list>
-        </gov-table-cell>
-      </gov-table-row>
     </template>
   </gov-table>
 </template>
@@ -61,22 +46,6 @@ export default {
     organisation: {
       type: Object,
       required: true
-    }
-  },
-  methods: {
-    humanReadableSocialMedia(type) {
-      switch (type) {
-        case "twitter":
-          return "Twitter";
-        case "facebook":
-          return "Facebook";
-        case "instagram":
-          return "Instagram";
-        case "youtube":
-          return "YouTube";
-        case "other":
-          return "Other";
-      }
     }
   }
 };

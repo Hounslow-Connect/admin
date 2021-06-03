@@ -113,8 +113,6 @@ export default {
           return "Service location";
         case "organisation_sign_up_form":
           return "Organisation sign up form";
-        case "new_service_created_by_org_admin":
-          return "New Service";
         default:
           return "Invalid type";
       }

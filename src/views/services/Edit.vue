@@ -93,18 +93,25 @@
                   <gov-button @click="onNext" start>Next</gov-button>
                 </useful-info-tab>
 
-                <eligibility-tab
-                  v-if="isTabActive('eligibility')"
+                <who-for-tab
+                  v-if="isTabActive('who-for')"
                   @clear="
                     form.$errors.clear($event);
                     errors = {};
                   "
                   :errors="form.$errors"
                   :type="form.type"
-                  :serviceEligibilityTypes.sync="form.eligibility_types"
+                  :age_group.sync="form.criteria.age_group"
+                  :disability.sync="form.criteria.disability"
+                  :employment.sync="form.criteria.employment"
+                  :gender.sync="form.criteria.gender"
+                  :housing.sync="form.criteria.housing"
+                  :income.sync="form.criteria.income"
+                  :language.sync="form.criteria.language"
+                  :other.sync="form.criteria.other"
                 >
                   <gov-button @click="onNext" start>Next</gov-button>
-                </eligibility-tab>
+                </who-for-tab>
 
                 <taxonomies-tab
                   v-if="isTabActive('taxonomies')"
@@ -205,9 +212,9 @@
               <gov-button v-if="form.$submitting" disabled type="submit"
                 >Requesting...</gov-button
               >
-              <gov-button v-else @click="onSubmit" type="submit">{{
-                updateButtonText
-              }}</gov-button>
+              <gov-button v-else @click="onSubmit" type="submit"
+                >Request update</gov-button
+              >
             </gov-grid-column>
           </gov-grid-row>
         </gov-main-wrapper>
@@ -223,7 +230,7 @@ import DetailsTab from "@/views/services/forms/DetailsTab";
 import DescriptionTab from "@/views/services/forms/DescriptionTab";
 import AdditionalInfoTab from "@/views/services/forms/AdditionalInfoTab";
 import UsefulInfoTab from "@/views/services/forms/UsefulInfoTab";
-import EligibilityTab from "@/views/services/forms/EligibilityTab";
+import WhoForTab from "@/views/services/forms/WhoForTab";
 import ReferralTab from "@/views/services/forms/ReferralTab";
 import TaxonomiesTab from "@/views/services/forms/TaxonomiesTab";
 import ServiceDetails from "@/views/update-requests/show/ServiceDetails";
@@ -235,7 +242,7 @@ export default {
     DescriptionTab,
     AdditionalInfoTab,
     UsefulInfoTab,
-    EligibilityTab,
+    WhoForTab,
     ReferralTab,
     TaxonomiesTab,
     ServiceDetails
@@ -247,7 +254,7 @@ export default {
         { id: "details", heading: "Details", active: true },
         { id: "additional-info", heading: "Additional info", active: false },
         { id: "useful-info", heading: "Good to know", active: false },
-        { id: "eligibility", heading: "Eligibility", active: false },
+        { id: "who-for", heading: "Who is it for?", active: false },
         { id: "taxonomies", heading: "Taxonomies", active: false },
         { id: "description", heading: "Description", active: false },
         { id: "referral", heading: "Referral", active: false }
@@ -271,9 +278,6 @@ export default {
       }
 
       return this.tabs;
-    },
-    updateButtonText() {
-      return this.auth.isGlobalAdmin ? "Update" : "Request update";
     }
   },
   methods: {
@@ -307,6 +311,16 @@ export default {
         referral_button_text: this.service.referral_button_text || "",
         referral_email: this.service.referral_email || "",
         referral_url: this.service.referral_url || "",
+        criteria: {
+          age_group: this.service.criteria.age_group || "",
+          disability: this.service.criteria.disability || "",
+          employment: this.service.criteria.employment || "",
+          gender: this.service.criteria.gender || "",
+          housing: this.service.criteria.housing || "",
+          income: this.service.criteria.income || "",
+          language: this.service.criteria.language || "",
+          other: this.service.criteria.other || ""
+        },
         useful_infos: this.service.useful_infos,
         offerings: this.service.offerings,
         social_medias: this.service.social_medias,
@@ -316,9 +330,6 @@ export default {
         })),
         category_taxonomies: this.service.category_taxonomies.map(
           taxonomy => taxonomy.id
-        ),
-        eligibility_types: JSON.parse(
-          JSON.stringify(this.service.eligibility_types)
         ),
         logo_file_id: null,
         logo: null
@@ -407,6 +418,43 @@ export default {
             delete data.referral_url;
           }
           if (
+            data.criteria.age_group === (this.service.criteria.age_group || "")
+          ) {
+            delete data.criteria.age_group;
+          }
+          if (
+            data.criteria.disability ===
+            (this.service.criteria.disability || "")
+          ) {
+            delete data.criteria.disability;
+          }
+          if (
+            data.criteria.employment ===
+            (this.service.criteria.employment || "")
+          ) {
+            delete data.criteria.employment;
+          }
+          if (data.criteria.gender === (this.service.criteria.gender || "")) {
+            delete data.criteria.gender;
+          }
+          if (data.criteria.housing === (this.service.criteria.housing || "")) {
+            delete data.criteria.housing;
+          }
+          if (data.criteria.income === (this.service.criteria.income || "")) {
+            delete data.criteria.income;
+          }
+          if (
+            data.criteria.language === (this.service.criteria.language || "")
+          ) {
+            delete data.criteria.language;
+          }
+          if (data.criteria.other === (this.service.criteria.other || "")) {
+            delete data.criteria.other;
+          }
+          if (Object.keys(data.criteria).length === 0) {
+            delete data.criteria;
+          }
+          if (
             JSON.stringify(data.useful_infos) ===
             JSON.stringify(this.service.useful_infos)
           ) {
@@ -431,12 +479,6 @@ export default {
             )
           ) {
             delete data.category_taxonomies;
-          }
-          if (
-            JSON.stringify(data.eligibility_types) ===
-            JSON.stringify(this.service.eligibility_types)
-          ) {
-            delete data.eligibility_types;
           }
 
           // Remove the logo from the request if null, or delete if false.
@@ -470,26 +512,11 @@ export default {
         return response;
       }
 
-      const updateRequestId = response.id;
-      let next = {
+      // Otherwise, forward the user to the service page.
+      this.$router.push({
         name: "services-updated",
         params: { service: this.service.id }
-      };
-
-      if (this.auth.isGlobalAdmin) {
-        try {
-          const { data } = await http.get(
-            `/update-requests/${updateRequestId}`
-          );
-          if (data.approved_at) {
-            next.name = "services-show";
-            next.query = { updated: true };
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      this.$router.push(next);
+      });
     },
     async onPreview() {
       this.updateRequest = await this.onSubmit(true);

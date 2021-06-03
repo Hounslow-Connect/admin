@@ -40,9 +40,9 @@
             <gov-button v-if="form.$submitting" disabled type="submit"
               >Requesting...</gov-button
             >
-            <gov-button v-else @click="onSubmit" type="submit">{{
-              updateButtonText
-            }}</gov-button>
+            <gov-button v-else @click="onSubmit" type="submit"
+              >Request update</gov-button
+            >
             <ck-submit-error v-if="form.$errors.any()" />
           </gov-grid-column>
         </gov-grid-row>
@@ -66,11 +66,6 @@ export default {
       loading: false
     };
   },
-  computed: {
-    updateButtonText() {
-      return this.auth.isGlobalAdmin ? "Update" : "Request update";
-    }
-  },
   methods: {
     async fetchServiceLocation() {
       this.loading = true;
@@ -87,7 +82,7 @@ export default {
       this.loading = false;
     },
     async onSubmit() {
-      const response = await this.form.put(
+      await this.form.put(
         `/service-locations/${this.serviceLocation.id}`,
         (config, data) => {
           // Remove any unchanged values.
@@ -115,26 +110,10 @@ export default {
         }
       );
 
-      const updateRequestId = response.id;
-      let next = {
+      this.$router.push({
         name: "service-locations-updated",
         params: { serviceLocation: this.serviceLocation.id }
-      };
-
-      if (this.auth.isGlobalAdmin) {
-        try {
-          const { data } = await http.get(
-            `/update-requests/${updateRequestId}`
-          );
-          if (data.approved_at) {
-            next.name = "service-locations-show";
-            next.query = { updated: true };
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      this.$router.push(next);
+      });
     }
   },
   created() {

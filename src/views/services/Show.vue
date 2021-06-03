@@ -17,10 +17,6 @@
                 <gov-caption size="m">{{ service.name }}</gov-caption>
                 View {{ service.type }}
               </gov-heading>
-              <gov-inset-text v-if="updated"
-                >{{ service.type }} {{ service.name }} has been
-                updated</gov-inset-text
-              >
             </gov-grid-column>
             <gov-grid-column
               v-if="auth.isServiceAdmin(service)"
@@ -67,7 +63,6 @@ export default {
     return {
       loading: false,
       service: null,
-      updated: false,
       tabs: [
         { heading: "Details", to: { name: "services-show" } },
         {
@@ -82,10 +77,7 @@ export default {
           heading: "Contact info",
           to: { name: "services-show-contact-info" }
         },
-        {
-          heading: "Eligibility",
-          to: { name: "services-show-eligibility" }
-        },
+        { heading: "Who is it for?", to: { name: "services-show-who-for" } },
         { heading: "Locations", to: { name: "services-show-locations" } },
         { heading: "Referral", to: { name: "services-show-referral" } }
       ]
@@ -119,7 +111,6 @@ export default {
     }
   },
   created() {
-    this.updated = this.$route.query.updated || false;
     this.fetchService();
   }
 };

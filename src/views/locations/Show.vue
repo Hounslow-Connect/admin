@@ -13,11 +13,6 @@
         <gov-grid-column width="two-thirds">
           <gov-heading size="m">View location</gov-heading>
 
-          <gov-inset-text v-if="updated"
-            >Location {{ location.address_line_1 }} has been
-            updated</gov-inset-text
-          >
-
           <location-details :location="location" />
 
           <template v-if="auth.isGlobalAdmin">
@@ -60,8 +55,7 @@ export default {
   data() {
     return {
       loading: false,
-      location: null,
-      updated: false
+      location: null
     };
   },
   methods: {
@@ -80,7 +74,6 @@ export default {
     }
   },
   created() {
-    this.updated = this.$route.query.updated || false;
     this.fetchLocation();
   }
 };

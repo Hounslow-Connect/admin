@@ -97,6 +97,7 @@ export default {
         data: { data: settings }
       } = await http.get("/settings");
 
+      delete settings.cms.frontend.banner.has_image;
       settings.cms.frontend.banner.enabled =
         settings.cms.frontend.banner.title !== null;
 
@@ -125,17 +126,6 @@ export default {
 
         // Remove banner enabled field.
         delete data.cms.frontend.banner.enabled;
-
-        data.cms.frontend.home.banners = data.cms.frontend.home.banners.filter(
-          banner => {
-            return !(
-              (banner.title == "") &
-              (banner.content == "") &
-              (banner.button_text == "") &
-              (banner.button_url == "")
-            );
-          }
-        );
       });
       this.$router.push({ name: "admin-index-cms-updated" });
     }

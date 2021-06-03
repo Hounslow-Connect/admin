@@ -46,9 +46,9 @@
             <gov-button v-if="form.$submitting" disabled type="submit"
               >Requesting...</gov-button
             >
-            <gov-button v-else @click="onSubmit" type="submit">{{
-              updateButtonText
-            }}</gov-button>
+            <gov-button v-else @click="onSubmit" type="submit"
+              >Request update</gov-button
+            >
             <ck-submit-error v-if="form.$errors.any()" />
           </gov-grid-column>
         </gov-grid-row>
@@ -71,11 +71,6 @@ export default {
       location: null,
       form: null
     };
-  },
-  computed: {
-    updateButtonText() {
-      return this.auth.isGlobalAdmin ? "Update" : "Request update";
-    }
   },
   methods: {
     async fetchLocation() {
@@ -102,73 +97,54 @@ export default {
       this.loading = false;
     },
     async onSubmit() {
-      const response = await this.form.put(
-        `/locations/${this.location.id}`,
-        (config, data) => {
-          // Remove any unchanged values.
-          if (data.address_line_1 === this.location.address_line_1) {
-            delete data.address_line_1;
-          }
-          if (data.address_line_2 === (this.location.address_line_2 || "")) {
-            delete data.address_line_2;
-          }
-          if (data.address_line_3 === (this.location.address_line_3 || "")) {
-            delete data.address_line_3;
-          }
-          if (data.city === this.location.city) {
-            delete data.city;
-          }
-          if (data.county === this.location.county) {
-            delete data.county;
-          }
-          if (data.postcode === this.location.postcode) {
-            delete data.postcode;
-          }
-          if (data.country === this.location.country) {
-            delete data.country;
-          }
-          if (
-            data.accessibility_info === (this.location.accessibility_info || "")
-          ) {
-            delete data.accessibility_info;
-          }
-          if (
-            data.has_wheelchair_access === this.location.has_wheelchair_access
-          ) {
-            delete data.has_wheelchair_access;
-          }
-          if (data.has_induction_loop === this.location.has_induction_loop) {
-            delete data.has_induction_loop;
-          }
-          // Remove the logo from the request if null, or delete if false.
-          if (data.image_file_id === null) {
-            delete data.image_file_id;
-          } else if (data.image_file_id === false) {
-            data.image_file_id = null;
-          }
+      await this.form.put(`/locations/${this.location.id}`, (config, data) => {
+        // Remove any unchanged values.
+        if (data.address_line_1 === this.location.address_line_1) {
+          delete data.address_line_1;
         }
-      );
+        if (data.address_line_2 === (this.location.address_line_2 || "")) {
+          delete data.address_line_2;
+        }
+        if (data.address_line_3 === (this.location.address_line_3 || "")) {
+          delete data.address_line_3;
+        }
+        if (data.city === this.location.city) {
+          delete data.city;
+        }
+        if (data.county === this.location.county) {
+          delete data.county;
+        }
+        if (data.postcode === this.location.postcode) {
+          delete data.postcode;
+        }
+        if (data.country === this.location.country) {
+          delete data.country;
+        }
+        if (
+          data.accessibility_info === (this.location.accessibility_info || "")
+        ) {
+          delete data.accessibility_info;
+        }
+        if (
+          data.has_wheelchair_access === this.location.has_wheelchair_access
+        ) {
+          delete data.has_wheelchair_access;
+        }
+        if (data.has_induction_loop === this.location.has_induction_loop) {
+          delete data.has_induction_loop;
+        }
+        // Remove the logo from the request if null, or delete if false.
+        if (data.image_file_id === null) {
+          delete data.image_file_id;
+        } else if (data.image_file_id === false) {
+          data.image_file_id = null;
+        }
+      });
 
-      const updateRequestId = response.id;
-      let next = {
+      this.$router.push({
         name: "locations-updated",
         params: { location: this.location.id }
-      };
-
-      if (this.auth.isGlobalAdmin) {
-        try {
-          const { data } = await http.get(
-            `/update-requests/${updateRequestId}`
-          );
-          if (data.approved_at) {
-            next.name = "locations-show";
-            next.query = { updated: true };
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      this.$router.push(next);
+      });
     }
   },
   created() {

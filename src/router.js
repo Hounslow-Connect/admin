@@ -38,12 +38,6 @@ let router = new Router({
       meta: { auth: true }
     },
     {
-      path: "/organisations/import",
-      name: "organisations-import",
-      component: () => import("@/views/organisations/Import"),
-      meta: { auth: true }
-    },
-    {
       path: "/organisations/:organisation",
       name: "organisations-show",
       component: () => import("@/views/organisations/Show"),
@@ -152,12 +146,6 @@ let router = new Router({
       meta: { auth: true }
     },
     {
-      path: "/services/import",
-      name: "services-import",
-      component: () => import("@/views/services/Import"),
-      meta: { auth: true }
-    },
-    {
       path: "/services/:service/created",
       name: "services-post-create",
       component: () => import("@/views/services/PostCreate"),
@@ -189,9 +177,9 @@ let router = new Router({
           component: () => import("@/views/services/show/ContactInfoTab")
         },
         {
-          path: "eligibility",
-          name: "services-show-eligibility",
-          component: () => import("@/views/services/show/EligibilityTab")
+          path: "who-for",
+          name: "services-show-who-for",
+          component: () => import("@/views/services/show/WhoForTab")
         },
         {
           path: "locations",

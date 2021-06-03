@@ -21,11 +21,6 @@
           <gov-grid-column width="two-thirds">
             <gov-heading size="m">View service location</gov-heading>
 
-            <gov-inset-text v-if="updated"
-              >Service Location {{ serviceLocation.name || "" }} has been
-              updated</gov-inset-text
-            >
-
             <service-location-details :service-location="serviceLocation" />
 
             <template v-if="auth.isServiceAdmin(serviceLocation.service)">
@@ -73,8 +68,7 @@ export default {
   data() {
     return {
       loading: false,
-      serviceLocation: null,
-      updated: false
+      serviceLocation: null
     };
   },
   methods: {
@@ -95,7 +89,6 @@ export default {
     }
   },
   created() {
-    this.updated = this.$route.query.updated || false;
     this.fetchServiceLocation();
   }
 };

@@ -60,8 +60,7 @@
     />
 
     <gov-label class="govuk-!-font-weight-bold">Taxonomies</gov-label>
-    <ck-taxonomy-input
-      root="categories"
+    <category-taxonomy-input
       :invalid="errors.has('category_taxonomies')"
       :value="category_taxonomies"
       @input="$emit('update:category_taxonomies', $event)"
@@ -74,12 +73,12 @@
 
 <script>
 import icons from "@/storage/icons";
-import CkTaxonomyInput from "@/components/Ck/CkTaxonomyInput";
+import CategoryTaxonomyInput from "@/views/services/inputs/CategoryTaxonomyInput";
 import CkSideboxesInput from "@/views/collections/inputs/SideboxesInput";
 
 export default {
   name: "CollectionForm",
-  components: { CkTaxonomyInput, CkSideboxesInput },
+  components: { CategoryTaxonomyInput, CkSideboxesInput },
   props: {
     errors: {
       required: true,

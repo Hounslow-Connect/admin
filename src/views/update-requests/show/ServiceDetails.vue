@@ -1,66 +1,50 @@
 <template>
   <ck-loader v-if="loading" />
   <div v-else>
-    <gov-body v-if="original">
+    <gov-body>
       For service
       <gov-link
         :to="{ name: 'services-show', params: { service: original.id } }"
         v-text="original.name"
       />.
     </gov-body>
-    <gov-body v-else>
-      For a new service.
-    </gov-body>
 
     <gov-table>
       <template slot="body">
         <gov-table-row>
           <gov-table-header scope="column"></gov-table-header>
-          <gov-table-header scope="column" v-if="original"
-            >From</gov-table-header
-          >
-          <gov-table-header scope="column">{{
-            original ? "To" : "New"
-          }}</gov-table-header>
+          <gov-table-header scope="column">From</gov-table-header>
+          <gov-table-header scope="column">To</gov-table-header>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('type')">
           <gov-table-header top scope="row">Type</gov-table-header>
-          <gov-table-cell break v-if="original">{{
-            original.type | originalExists | ucfirst
-          }}</gov-table-cell>
+          <gov-table-cell break>{{ original.type | ucfirst }}</gov-table-cell>
           <gov-table-cell break>{{ service.type | ucfirst }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('url')">
           <gov-table-header top scope="row">URL</gov-table-header>
-          <gov-table-cell break v-if="original">{{
-            original.url | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell break>{{ original.url }}</gov-table-cell>
           <gov-table-cell break>{{ service.url }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('name')">
           <gov-table-header top scope="row">Name</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.name | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.name }}</gov-table-cell>
           <gov-table-cell>{{ service.name }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('slug')">
           <gov-table-header top scope="row">Slug</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.slug | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.slug }}</gov-table-cell>
           <gov-table-cell>{{ service.slug }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('organisation_id')">
           <gov-table-header top scope="row">Organisation</gov-table-header>
-          <gov-table-cell v-if="original">
+          <gov-table-cell>
             <gov-link
-              v-if="original.hasOwnProperty('organisation_id')"
               :to="{
                 name: 'organisations-show',
                 params: { organisation: original.organisation_id }
@@ -76,181 +60,157 @@
                 params: { organisation: service.organisation_id }
               }"
             >
-              {{ service.organisation.name || "" }}
+              {{ service.organisation.name }}
             </gov-link>
           </gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('intro')">
           <gov-table-header top scope="row">Intro</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.intro | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.intro }}</gov-table-cell>
           <gov-table-cell>{{ service.intro }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('status')">
           <gov-table-header top scope="row">Status</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.status | status
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.status | status }}</gov-table-cell>
           <gov-table-cell>{{ service.status | status }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('is_free')">
           <gov-table-header top scope="row">Is free</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.is_free | isFree
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.is_free | isFree }}</gov-table-cell>
           <gov-table-cell>{{ service.is_free | isFree }}</gov-table-cell>
         </gov-table-row>
 
-        <gov-table-row v-if="service.hasOwnProperty('eligibility_types')">
-          <gov-table-header top scope="row">Eligibility</gov-table-header>
-          <gov-table-cell v-if="original">
-            <div
-              v-for="rootTaxonomy in eligibilityTypes"
-              :key="rootTaxonomy.id"
-              v-if="eligibilityChanged(rootTaxonomy)"
-            >
-              <span class="govuk-!-font-weight-bold">{{
-                rootTaxonomy.name
-              }}</span>
-              <ck-taxonomy-tree
-                v-if="Array.isArray(service.eligibility_types.taxonomies)"
-                :taxonomies="rootTaxonomy.children"
-                :checked="original.eligibility_types.taxonomies"
-                :error="false"
-                :filteredTaxonomyIds="updatedServiceEligibilities"
-                :disabled="true"
-              />
-              <gov-body
-                v-if="
-                  original.eligibility_types.hasOwnProperty('custom') &&
-                    original.eligibility_types.custom[
-                      slugify(rootTaxonomy.name)
-                    ] !==
-                      service.eligibility_types.custom[
-                        slugify(rootTaxonomy.name)
-                      ]
-                "
-                >Custom Value:
-                {{
-                  original.eligibility_types.custom[slugify(rootTaxonomy.name)]
-                }}</gov-body
-              >
-            </div>
+        <gov-table-row v-if="service.hasOwnProperty('criteria')">
+          <gov-table-header top scope="row">Criteria</gov-table-header>
+          <gov-table-cell>
+            <gov-list>
+              <li v-if="service.criteria.hasOwnProperty('age_group')">
+                <span class="govuk-!-font-weight-bold">Age group:</span>
+                {{ original.criteria.age_group || "-" }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('disability')">
+                <span class="govuk-!-font-weight-bold">Disability:</span>
+                {{ original.criteria.disability || "-" }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('employment')">
+                <span class="govuk-!-font-weight-bold">Employment:</span>
+                {{ original.criteria.employment || "-" }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('gender')">
+                <span class="govuk-!-font-weight-bold">Gender:</span>
+                {{ original.criteria.gender || "-" }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('housing')">
+                <span class="govuk-!-font-weight-bold">Housing:</span>
+                {{ original.criteria.housing || "-" }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('income')">
+                <span class="govuk-!-font-weight-bold">Income:</span>
+                {{ original.criteria.income || "-" }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('language')">
+                <span class="govuk-!-font-weight-bold">Language:</span>
+                {{ original.criteria.language || "-" }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('other')">
+                <span class="govuk-!-font-weight-bold">Other:</span>
+                {{ original.criteria.other || "-" }}
+              </li>
+            </gov-list>
           </gov-table-cell>
           <gov-table-cell>
-            <div
-              v-for="rootTaxonomy in eligibilityTypes"
-              :key="rootTaxonomy.id"
-              v-if="eligibilityChanged(rootTaxonomy)"
-            >
-              <span class="govuk-!-font-weight-bold">{{
-                rootTaxonomy.name
-              }}</span>
-              <ck-taxonomy-tree
-                v-if="Array.isArray(service.eligibility_types.taxonomies)"
-                :taxonomies="rootTaxonomy.children"
-                :checked="service.eligibility_types.taxonomies"
-                :error="false"
-                :filteredTaxonomyIds="updatedServiceEligibilities"
-                :disabled="true"
-              />
-              <gov-body
-                v-if="
-                  service.eligibility_types.hasOwnProperty('custom') &&
-                    original.eligibility_types.custom[
-                      slugify(rootTaxonomy.name)
-                    ] !==
-                      service.eligibility_types.custom[
-                        slugify(rootTaxonomy.name)
-                      ]
-                "
-                >Custom Value:
-                {{
-                  service.eligibility_types.custom[slugify(rootTaxonomy.name)]
-                }}</gov-body
-              >
-            </div>
+            <gov-list>
+              <li v-if="service.criteria.hasOwnProperty('age_group')">
+                <span class="govuk-!-font-weight-bold">Age group:</span>
+                {{ service.criteria.age_group }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('disability')">
+                <span class="govuk-!-font-weight-bold">Disability:</span>
+                {{ service.criteria.disability }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('employment')">
+                <span class="govuk-!-font-weight-bold">Employment:</span>
+                {{ service.criteria.employment }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('gender')">
+                <span class="govuk-!-font-weight-bold">Gender:</span>
+                {{ service.criteria.gender }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('housing')">
+                <span class="govuk-!-font-weight-bold">Housing:</span>
+                {{ service.criteria.housing }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('income')">
+                <span class="govuk-!-font-weight-bold">Income:</span>
+                {{ service.criteria.income }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('language')">
+                <span class="govuk-!-font-weight-bold">Language:</span>
+                {{ service.criteria.language }}
+              </li>
+              <li v-if="service.criteria.hasOwnProperty('other')">
+                <span class="govuk-!-font-weight-bold">Other:</span>
+                {{ service.criteria.other }}
+              </li>
+            </gov-list>
           </gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('fees_url')">
           <gov-table-header top scope="row">Fees URL</gov-table-header>
-          <gov-table-cell break v-if="original">{{
-            original.fees_url | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell break>{{ original.fees_url }}</gov-table-cell>
           <gov-table-cell break>{{ service.fees_url }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('fees_text')">
           <gov-table-header top scope="row">Fees text</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.fees_text | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.fees_text }}</gov-table-cell>
           <gov-table-cell>{{ service.fees_text }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('wait_time')">
           <gov-table-header top scope="row">Wait time</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.wait_time | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.wait_time }}</gov-table-cell>
           <gov-table-cell>{{ service.wait_time }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('description')">
           <gov-table-header top scope="row">Description</gov-table-header>
-          <gov-table-cell
-            v-if="original"
-            v-html="toHtml(original.description)"
-          />
+          <gov-table-cell v-html="toHtml(original.description)" />
           <gov-table-cell v-html="toHtml(service.description)" />
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('testimonial')">
           <gov-table-header top scope="row">Testimonial</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.testimonial | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.testimonial }}</gov-table-cell>
           <gov-table-cell>{{ service.testimonial }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('video_embed')">
           <gov-table-header top scope="row">Video embed</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.video_embed | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.video_embed }}</gov-table-cell>
           <gov-table-cell>{{ service.video_embed }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('contact_name')">
           <gov-table-header top scope="row">Contact name</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.contact_name | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.contact_name }}</gov-table-cell>
           <gov-table-cell>{{ service.contact_name }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('referral_url')">
           <gov-table-header top scope="row">Referral URL</gov-table-header>
-          <gov-table-cell break v-if="original">{{
-            original.referral_url | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell break>{{ original.referral_url }}</gov-table-cell>
           <gov-table-cell break>{{ service.referral_url }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('useful_infos')">
           <gov-table-header top scope="row">Useful infos</gov-table-header>
-          <gov-table-cell v-if="original">
-            <gov-list
-              v-if="
-                original.hasOwnProperty('useful_infos') &&
-                  Array.isArray(original.useful_infos)
-              "
-            >
+          <gov-table-cell>
+            <gov-list v-if="original.useful_infos.length > 0">
               <li
                 v-for="(usefulInfo, index) in original.useful_infos"
                 :key="`useful_info.${index}`"
@@ -267,7 +227,7 @@
             <template v-else>None</template>
           </gov-table-cell>
           <gov-table-cell>
-            <gov-list v-if="Array.isArray(service.useful_infos)">
+            <gov-list v-if="service.useful_infos.length > 0">
               <li
                 v-for="(usefulInfo, index) in service.useful_infos"
                 :key="`useful_info.${index}`"
@@ -287,14 +247,8 @@
 
         <gov-table-row v-if="service.hasOwnProperty('offerings')">
           <gov-table-header top scope="row">Offerings</gov-table-header>
-          <gov-table-cell v-if="original">
-            <gov-list
-              v-if="
-                original.hasOwnProperty('offerings') &&
-                  Array.isArray(original.offerings)
-              "
-              bullet
-            >
+          <gov-table-cell>
+            <gov-list v-if="original.offerings.length > 0" bullet>
               <li
                 v-for="{ offering, order } in original.offerings"
                 :key="`ServiceOffering::Original::${order}`"
@@ -305,7 +259,7 @@
             <template v-else>None</template>
           </gov-table-cell>
           <gov-table-cell>
-            <gov-list v-if="Array.isArray(service.offerings)" bullet>
+            <gov-list v-if="service.offerings.length > 0" bullet>
               <li
                 v-for="{ offering, order } in service.offerings"
                 :key="`ServiceOffering::New::${order}`"
@@ -319,29 +273,20 @@
 
         <gov-table-row v-if="service.hasOwnProperty('contact_email')">
           <gov-table-header top scope="row">Contact email</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.contact_email
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.contact_email }}</gov-table-cell>
           <gov-table-cell>{{ service.contact_email }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('contact_phone')">
           <gov-table-header top scope="row">Contact phone</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.contact_phone | originalExists
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.contact_phone }}</gov-table-cell>
           <gov-table-cell>{{ service.contact_phone }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('social_medias')">
           <gov-table-header top scope="row">Social medias</gov-table-header>
-          <gov-table-cell break v-if="original">
-            <gov-list
-              v-if="
-                original.hasOwnProperty('social_medias') &&
-                  Array.isArray(original.social_medias)
-              "
-            >
+          <gov-table-cell break>
+            <gov-list v-if="original.social_medias.length > 0">
               <li
                 v-for="(socialMedia, index) in original.social_medias"
                 :key="`social_media.${index}`"
@@ -355,7 +300,7 @@
             <template v-else>None</template>
           </gov-table-cell>
           <gov-table-cell break>
-            <gov-list v-if="Array.isArray(service.social_medias)">
+            <gov-list v-if="service.social_medias.length > 0">
               <li
                 v-for="(socialMedia, index) in service.social_medias"
                 :key="`social_media.${index}`"
@@ -372,16 +317,14 @@
 
         <gov-table-row v-if="service.hasOwnProperty('referral_email')">
           <gov-table-header top scope="row">Referral email</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.referral_email
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.referral_email }}</gov-table-cell>
           <gov-table-cell>{{ service.referral_email }}</gov-table-cell>
         </gov-table-row>
 
         <gov-table-row v-if="service.hasOwnProperty('referral_method')">
           <gov-table-header top scope="row">Referral method</gov-table-header>
-          <gov-table-cell v-if="original">{{
-            original.referral_method | originalExists | referralMethod
+          <gov-table-cell>{{
+            original.referral_method | referralMethod
           }}</gov-table-cell>
           <gov-table-cell>{{
             service.referral_method | referralMethod
@@ -392,14 +335,8 @@
           <gov-table-header top scope="row"
             >Category taxonomies</gov-table-header
           >
-          <gov-table-cell v-if="original">
-            <gov-list
-              bullet
-              v-if="
-                original.hasOwnProperty('category_taxonomies') &&
-                  Array.isArray(original.category_taxonomies)
-              "
-            >
+          <gov-table-cell>
+            <gov-list bullet v-if="original.category_taxonomies.length > 0">
               <li
                 v-for="(taxonomy, index) in original.category_taxonomies"
                 :key="`category_taxonomies.${index}`"
@@ -410,7 +347,7 @@
             <template v-else>None</template>
           </gov-table-cell>
           <gov-table-cell>
-            <gov-list bullet v-if="Array.isArray(service.category_taxonomies)">
+            <gov-list bullet v-if="service.category_taxonomies.length > 0">
               <li
                 v-for="(taxonomy, index) in service.category_taxonomies"
                 :key="`category_taxonomies.${index}`"
@@ -426,9 +363,7 @@
           <gov-table-header top scope="row"
             >Referral button text</gov-table-header
           >
-          <gov-table-cell v-if="original">{{
-            original.referral_button_text
-          }}</gov-table-cell>
+          <gov-table-cell>{{ original.referral_button_text }}</gov-table-cell>
           <gov-table-cell>{{ service.referral_button_text }}</gov-table-cell>
         </gov-table-row>
 
@@ -438,7 +373,7 @@
           <gov-table-header top scope="row"
             >Show referral disclaimer</gov-table-header
           >
-          <gov-table-cell v-if="original">{{
+          <gov-table-cell>{{
             original.show_referral_disclaimer | showReferralDisclaimer
           }}</gov-table-cell>
           <gov-table-cell>{{
@@ -448,7 +383,7 @@
 
         <gov-table-row v-if="service.hasOwnProperty('logo_file_id')">
           <gov-table-header top scope="row">Logo</gov-table-header>
-          <gov-table-cell v-if="original">
+          <gov-table-cell>
             <img
               :src="apiUrl(`/services/${service.id}/logo.png?v=${requestedAt}`)"
               alt="Service logo"
@@ -471,19 +406,16 @@
 
         <gov-table-row v-if="service.hasOwnProperty('gallery_items')">
           <gov-table-header top scope="row">Gallery items</gov-table-header>
-          <gov-table-cell style="width: 25%;" v-if="original">
+          <gov-table-cell style="width: 25%;">
             <ck-carousel
-              v-if="
-                original.hasOwnProperty('gallery_items') &&
-                  Array.isArray(gallery_items)
-              "
+              v-if="original.gallery_items.length > 0"
               :image-urls="imageUrls(original)"
             />
             <gov-body v-else>-</gov-body>
           </gov-table-cell>
-          <gov-table-cell :style="original ? 'width: 25%;' : 'width: 50%;'">
+          <gov-table-cell style="width: 25%;">
             <ck-carousel
-              v-if="Array.isArray(service.gallery_items)"
+              v-if="service.gallery_items.length > 0"
               :image-urls="galleryItemsDataUris || imageUrls(service)"
             />
             <gov-body v-else>-</gov-body>
@@ -497,7 +429,6 @@
 <script>
 import http from "@/http";
 import CkCarousel from "@/components/Ck/CkCarousel";
-import CkTaxonomyTree from "@/components/Ck/CkTaxonomyTree";
 
 export default {
   name: "ServiceDetails",
@@ -529,51 +460,15 @@ export default {
     }
   },
 
-  components: { CkCarousel, CkTaxonomyTree },
+  components: { CkCarousel },
 
   data() {
     return {
       loading: false,
       original: null,
       taxonomies: [],
-      flattenedTaxonomies: [],
-      eligibilityTypes: [],
-      flattenedEligibilityTypes: []
+      flattenedTaxonomies: []
     };
-  },
-
-  computed: {
-    updatedServiceEligibilities() {
-      const originalTaxonomies = this.original.eligibility_types.taxonomies.reduce(
-        (taxonomyIds, taxonomyId) => {
-          const taxonomy = this.flattenedEligibilityTypes.find(
-            taxonomy => taxonomy.id === taxonomyId
-          );
-          return taxonomyIds.concat(
-            this.getTaxonomyAndAncestorsIds(
-              taxonomy,
-              this.flattenedEligibilityTypes
-            )
-          );
-        },
-        []
-      );
-      const updatedTaxonomies = this.service.eligibility_types.taxonomies.reduce(
-        (taxonomyIds, taxonomyId) => {
-          const taxonomy = this.flattenedEligibilityTypes.find(
-            taxonomy => taxonomy.id === taxonomyId
-          );
-          return taxonomyIds.concat(
-            this.getTaxonomyAndAncestorsIds(
-              taxonomy,
-              this.flattenedEligibilityTypes
-            )
-          );
-        },
-        []
-      );
-      return Array.from(new Set(originalTaxonomies.concat(updatedTaxonomies)));
-    }
   },
 
   methods: {
@@ -594,26 +489,18 @@ export default {
       this.loading = true;
 
       await this.fetchOriginal();
-
       await this.fetchTaxonomies();
-
-      await this.fetchServiceEligibilites();
 
       this.loading = false;
     },
 
     async fetchOriginal() {
-      // If this is an update request for a NEW service, then there's no original to check for.
-      if (this.service.id !== null) {
-        const {
-          data: { data: original }
-        } = await http.get(`/services/${this.service.id}`, {
-          params: { include: "organisation" }
-        });
-        this.original = original;
-      } else {
-        this.original = null;
-      }
+      const {
+        data: { data: original }
+      } = await http.get(`/services/${this.service.id}`, {
+        params: { include: "organisation" }
+      });
+      this.original = original;
     },
 
     async fetchTaxonomies() {
@@ -621,49 +508,26 @@ export default {
         data: { data: taxonomies }
       } = await http.get("/taxonomies/categories");
       this.taxonomies = taxonomies;
-      this.flattenedTaxonomies = this.getFlattenedTaxonomies(taxonomies);
+      this.setFlattenedTaxonomies();
     },
 
-    getFlattenedTaxonomies(taxonomies = null, flattenedTaxonomies = []) {
+    setFlattenedTaxonomies(taxonomies = null) {
+      if (taxonomies === null) {
+        this.flattenedTaxonomies = [];
+        taxonomies = this.taxonomies;
+      }
+
       taxonomies.forEach(taxonomy => {
-        flattenedTaxonomies.push(taxonomy);
+        this.flattenedTaxonomies.push(taxonomy);
 
         if (taxonomy.children.length > 0) {
-          this.getFlattenedTaxonomies(taxonomy.children, flattenedTaxonomies);
+          this.setFlattenedTaxonomies(taxonomy.children);
         }
       });
-      return flattenedTaxonomies;
     },
 
     findTaxonomy(id) {
       return this.flattenedTaxonomies.find(taxonomy => taxonomy.id === id);
-    },
-
-    async fetchServiceEligibilites() {
-      this.loading = true;
-      const { data: eligibilityTypes } = await http.get(
-        "/taxonomies/service-eligibilities"
-      );
-      this.eligibilityTypes = eligibilityTypes.data;
-      this.flattenedEligibilityTypes = this.getFlattenedTaxonomies(
-        eligibilityTypes.data
-      );
-      this.loading = false;
-    },
-
-    getTaxonomyAndAncestorsIds(taxonomy, flatTaxonomyTree) {
-      let ids = [taxonomy.id];
-      if (taxonomy.parent_id) {
-        const parent = flatTaxonomyTree.find(
-          tax => tax.id === taxonomy.parent_id
-        );
-        if (parent) {
-          ids = ids.concat(
-            this.getTaxonomyAndAncestorsIds(parent, flatTaxonomyTree)
-          );
-        }
-      }
-      return ids;
     },
 
     imageUrls(service) {
@@ -676,24 +540,6 @@ export default {
           `/services/${service.id}/gallery-items/${galleryItem.file_id}?update_request_id=${this.updateRequestId}`
         );
       });
-    },
-
-    slugify(name) {
-      return name.toLowerCase().replaceAll(" ", "_");
-    },
-
-    eligibilityChanged(eligibilityRoot) {
-      return (
-        this.service.hasOwnProperty("eligibility_types") &&
-        (this.updatedServiceEligibilities.includes(eligibilityRoot.id) ||
-          (this.service.eligibility_types.hasOwnProperty("custom") &&
-            this.original.eligibility_types.custom[
-              this.slugify(eligibilityRoot.name)
-            ] !==
-              this.service.eligibility_types.custom[
-                this.slugify(eligibilityRoot.name)
-              ]))
-      );
     }
   },
 
@@ -704,10 +550,6 @@ export default {
 
     isFree(isFree) {
       return isFree ? "Yes" : "No";
-    },
-
-    originalExists(field) {
-      return field || "";
     },
 
     socialMediaType(type) {

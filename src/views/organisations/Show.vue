@@ -13,11 +13,6 @@
         <gov-grid-column width="two-thirds">
           <gov-heading size="m">View organisation</gov-heading>
 
-          <gov-inset-text v-if="updated"
-            >Organisation {{ organisation.name }} has been
-            updated</gov-inset-text
-          >
-
           <ck-organisation-details :organisation="organisation" />
 
           <template v-if="auth.isSuperAdmin">
@@ -62,7 +57,6 @@ export default {
   data() {
     return {
       loading: false,
-      updated: false,
       organisation: null
     };
   },
@@ -81,7 +75,6 @@ export default {
     }
   },
   created() {
-    this.updated = this.$route.query.updated || false;
     this.fetchOrganisation();
   }
 };

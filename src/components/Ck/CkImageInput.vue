@@ -38,7 +38,7 @@
 
     <gov-error-message
       v-if="form.$errors.any()"
-      v-text="form.$errors.get(['is_private', 'mime_type', 'file'])"
+      v-text="form.$errors.any(['is_private', 'mime_type', 'file'])"
       :for="id"
     />
 
@@ -137,7 +137,6 @@ export default {
         this.$refs.file.$el.value = "";
         this.form.mime_type = null;
         this.form.file = null;
-        this.form.$errors.clear();
         this.$emit("input", { file_id: null, image: null });
         return;
       }

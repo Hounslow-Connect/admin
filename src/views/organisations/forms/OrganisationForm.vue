@@ -68,34 +68,15 @@
         id ? apiUrl(`/organisations/${id}/logo.png?v=${now}`) : undefined
       "
     />
-
-    <gov-section-break size="l" />
-
-    <gov-heading size="m">Social media links</gov-heading>
-
-    <gov-body>
-      If you have any social media accounts for your Organisation, please select
-      the appropriate platform from the dropdown and add the relevant URL.
-    </gov-body>
-
-    <ck-social-medias-input
-      :social-medias="social_medias"
-      @input="$emit('update:social_medias', $event)"
-      :errors="errors"
-    />
   </div>
 </template>
 
 <script>
 import CkImageInput from "@/components/Ck/CkImageInput";
-import CkSocialMediasInput from "@/components/Ck/CkSocialMediasInput";
 
 export default {
   name: "OrganisationForm",
-  components: {
-    CkImageInput,
-    CkSocialMediasInput
-  },
+  components: { CkImageInput },
   props: {
     errors: {
       required: true,
@@ -128,9 +109,6 @@ export default {
     id: {
       required: false,
       type: String
-    },
-    social_medias: {
-      required: true
     }
   },
   methods: {
