@@ -13,7 +13,7 @@
       :disabled="disabled"
     >
       <gov-hint :for="taxonomy.id" v-if="taxonomyCollections[taxonomy.id]"
-        >Found in {{ taxonomyCollections[taxonomy.id].join(', ') }}</gov-hint
+        >Found in {{ taxonomyCollections[taxonomy.id].join(", ") }}</gov-hint
       >
 
       <ck-taxonomy-checkboxes
@@ -32,61 +32,61 @@
 </template>
 
 <script>
-  export default {
-    name: 'CkTaxonomyCheckboxes',
-    props: {
-      taxonomies: {
-        required: true,
-        type: Array,
-      },
-      checked: {
-        required: true,
-        type: Array,
-      },
-      filteredTaxonomyIds: {
-        type: [Array, Boolean],
-        default() {
-          return [];
-        },
-      },
-      taxonomyCollections: {
-        type: Object,
-        default() {
-          return {};
-        },
-      },
-      disabled: {
-        type: Boolean,
-        default: false,
-      },
-      nested: {
-        type: Boolean,
-        default: false,
-      },
+export default {
+  name: "CkTaxonomyCheckboxes",
+  props: {
+    taxonomies: {
+      required: true,
+      type: Array
     },
+    checked: {
+      required: true,
+      type: Array
+    },
+    filteredTaxonomyIds: {
+      type: [Array, Boolean],
+      default() {
+        return [];
+      }
+    },
+    taxonomyCollections: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    nested: {
+      type: Boolean,
+      default: false
+    }
+  },
 
-    methods: {
-      showCheckBox(taxonomy) {
-        return Array.isArray(this.filteredTaxonomyIds)
-          ? this.filteredTaxonomyIds.includes(taxonomy.id)
-          : this.filteredTaxonomyIds;
-      },
-      onTaxonomyUpdate({ taxonomy, enabled }) {
-        this.$emit('update', { taxonomy, enabled });
-      },
-      onChildUpdate({ taxonomy, enabled }) {
-        this.onTaxonomyUpdate({ taxonomy, enabled });
-        if (taxonomy.parent_id) {
-          const parent = this.taxonomies.find(
-            (tax) => tax.id === taxonomy.parent_id
-          );
-          if (parent) {
-            this.onTaxonomyUpdate({ taxonomy: parent, enabled });
-          }
-        }
-      },
+  methods: {
+    showCheckBox(taxonomy) {
+      return Array.isArray(this.filteredTaxonomyIds)
+        ? this.filteredTaxonomyIds.includes(taxonomy.id)
+        : this.filteredTaxonomyIds;
     },
-  };
+    onTaxonomyUpdate({ taxonomy, enabled }) {
+      this.$emit("update", { taxonomy, enabled });
+    },
+    onChildUpdate({ taxonomy, enabled }) {
+      this.onTaxonomyUpdate({ taxonomy, enabled });
+      if (taxonomy.parent_id) {
+        const parent = this.taxonomies.find(
+          tax => tax.id === taxonomy.parent_id
+        );
+        if (parent) {
+          this.onTaxonomyUpdate({ taxonomy: parent, enabled });
+        }
+      }
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

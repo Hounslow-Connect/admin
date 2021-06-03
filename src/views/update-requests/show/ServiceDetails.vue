@@ -20,7 +20,7 @@
             >From</gov-table-header
           >
           <gov-table-header scope="column">{{
-            original ? 'To' : 'New'
+            original ? "To" : "New"
           }}</gov-table-header>
         </gov-table-row>
 
@@ -63,7 +63,7 @@
               v-if="original.hasOwnProperty('organisation_id')"
               :to="{
                 name: 'organisations-show',
-                params: { organisation: original.organisation_id },
+                params: { organisation: original.organisation_id }
               }"
             >
               {{ original.organisation.name }}
@@ -73,10 +73,10 @@
             <gov-link
               :to="{
                 name: 'organisations-show',
-                params: { organisation: service.organisation_id },
+                params: { organisation: service.organisation_id }
               }"
             >
-              {{ service.organisation.name || '' }}
+              {{ service.organisation.name || "" }}
             </gov-link>
           </gov-table-cell>
         </gov-table-row>
@@ -495,249 +495,247 @@
 </template>
 
 <script>
-  import http from '@/http';
-  import CkCarousel from '@/components/Ck/CkCarousel';
-  import CkTaxonomyTree from '@/components/Ck/CkTaxonomyTree';
+import http from "@/http";
+import CkCarousel from "@/components/Ck/CkCarousel";
+import CkTaxonomyTree from "@/components/Ck/CkTaxonomyTree";
 
-  export default {
-    name: 'ServiceDetails',
+export default {
+  name: "ServiceDetails",
 
-    props: {
-      updateRequestId: {
-        required: true,
-        type: String,
-      },
-
-      requestedAt: {
-        required: true,
-        type: String,
-      },
-
-      service: {
-        required: true,
-        type: Object,
-      },
-
-      logoDataUri: {
-        required: false,
-        type: String,
-      },
-
-      galleryItemsDataUris: {
-        required: false,
-        type: Array,
-      },
+  props: {
+    updateRequestId: {
+      required: true,
+      type: String
     },
 
-    components: { CkCarousel, CkTaxonomyTree },
-
-    data() {
-      return {
-        loading: false,
-        original: null,
-        taxonomies: [],
-        flattenedTaxonomies: [],
-        eligibilityTypes: [],
-        flattenedEligibilityTypes: [],
-      };
+    requestedAt: {
+      required: true,
+      type: String
     },
 
-    computed: {
-      updatedServiceEligibilities() {
-        const originalTaxonomies = this.original.eligibility_types.taxonomies.reduce(
-          (taxonomyIds, taxonomyId) => {
-            const taxonomy = this.flattenedEligibilityTypes.find(
-              (taxonomy) => taxonomy.id === taxonomyId
-            );
-            return taxonomyIds.concat(
-              this.getTaxonomyAndAncestorsIds(
-                taxonomy,
-                this.flattenedEligibilityTypes
-              )
-            );
-          },
-          []
-        );
-        const updatedTaxonomies = this.service.eligibility_types.taxonomies.reduce(
-          (taxonomyIds, taxonomyId) => {
-            const taxonomy = this.flattenedEligibilityTypes.find(
-              (taxonomy) => taxonomy.id === taxonomyId
-            );
-            return taxonomyIds.concat(
-              this.getTaxonomyAndAncestorsIds(
-                taxonomy,
-                this.flattenedEligibilityTypes
-              )
-            );
-          },
-          []
-        );
-        return Array.from(
-          new Set(originalTaxonomies.concat(updatedTaxonomies))
-        );
-      },
+    service: {
+      required: true,
+      type: Object
     },
 
-    methods: {
-      taxonomyName(taxonomy) {
-        let name = taxonomy.name;
+    logoDataUri: {
+      required: false,
+      type: String
+    },
 
-        if (taxonomy.parent_id !== null) {
-          const parent = this.flattenedTaxonomies.find((flattenedTaxonomy) => {
-            return flattenedTaxonomy.id === taxonomy.parent_id;
-          });
-          name = `${this.taxonomyName(parent)} / ${name}`;
-        }
+    galleryItemsDataUris: {
+      required: false,
+      type: Array
+    }
+  },
 
-        return name;
-      },
+  components: { CkCarousel, CkTaxonomyTree },
 
-      async fetchAll() {
-        this.loading = true;
+  data() {
+    return {
+      loading: false,
+      original: null,
+      taxonomies: [],
+      flattenedTaxonomies: [],
+      eligibilityTypes: [],
+      flattenedEligibilityTypes: []
+    };
+  },
 
-        await this.fetchOriginal();
+  computed: {
+    updatedServiceEligibilities() {
+      const originalTaxonomies = this.original.eligibility_types.taxonomies.reduce(
+        (taxonomyIds, taxonomyId) => {
+          const taxonomy = this.flattenedEligibilityTypes.find(
+            taxonomy => taxonomy.id === taxonomyId
+          );
+          return taxonomyIds.concat(
+            this.getTaxonomyAndAncestorsIds(
+              taxonomy,
+              this.flattenedEligibilityTypes
+            )
+          );
+        },
+        []
+      );
+      const updatedTaxonomies = this.service.eligibility_types.taxonomies.reduce(
+        (taxonomyIds, taxonomyId) => {
+          const taxonomy = this.flattenedEligibilityTypes.find(
+            taxonomy => taxonomy.id === taxonomyId
+          );
+          return taxonomyIds.concat(
+            this.getTaxonomyAndAncestorsIds(
+              taxonomy,
+              this.flattenedEligibilityTypes
+            )
+          );
+        },
+        []
+      );
+      return Array.from(new Set(originalTaxonomies.concat(updatedTaxonomies)));
+    }
+  },
 
-        await this.fetchTaxonomies();
+  methods: {
+    taxonomyName(taxonomy) {
+      let name = taxonomy.name;
 
-        await this.fetchServiceEligibilites();
+      if (taxonomy.parent_id !== null) {
+        const parent = this.flattenedTaxonomies.find(flattenedTaxonomy => {
+          return flattenedTaxonomy.id === taxonomy.parent_id;
+        });
+        name = `${this.taxonomyName(parent)} / ${name}`;
+      }
 
-        this.loading = false;
-      },
+      return name;
+    },
 
-      async fetchOriginal() {
-        // If this is an update request for a NEW service, then there's no original to check for.
-        if (this.service.id !== null) {
-          const {
-            data: { data: original },
-          } = await http.get(`/services/${this.service.id}`, {
-            params: { include: 'organisation' },
-          });
-          this.original = original;
-        } else {
-          this.original = null;
-        }
-      },
+    async fetchAll() {
+      this.loading = true;
 
-      async fetchTaxonomies() {
+      await this.fetchOriginal();
+
+      await this.fetchTaxonomies();
+
+      await this.fetchServiceEligibilites();
+
+      this.loading = false;
+    },
+
+    async fetchOriginal() {
+      // If this is an update request for a NEW service, then there's no original to check for.
+      if (this.service.id !== null) {
         const {
-          data: { data: taxonomies },
-        } = await http.get('/taxonomies/categories');
-        this.taxonomies = taxonomies;
-        this.flattenedTaxonomies = this.getFlattenedTaxonomies(taxonomies);
-      },
-
-      getFlattenedTaxonomies(taxonomies = null, flattenedTaxonomies = []) {
-        taxonomies.forEach((taxonomy) => {
-          flattenedTaxonomies.push(taxonomy);
-
-          if (taxonomy.children.length > 0) {
-            this.getFlattenedTaxonomies(taxonomy.children, flattenedTaxonomies);
-          }
+          data: { data: original }
+        } = await http.get(`/services/${this.service.id}`, {
+          params: { include: "organisation" }
         });
-        return flattenedTaxonomies;
-      },
+        this.original = original;
+      } else {
+        this.original = null;
+      }
+    },
 
-      findTaxonomy(id) {
-        return this.flattenedTaxonomies.find((taxonomy) => taxonomy.id === id);
-      },
+    async fetchTaxonomies() {
+      const {
+        data: { data: taxonomies }
+      } = await http.get("/taxonomies/categories");
+      this.taxonomies = taxonomies;
+      this.flattenedTaxonomies = this.getFlattenedTaxonomies(taxonomies);
+    },
 
-      async fetchServiceEligibilites() {
-        this.loading = true;
-        const { data: eligibilityTypes } = await http.get(
-          '/taxonomies/service-eligibilities'
-        );
-        this.eligibilityTypes = eligibilityTypes.data;
-        this.flattenedEligibilityTypes = this.getFlattenedTaxonomies(
-          eligibilityTypes.data
-        );
-        this.loading = false;
-      },
+    getFlattenedTaxonomies(taxonomies = null, flattenedTaxonomies = []) {
+      taxonomies.forEach(taxonomy => {
+        flattenedTaxonomies.push(taxonomy);
 
-      getTaxonomyAndAncestorsIds(taxonomy, flatTaxonomyTree) {
-        let ids = [taxonomy.id];
-        if (taxonomy.parent_id) {
-          const parent = flatTaxonomyTree.find(
-            (tax) => tax.id === taxonomy.parent_id
-          );
-          if (parent) {
-            ids = ids.concat(
-              this.getTaxonomyAndAncestorsIds(parent, flatTaxonomyTree)
-            );
-          }
+        if (taxonomy.children.length > 0) {
+          this.getFlattenedTaxonomies(taxonomy.children, flattenedTaxonomies);
         }
-        return ids;
-      },
+      });
+      return flattenedTaxonomies;
+    },
 
-      imageUrls(service) {
-        return service.gallery_items.map((galleryItem) => {
-          if (galleryItem.hasOwnProperty('url')) {
-            return galleryItem.url;
-          }
+    findTaxonomy(id) {
+      return this.flattenedTaxonomies.find(taxonomy => taxonomy.id === id);
+    },
 
-          return this.apiUrl(
-            `/services/${service.id}/gallery-items/${galleryItem.file_id}?update_request_id=${this.updateRequestId}`
+    async fetchServiceEligibilites() {
+      this.loading = true;
+      const { data: eligibilityTypes } = await http.get(
+        "/taxonomies/service-eligibilities"
+      );
+      this.eligibilityTypes = eligibilityTypes.data;
+      this.flattenedEligibilityTypes = this.getFlattenedTaxonomies(
+        eligibilityTypes.data
+      );
+      this.loading = false;
+    },
+
+    getTaxonomyAndAncestorsIds(taxonomy, flatTaxonomyTree) {
+      let ids = [taxonomy.id];
+      if (taxonomy.parent_id) {
+        const parent = flatTaxonomyTree.find(
+          tax => tax.id === taxonomy.parent_id
+        );
+        if (parent) {
+          ids = ids.concat(
+            this.getTaxonomyAndAncestorsIds(parent, flatTaxonomyTree)
           );
-        });
-      },
+        }
+      }
+      return ids;
+    },
 
-      slugify(name) {
-        return name.toLowerCase().replaceAll(' ', '_');
-      },
+    imageUrls(service) {
+      return service.gallery_items.map(galleryItem => {
+        if (galleryItem.hasOwnProperty("url")) {
+          return galleryItem.url;
+        }
 
-      eligibilityChanged(eligibilityRoot) {
-        return (
-          this.service.hasOwnProperty('eligibility_types') &&
-          (this.updatedServiceEligibilities.includes(eligibilityRoot.id) ||
-            (this.service.eligibility_types.hasOwnProperty('custom') &&
-              this.original.eligibility_types.custom[
+        return this.apiUrl(
+          `/services/${service.id}/gallery-items/${galleryItem.file_id}?update_request_id=${this.updateRequestId}`
+        );
+      });
+    },
+
+    slugify(name) {
+      return name.toLowerCase().replaceAll(" ", "_");
+    },
+
+    eligibilityChanged(eligibilityRoot) {
+      return (
+        this.service.hasOwnProperty("eligibility_types") &&
+        (this.updatedServiceEligibilities.includes(eligibilityRoot.id) ||
+          (this.service.eligibility_types.hasOwnProperty("custom") &&
+            this.original.eligibility_types.custom[
+              this.slugify(eligibilityRoot.name)
+            ] !==
+              this.service.eligibility_types.custom[
                 this.slugify(eligibilityRoot.name)
-              ] !==
-                this.service.eligibility_types.custom[
-                  this.slugify(eligibilityRoot.name)
-                ]))
-        );
-      },
+              ]))
+      );
+    }
+  },
+
+  filters: {
+    status(status) {
+      return status === "active" ? "Enabled" : "Disabled";
     },
 
-    filters: {
-      status(status) {
-        return status === 'active' ? 'Enabled' : 'Disabled';
-      },
-
-      isFree(isFree) {
-        return isFree ? 'Yes' : 'No';
-      },
-
-      originalExists(field) {
-        return field || '';
-      },
-
-      socialMediaType(type) {
-        switch (type) {
-          case 'twitter':
-            return 'Twitter';
-          case 'facebook':
-            return 'Facebook';
-          case 'instagram':
-            return 'Instagram';
-          case 'youtube':
-            return 'YouTube';
-          case 'other':
-            return 'Other';
-        }
-      },
-
-      referralMethod(referralMethod) {
-        return referralMethod.charAt(0).toUpperCase() + referralMethod.slice(1);
-      },
-
-      showReferralDisclaimer(showReferralDisclaimer) {
-        return showReferralDisclaimer ? 'Show' : 'Hide';
-      },
+    isFree(isFree) {
+      return isFree ? "Yes" : "No";
     },
 
-    created() {
-      this.fetchAll();
+    originalExists(field) {
+      return field || "";
     },
-  };
+
+    socialMediaType(type) {
+      switch (type) {
+        case "twitter":
+          return "Twitter";
+        case "facebook":
+          return "Facebook";
+        case "instagram":
+          return "Instagram";
+        case "youtube":
+          return "YouTube";
+        case "other":
+          return "Other";
+      }
+    },
+
+    referralMethod(referralMethod) {
+      return referralMethod.charAt(0).toUpperCase() + referralMethod.slice(1);
+    },
+
+    showReferralDisclaimer(showReferralDisclaimer) {
+      return showReferralDisclaimer ? "Show" : "Hide";
+    }
+  },
+
+  created() {
+    this.fetchAll();
+  }
+};
 </script>

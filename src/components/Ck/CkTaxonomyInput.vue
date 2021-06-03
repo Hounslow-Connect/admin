@@ -38,160 +38,160 @@
 </template>
 
 <script>
-  import http from '@/http';
-  import CkTaxonomyTree from './CkTaxonomyTree';
+import http from "@/http";
+import CkTaxonomyTree from "./CkTaxonomyTree";
 
-  export default {
-    name: 'TaxonomyInput',
+export default {
+  name: "TaxonomyInput",
 
-    components: {
-      CkTaxonomyTree,
-    },
+  components: {
+    CkTaxonomyTree
+  },
 
-    props: {
-      value: {
-        required: true,
-        type: Array,
-      },
-      error: {
-        required: true,
-      },
-      root: {
-        required: true,
-        type: String,
-        validator: function(value) {
-          return ['categories', 'organisations'].indexOf(value) !== -1;
-        },
-      },
-      disabled: {
-        required: false,
-        type: Boolean,
-        default: false,
-      },
-      hierarchy: {
-        required: false,
-        type: Boolean,
-        default: true,
-      },
+  props: {
+    value: {
+      required: true,
+      type: Array
     },
-    data() {
-      return {
-        taxonomies: [],
-        taxonomyCollections: {},
-        flattenedTaxonomies: [],
-        loading: false,
-        enabledTaxonomies: [],
-        filters: {
-          name: '',
-        },
-      };
+    error: {
+      required: true
     },
-    computed: {
-      filteredTaxonomyIds() {
-        if (this.filters.name.length > 2) {
-          const filteredTaxonomyIds = this.flattenedTaxonomies.reduce(
-            (filteredTaxonomies, taxonomy) => {
-              if (
-                taxonomy.name
-                  .toLowerCase()
-                  .includes(this.filters.name.toLowerCase())
-              ) {
-                filteredTaxonomies = filteredTaxonomies.concat(
-                  this.getTaxonomyAndAncestorsIds(taxonomy)
-                );
-              }
-              return filteredTaxonomies;
-            },
-            []
-          );
-          return [...new Set(filteredTaxonomyIds)];
-        } else {
-          return this.flattenedTaxonomies.map((taxonomy) => taxonomy.id);
-        }
-      },
+    root: {
+      required: true,
+      type: String,
+      validator: function(value) {
+        return ["categories", "organisations"].indexOf(value) !== -1;
+      }
     },
-    methods: {
-      async fetchTaxonomies() {
-        this.loading = true;
-        const { data: taxonomies } = await http.get(`/taxonomies/${this.root}`);
-        this.taxonomies = taxonomies.data;
-        const { data: collections } = await http.get(
-          `/collections/${this.root}/all`
+    disabled: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
+    hierarchy: {
+      required: false,
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      taxonomies: [],
+      taxonomyCollections: {},
+      flattenedTaxonomies: [],
+      loading: false,
+      enabledTaxonomies: [],
+      filters: {
+        name: ""
+      }
+    };
+  },
+  computed: {
+    filteredTaxonomyIds() {
+      if (this.filters.name.length > 2) {
+        const filteredTaxonomyIds = this.flattenedTaxonomies.reduce(
+          (filteredTaxonomies, taxonomy) => {
+            if (
+              taxonomy.name
+                .toLowerCase()
+                .includes(this.filters.name.toLowerCase())
+            ) {
+              filteredTaxonomies = filteredTaxonomies.concat(
+                this.getTaxonomyAndAncestorsIds(taxonomy)
+              );
+            }
+            return filteredTaxonomies;
+          },
+          []
         );
-        this.setFlattenedTaxonomies();
-        this.setTaxonomyCollections(collections.data);
-        this.loading = false;
-      },
-      setFlattenedTaxonomies(taxonomies = null) {
-        if (taxonomies === null) {
-          this.flattenedTaxonomies = [];
-          taxonomies = this.taxonomies;
+        return [...new Set(filteredTaxonomyIds)];
+      } else {
+        return this.flattenedTaxonomies.map(taxonomy => taxonomy.id);
+      }
+    }
+  },
+  methods: {
+    async fetchTaxonomies() {
+      this.loading = true;
+      const { data: taxonomies } = await http.get(`/taxonomies/${this.root}`);
+      this.taxonomies = taxonomies.data;
+      const { data: collections } = await http.get(
+        `/collections/${this.root}/all`
+      );
+      this.setFlattenedTaxonomies();
+      this.setTaxonomyCollections(collections.data);
+      this.loading = false;
+    },
+    setFlattenedTaxonomies(taxonomies = null) {
+      if (taxonomies === null) {
+        this.flattenedTaxonomies = [];
+        taxonomies = this.taxonomies;
+      }
+
+      taxonomies.forEach(taxonomy => {
+        this.flattenedTaxonomies.push(taxonomy);
+
+        if (taxonomy.children.length > 0) {
+          this.setFlattenedTaxonomies(taxonomy.children);
         }
-
-        taxonomies.forEach((taxonomy) => {
-          this.flattenedTaxonomies.push(taxonomy);
-
-          if (taxonomy.children.length > 0) {
-            this.setFlattenedTaxonomies(taxonomy.children);
-          }
+      });
+    },
+    setTaxonomyCollections(collections) {
+      collections.forEach(collection => {
+        collection.category_taxonomies.forEach(taxonomy => {
+          this.taxonomyCollections[taxonomy.id] =
+            this.taxonomyCollections[taxonomy.id] || [];
+          this.taxonomyCollections[taxonomy.id].push(collection.name);
         });
-      },
-      setTaxonomyCollections(collections) {
-        collections.forEach((collection) => {
-          collection.category_taxonomies.forEach((taxonomy) => {
-            this.taxonomyCollections[taxonomy.id] =
-              this.taxonomyCollections[taxonomy.id] || [];
-            this.taxonomyCollections[taxonomy.id].push(collection.name);
-          });
-        });
-      },
-      onUpdate({ taxonomy, enabled }) {
-        if (enabled) {
-          this.onChecked(taxonomy);
-        } else {
-          this.onUnchecked(taxonomy);
-        }
+      });
+    },
+    onUpdate({ taxonomy, enabled }) {
+      if (enabled) {
+        this.onChecked(taxonomy);
+      } else {
+        this.onUnchecked(taxonomy);
+      }
 
-        this.$emit('input', this.enabledTaxonomies);
-        this.$emit('clear');
-      },
-      onChecked(taxonomy) {
-        if (!this.enabledTaxonomies.includes(taxonomy.id)) {
-          this.enabledTaxonomies.push(taxonomy.id);
-        }
-      },
-      onUnchecked(taxonomy) {
-        if (this.enabledTaxonomies.includes(taxonomy.id)) {
-          const index = this.enabledTaxonomies.indexOf(taxonomy.id);
-          this.enabledTaxonomies.splice(index, 1);
-        }
-      },
-      getTaxonomyAndAncestorsIds(taxonomy) {
-        let ids = [taxonomy.id];
-        if (taxonomy.parent_id) {
-          const parent = this.flattenedTaxonomies.find(
-            (tax) => tax.id === taxonomy.parent_id
-          );
-          ids = ids.concat(this.getTaxonomyAndAncestorsIds(parent));
-        }
-        return ids;
-      },
-      filteredTaxonomies(taxonomies) {
-        return taxonomies.filter((taxonomy) =>
-          this.filteredTaxonomyIds.includes(taxonomy.id)
+      this.$emit("input", this.enabledTaxonomies);
+      this.$emit("clear");
+    },
+    onChecked(taxonomy) {
+      if (!this.enabledTaxonomies.includes(taxonomy.id)) {
+        this.enabledTaxonomies.push(taxonomy.id);
+      }
+    },
+    onUnchecked(taxonomy) {
+      if (this.enabledTaxonomies.includes(taxonomy.id)) {
+        const index = this.enabledTaxonomies.indexOf(taxonomy.id);
+        this.enabledTaxonomies.splice(index, 1);
+      }
+    },
+    getTaxonomyAndAncestorsIds(taxonomy) {
+      let ids = [taxonomy.id];
+      if (taxonomy.parent_id) {
+        const parent = this.flattenedTaxonomies.find(
+          tax => tax.id === taxonomy.parent_id
         );
-      },
+        ids = ids.concat(this.getTaxonomyAndAncestorsIds(parent));
+      }
+      return ids;
     },
-    created() {
-      this.fetchTaxonomies();
-      this.enabledTaxonomies = this.value;
-    },
-  };
+    filteredTaxonomies(taxonomies) {
+      return taxonomies.filter(taxonomy =>
+        this.filteredTaxonomyIds.includes(taxonomy.id)
+      );
+    }
+  },
+  created() {
+    this.fetchTaxonomies();
+    this.enabledTaxonomies = this.value;
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-  .govuk-hint {
-    padding: 8px 15px 5px;
-    margin: 0;
-  }
+.govuk-hint {
+  padding: 8px 15px 5px;
+  margin: 0;
+}
 </style>

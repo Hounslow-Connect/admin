@@ -13,42 +13,42 @@
 </template>
 
 <script>
-  import CkTaxonomyCheckboxes from './CkTaxonomyCheckboxes';
-  export default {
-    components: {
-      CkTaxonomyCheckboxes,
-    },
+import CkTaxonomyCheckboxes from "./CkTaxonomyCheckboxes";
+export default {
+  components: {
+    CkTaxonomyCheckboxes
+  },
 
-    props: {
-      taxonomies: {
-        required: true,
-        type: Array,
-      },
-      checked: {
-        required: true,
-        type: Array,
-      },
-      error: {
-        required: true,
-      },
-      filteredTaxonomyIds: {
-        type: [Array, Boolean],
-        default() {
-          return [];
-        },
-      },
-      taxonomyCollections: {
-        type: Object,
-        default() {
-          return {};
-        },
-      },
-      disabled: {
-        type: Boolean,
-        default: false,
-      },
+  props: {
+    taxonomies: {
+      required: true,
+      type: Array
     },
-  };
+    checked: {
+      required: true,
+      type: Array
+    },
+    error: {
+      required: true
+    },
+    filteredTaxonomyIds: {
+      type: [Array, Boolean],
+      default() {
+        return [];
+      }
+    },
+    taxonomyCollections: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

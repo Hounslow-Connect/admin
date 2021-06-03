@@ -28,46 +28,46 @@
 </template>
 
 <script>
-  import http from '@/http';
-  import CkTaxonomyList from '@/components/Ck/CkTaxonomyList.vue';
+import http from "@/http";
+import CkTaxonomyList from "@/components/Ck/CkTaxonomyList.vue";
 
-  export default {
-    name: 'EligibilityTab',
+export default {
+  name: "EligibilityTab",
 
-    components: {
-      CkTaxonomyList,
+  components: {
+    CkTaxonomyList
+  },
+
+  props: {
+    service: {
+      type: Object,
+      required: true
+    }
+  },
+
+  data() {
+    return {
+      loading: false,
+      eligibilityTypes: []
+    };
+  },
+
+  methods: {
+    async fetchServiceEligibilites() {
+      this.loading = true;
+      const { data: eligibilityTypes } = await http.get(
+        "/taxonomies/service-eligibilities"
+      );
+      this.eligibilityTypes = eligibilityTypes.data;
+      this.loading = false;
     },
+    slugify(name) {
+      return name.toLowerCase().replaceAll(" ", "_");
+    }
+  },
 
-    props: {
-      service: {
-        type: Object,
-        required: true,
-      },
-    },
-
-    data() {
-      return {
-        loading: false,
-        eligibilityTypes: [],
-      };
-    },
-
-    methods: {
-      async fetchServiceEligibilites() {
-        this.loading = true;
-        const { data: eligibilityTypes } = await http.get(
-          '/taxonomies/service-eligibilities'
-        );
-        this.eligibilityTypes = eligibilityTypes.data;
-        this.loading = false;
-      },
-      slugify(name) {
-        return name.toLowerCase().replaceAll(' ', '_');
-      },
-    },
-
-    created() {
-      this.fetchServiceEligibilites();
-    },
-  };
+  created() {
+    this.fetchServiceEligibilites();
+  }
+};
 </script>
