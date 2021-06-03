@@ -113,14 +113,7 @@
               "
               :errors="form.$errors"
               :type="form.type"
-              :age_group.sync="form.criteria.age_group"
-              :disability.sync="form.criteria.disability"
-              :employment.sync="form.criteria.employment"
-              :gender.sync="form.criteria.gender"
-              :housing.sync="form.criteria.housing"
-              :income.sync="form.criteria.income"
-              :language.sync="form.criteria.language"
-              :other.sync="form.criteria.other"
+              :serviceEligibilityTypes.sync="form.eligibility_types"
             >
               <gov-button @click="onNext" start>Next</gov-button>
             </eligibility-tab>
@@ -232,16 +225,6 @@
           referral_button_text: '',
           referral_email: '',
           referral_url: '',
-          criteria: {
-            age_group: '',
-            disability: '',
-            employment: '',
-            gender: '',
-            housing: '',
-            income: '',
-            language: '',
-            other: '',
-          },
           useful_infos: [
             {
               title: '',
@@ -253,6 +236,10 @@
           social_medias: [],
           gallery_items: [],
           category_taxonomies: [],
+          eligibility_types: {
+            taxonomies: [],
+            custom: {},
+          },
           logo_file_id: null,
         }),
         errors: {},
@@ -260,7 +247,7 @@
           { id: 'details', heading: 'Details', active: true },
           { id: 'additional-info', heading: 'Additional info', active: false },
           { id: 'useful-info', heading: 'Good to know', active: false },
-          { id: 'eligibility', heading: 'Who is it for?', active: false },
+          { id: 'eligibility', heading: 'Eligibility', active: false },
           { id: 'taxonomies', heading: 'Taxonomies', active: false },
           { id: 'description', heading: 'Description', active: false },
           { id: 'referral', heading: 'Referral', active: false },

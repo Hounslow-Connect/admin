@@ -6,13 +6,22 @@
       :key="rootTaxonomy.id"
     >
       <gov-grid-column width="two-thirds">
-        <gov-heading size="l"
-          >{{ service.type | ucfirst }} locations</gov-heading
-        >
-        <ck-taxonomy-tree
+        <gov-heading size="m">{{ rootTaxonomy.name }}</gov-heading>
+        <ck-taxonomy-list
           :taxonomies="rootTaxonomy.children"
           :filteredTaxonomyIds="service.eligibility_types.taxonomies"
         />
+        <gov-body
+          v-if="
+            service.eligibility_types.hasOwnProperty('custom') &&
+              null !==
+                service.eligibility_types.custom[slugify(rootTaxonomy.name)]
+          "
+          >Custom Value:
+          {{
+            service.eligibility_types.custom[slugify(rootTaxonomy.name)]
+          }}</gov-body
+        >
       </gov-grid-column>
     </gov-grid-row>
   </div>
@@ -20,9 +29,15 @@
 
 <script>
   import http from '@/http';
+  import CkTaxonomyList from '@/components/Ck/CkTaxonomyList.vue';
 
   export default {
     name: 'EligibilityTab',
+
+    components: {
+      CkTaxonomyList,
+    },
+
     props: {
       service: {
         type: Object,
@@ -46,6 +61,13 @@
         this.eligibilityTypes = eligibilityTypes.data;
         this.loading = false;
       },
+      slugify(name) {
+        return name.toLowerCase().replaceAll(' ', '_');
+      },
+    },
+
+    created() {
+      this.fetchServiceEligibilites();
     },
   };
 </script>

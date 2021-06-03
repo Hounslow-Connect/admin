@@ -29,10 +29,6 @@
         required: true,
         type: Array,
       },
-      checked: {
-        required: true,
-        type: Array,
-      },
       filteredTaxonomyIds: {
         type: [Array, Boolean],
         default() {

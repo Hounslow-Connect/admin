@@ -307,16 +307,6 @@
           referral_button_text: this.service.referral_button_text || '',
           referral_email: this.service.referral_email || '',
           referral_url: this.service.referral_url || '',
-          criteria: {
-            age_group: this.service.criteria.age_group || '',
-            disability: this.service.criteria.disability || '',
-            employment: this.service.criteria.employment || '',
-            gender: this.service.criteria.gender || '',
-            housing: this.service.criteria.housing || '',
-            income: this.service.criteria.income || '',
-            language: this.service.criteria.language || '',
-            other: this.service.criteria.other || '',
-          },
           useful_infos: this.service.useful_infos,
           offerings: this.service.offerings,
           social_medias: this.service.social_medias,
@@ -327,7 +317,9 @@
           category_taxonomies: this.service.category_taxonomies.map(
             (taxonomy) => taxonomy.id
           ),
-          eligibility_types: this.service.eligibility_types,
+          eligibility_types: JSON.parse(
+            JSON.stringify(this.service.eligibility_types)
+          ),
           logo_file_id: null,
           logo: null,
         });
@@ -413,46 +405,6 @@
             }
             if (data.referral_url === (this.service.referral_url || '')) {
               delete data.referral_url;
-            }
-            if (
-              data.criteria.age_group ===
-              (this.service.criteria.age_group || '')
-            ) {
-              delete data.criteria.age_group;
-            }
-            if (
-              data.criteria.disability ===
-              (this.service.criteria.disability || '')
-            ) {
-              delete data.criteria.disability;
-            }
-            if (
-              data.criteria.employment ===
-              (this.service.criteria.employment || '')
-            ) {
-              delete data.criteria.employment;
-            }
-            if (data.criteria.gender === (this.service.criteria.gender || '')) {
-              delete data.criteria.gender;
-            }
-            if (
-              data.criteria.housing === (this.service.criteria.housing || '')
-            ) {
-              delete data.criteria.housing;
-            }
-            if (data.criteria.income === (this.service.criteria.income || '')) {
-              delete data.criteria.income;
-            }
-            if (
-              data.criteria.language === (this.service.criteria.language || '')
-            ) {
-              delete data.criteria.language;
-            }
-            if (data.criteria.other === (this.service.criteria.other || '')) {
-              delete data.criteria.other;
-            }
-            if (Object.keys(data.criteria).length === 0) {
-              delete data.criteria;
             }
             if (
               JSON.stringify(data.useful_infos) ===

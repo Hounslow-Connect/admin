@@ -56,31 +56,10 @@
 
     methods: {
       onUpdateTaxonomies({ taxonomy, enabled }) {
-        let updatedServiceEligibilityTaxonomies;
-        if (enabled) {
-          updatedServiceEligibilityTaxonomies = this.onChecked(taxonomy);
-        } else {
-          updatedServiceEligibilityTaxonomies = this.onUnchecked(taxonomy);
-        }
-
-        this.$emit('update:taxonomies', updatedServiceEligibilityTaxonomies);
+        this.$emit('update:taxonomies', { taxonomy, enabled });
         this.$emit('clear');
       },
-      onChecked(taxonomy) {
-        const serviceEligibilityTaxonomies = this.serviceEligibilityTypes.taxonomies.slice();
-        if (!serviceEligibilityTaxonomies.includes(taxonomy.id)) {
-          serviceEligibilityTaxonomies.push(taxonomy.id);
-        }
-        return serviceEligibilityTaxonomies;
-      },
-      onUnchecked(taxonomy) {
-        const serviceEligibilityTaxonomies = this.serviceEligibilityTypes.taxonomies.slice();
-        if (serviceEligibilityTaxonomies.includes(taxonomy.id)) {
-          const index = serviceEligibilityTaxonomies.indexOf(taxonomy.id);
-          serviceEligibilityTaxonomies.splice(index, 1);
-        }
-        return serviceEligibilityTaxonomies;
-      },
+
       onUpdateCustom(customEligibity) {
         this.$emit('update:custom', {
           customTaxonomy: this.customEligibilitySlug,

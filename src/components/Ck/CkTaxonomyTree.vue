@@ -1,5 +1,5 @@
 <template>
-  <gov-checkboxes v-if="checkbox" :invalid="error">
+  <gov-checkboxes :invalid="error">
     <ck-taxonomy-checkboxes
       :key="taxonomies[0].id"
       :taxonomies="taxonomies"
@@ -10,23 +10,13 @@
       @update="$emit('update', $event)"
     />
   </gov-checkboxes>
-  <ck-taxonomy-list
-    v-else
-    :key="taxonomies[0].id"
-    :taxonomies="taxonomies"
-    :checked="checked"
-    :filteredTaxonomyIds="filteredTaxonomyIds"
-    :taxonomyCollections="taxonomyCollections"
-  />
 </template>
 
 <script>
   import CkTaxonomyCheckboxes from './CkTaxonomyCheckboxes';
-  import CkTaxonomyList from './CkTaxonomyList.vue';
   export default {
     components: {
       CkTaxonomyCheckboxes,
-      CkTaxonomyList,
     },
 
     props: {
@@ -35,16 +25,11 @@
         type: Array,
       },
       checked: {
+        required: true,
         type: Array,
-        default() {
-          return [];
-        },
       },
-      errors: {
-        type: Array,
-        default() {
-          return [];
-        },
+      error: {
+        required: true,
       },
       filteredTaxonomyIds: {
         type: [Array, Boolean],
@@ -61,10 +46,6 @@
       disabled: {
         type: Boolean,
         default: false,
-      },
-      checkbox: {
-        type: Boolean,
-        default: true,
       },
     },
   };

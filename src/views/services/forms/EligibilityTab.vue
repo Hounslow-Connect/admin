@@ -69,18 +69,26 @@
         this.eligibilityTypes = eligibilityTypes.data;
         this.loading = false;
       },
-      updateServiceEligibilityTaxonomies(checkedServiceEligibilities) {
+      updateServiceEligibilityTaxonomies({ taxonomy, enabled }) {
         const updatedServiceEligibilityTypes = {
           ...this.serviceEligibilityTypes,
         };
 
-        updatedServiceEligibilityTypes.taxonomies = Array.from(
-          new Set(
-            checkedServiceEligibilities.concat(
-              this.serviceEligibilityTypes.taxonomies
-            )
-          )
-        );
+        if (enabled) {
+          if (
+            !updatedServiceEligibilityTypes.taxonomies.includes(taxonomy.id)
+          ) {
+            updatedServiceEligibilityTypes.taxonomies.push(taxonomy.id);
+          }
+        } else if (
+          updatedServiceEligibilityTypes.taxonomies.includes(taxonomy.id)
+        ) {
+          const index = updatedServiceEligibilityTypes.taxonomies.indexOf(
+            taxonomy.id
+          );
+          updatedServiceEligibilityTypes.taxonomies.splice(index, 1);
+        }
+
         this.$emit(
           'update:serviceEligibilityTypes',
           updatedServiceEligibilityTypes
