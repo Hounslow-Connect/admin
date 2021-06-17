@@ -63,6 +63,12 @@
       :error="errors.get('country')"
     />
 
+    <gov-error-message
+      v-if="errors.has('address_not_found')"
+      v-text="errors.get('address_not_found')"
+      for="postcode"
+    />
+
     <gov-section-break size="l" />
 
     <gov-form-group
