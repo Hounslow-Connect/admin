@@ -179,150 +179,150 @@
 </template>
 
 <script>
-  import Form from '@/classes/Form';
-  import DetailsTab from '@/views/services/forms/DetailsTab';
-  import DescriptionTab from '@/views/services/forms/DescriptionTab';
-  import AdditionalInfoTab from '@/views/services/forms/AdditionalInfoTab';
-  import UsefulInfoTab from '@/views/services/forms/UsefulInfoTab';
-  import EligibilityTab from '@/views/services/forms/EligibilityTab';
-  import ReferralTab from '@/views/services/forms/ReferralTab';
-  import TaxonomiesTab from '@/views/services/forms/TaxonomiesTab';
+import Form from "@/classes/Form";
+import DetailsTab from "@/views/services/forms/DetailsTab";
+import DescriptionTab from "@/views/services/forms/DescriptionTab";
+import AdditionalInfoTab from "@/views/services/forms/AdditionalInfoTab";
+import UsefulInfoTab from "@/views/services/forms/UsefulInfoTab";
+import EligibilityTab from "@/views/services/forms/EligibilityTab";
+import ReferralTab from "@/views/services/forms/ReferralTab";
+import TaxonomiesTab from "@/views/services/forms/TaxonomiesTab";
 
-  export default {
-    name: 'CreateService',
-    components: {
-      DetailsTab,
-      DescriptionTab,
-      AdditionalInfoTab,
-      UsefulInfoTab,
-      EligibilityTab,
-      ReferralTab,
-      TaxonomiesTab,
-    },
-    data() {
-      return {
-        form: new Form({
-          id: null,
-          organisation_id: null,
-          name: '',
-          slug: '',
-          type: 'service',
-          status: 'inactive',
-          intro: '',
-          description: '',
-          wait_time: null,
-          is_free: null,
-          fees_text: '',
-          fees_url: '',
-          testimonial: '',
-          video_embed: '',
-          url: '',
-          contact_name: '',
-          contact_phone: '',
-          contact_email: '',
-          show_referral_disclaimer: false,
-          referral_method: 'none',
-          referral_button_text: '',
-          referral_email: '',
-          referral_url: '',
-          criteria: {
-            age_group: '',
-            disability: '',
-            employment: '',
-            gender: '',
-            housing: '',
-            income: '',
-            language: '',
-            other: '',
-          },
-          useful_infos: [
-            {
-              title: '',
-              description: '',
-              order: 1,
-            },
-          ],
-          offerings: [],
-          social_medias: [],
-          gallery_items: [],
-          category_taxonomies: [],
-          eligibility_types: {
-            taxonomies: [],
-            custom: {},
-          },
-          logo_file_id: null,
-        }),
-        errors: {},
-        tabs: [
-          { id: 'details', heading: 'Details', active: true },
-          { id: 'additional-info', heading: 'Additional info', active: false },
-          { id: 'useful-info', heading: 'Good to know', active: false },
-          { id: 'eligibility', heading: 'Eligibility', active: false },
-          { id: 'taxonomies', heading: 'Taxonomies', active: false },
-          { id: 'description', heading: 'Description', active: false },
-          { id: 'referral', heading: 'Referral', active: false },
-        ],
-      };
-    },
-    computed: {
-      allowedTabs() {
-        if (!this.auth.isGlobalAdmin) {
-          const taxonomiesTabIndex = this.tabs.findIndex(
-            (tab) => tab.id === 'taxonomies'
-          );
-          const tabs = this.tabs.slice();
-          tabs.splice(taxonomiesTabIndex, 1);
-
-          return tabs;
-        }
-
-        return this.tabs;
-      },
-    },
-    methods: {
-      async onSubmit() {
-        const data = await this.form.post('/services', (config, data) => {
-          // Remove useful info if only item and empty.
-          if (
-            data.useful_infos.length === 1 &&
-            data.useful_infos[0].title === '' &&
-            data.useful_infos[0].description === ''
-          ) {
-            data.useful_infos = [];
+export default {
+  name: "CreateService",
+  components: {
+    DetailsTab,
+    DescriptionTab,
+    AdditionalInfoTab,
+    UsefulInfoTab,
+    EligibilityTab,
+    ReferralTab,
+    TaxonomiesTab
+  },
+  data() {
+    return {
+      form: new Form({
+        id: null,
+        organisation_id: null,
+        name: "",
+        slug: "",
+        type: "service",
+        status: "inactive",
+        intro: "",
+        description: "",
+        wait_time: null,
+        is_free: null,
+        fees_text: "",
+        fees_url: "",
+        testimonial: "",
+        video_embed: "",
+        url: "",
+        contact_name: "",
+        contact_phone: "",
+        contact_email: "",
+        show_referral_disclaimer: false,
+        referral_method: "none",
+        referral_button_text: "",
+        referral_email: "",
+        referral_url: "",
+        criteria: {
+          age_group: "",
+          disability: "",
+          employment: "",
+          gender: "",
+          housing: "",
+          income: "",
+          language: "",
+          other: ""
+        },
+        useful_infos: [
+          {
+            title: "",
+            description: "",
+            order: 1
           }
-        });
-        const serviceId = data.data.id;
-
-        // Refetch the user as new permissions added for the new service.
-        await this.auth.fetchUser();
-
-        this.$router.push({
-          name: 'services-post-create',
-          params: { service: serviceId },
-        });
-      },
-      onTabChange({ index }) {
-        this.tabs.forEach((tab) => (tab.active = false));
-        const tabId = this.allowedTabs[index].id;
-        this.tabs.find((tab) => tab.id === tabId).active = true;
-      },
-      onNext() {
-        const currentTabIndex = this.allowedTabs.findIndex(
-          (tab) => tab.active === true
+        ],
+        offerings: [],
+        social_medias: [],
+        gallery_items: [],
+        category_taxonomies: [],
+        eligibility_types: {
+          taxonomies: [],
+          custom: {}
+        },
+        logo_file_id: null
+      }),
+      errors: {},
+      tabs: [
+        { id: "details", heading: "Details", active: true },
+        { id: "additional-info", heading: "Additional info", active: false },
+        { id: "useful-info", heading: "Good to know", active: false },
+        { id: "eligibility", heading: "Eligibility", active: false },
+        { id: "taxonomies", heading: "Taxonomies", active: false },
+        { id: "description", heading: "Description", active: false },
+        { id: "referral", heading: "Referral", active: false }
+      ]
+    };
+  },
+  computed: {
+    allowedTabs() {
+      if (!this.auth.isGlobalAdmin) {
+        const taxonomiesTabIndex = this.tabs.findIndex(
+          tab => tab.id === "taxonomies"
         );
-        this.tabs.forEach((tab) => (tab.active = false));
-        const newTabId = this.allowedTabs[currentTabIndex + 1].id;
-        this.tabs.find((tab) => tab.id === newTabId).active = true;
-        this.scrollToTop();
-      },
-      scrollToTop() {
-        document.getElementById('main-content').scrollIntoView();
-      },
-      isTabActive(id) {
-        const tab = this.allowedTabs.find((tab) => tab.id === id);
+        const tabs = this.tabs.slice();
+        tabs.splice(taxonomiesTabIndex, 1);
 
-        return tab === undefined ? false : tab.active;
-      },
+        return tabs;
+      }
+
+      return this.tabs;
+    }
+  },
+  methods: {
+    async onSubmit() {
+      const data = await this.form.post("/services", (config, data) => {
+        // Remove useful info if only item and empty.
+        if (
+          data.useful_infos.length === 1 &&
+          data.useful_infos[0].title === "" &&
+          data.useful_infos[0].description === ""
+        ) {
+          data.useful_infos = [];
+        }
+      });
+      const serviceId = data.data.id;
+
+      // Refetch the user as new permissions added for the new service.
+      await this.auth.fetchUser();
+
+      this.$router.push({
+        name: "services-post-create",
+        params: { service: serviceId }
+      });
     },
-  };
+    onTabChange({ index }) {
+      this.tabs.forEach(tab => (tab.active = false));
+      const tabId = this.allowedTabs[index].id;
+      this.tabs.find(tab => tab.id === tabId).active = true;
+    },
+    onNext() {
+      const currentTabIndex = this.allowedTabs.findIndex(
+        tab => tab.active === true
+      );
+      this.tabs.forEach(tab => (tab.active = false));
+      const newTabId = this.allowedTabs[currentTabIndex + 1].id;
+      this.tabs.find(tab => tab.id === newTabId).active = true;
+      this.scrollToTop();
+    },
+    scrollToTop() {
+      document.getElementById("main-content").scrollIntoView();
+    },
+    isTabActive(id) {
+      const tab = this.allowedTabs.find(tab => tab.id === id);
+
+      return tab === undefined ? false : tab.active;
+    }
+  }
+};
 </script>

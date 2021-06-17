@@ -7,26 +7,74 @@
     >
     <gov-main-wrapper>
       <gov-grid-row>
-        <gov-grid-column width="one-half">
+        <gov-grid-column width="full">
           <gov-heading size="xl">Organisations</gov-heading>
           <gov-heading size="m">Add organisation</gov-heading>
-          <gov-body
-            >General details about the organisation. To be found when searching
-            or linked from a service page.</gov-body
-          >
 
-          <organisation-form
-            :errors="form.$errors"
-            :name.sync="form.name"
-            :slug.sync="form.slug"
-            :description.sync="form.description"
-            :url.sync="form.url"
-            :email.sync="form.email"
-            :phone.sync="form.phone"
-            :social_medias.sync="form.social_medias"
-            @update:logo_file_id="form.logo_file_id = $event"
-            @clear="form.$errors.clear($event)"
-          />
+          <gov-error-summary v-if="form.$errors.any()" title="Check for errors">
+            <gov-list>
+              <li
+                v-for="(error, field) in form.$errors.all()"
+                :key="field"
+                v-text="error[0]"
+              />
+            </gov-list>
+          </gov-error-summary>
+
+          <gov-tabs @tab-changed="onTabChange" :tabs="tabs" no-router>
+            <organisation-tab title="Details" :active="isTabActive('details')">
+              <template v-slot:intro
+                >General details about the organisation. To be found when
+                searching or linked from a service page.</template
+              >
+
+              <organisation-form
+                :errors="form.$errors"
+                :name.sync="form.name"
+                :slug.sync="form.slug"
+                :description.sync="form.description"
+                :url.sync="form.url"
+                :email.sync="form.email"
+                :phone.sync="form.phone"
+                :social_medias.sync="form.social_medias"
+                @update:logo_file_id="form.logo_file_id = $event"
+                @clear="form.$errors.clear($event)"
+              />
+            </organisation-tab>
+
+            <organisation-tab
+              title="Taxonomies"
+              :active="isTabActive('taxonomies')"
+            >
+              <template v-slot:intro>
+                <gov-body>
+                  These are a list of ‘tags’ that are applied to an
+                  organisation. These tags help the organisation be found in
+                  categories and keyword searches.
+                </gov-body>
+                <gov-body>
+                  On creation of a new organisation, the admin team will select
+                  the tags that they feel represent the organisation.
+                </gov-body>
+              </template>
+              <gov-form-group
+                :invalid="form.$errors.has('category_taxonomies')"
+              >
+                <ck-taxonomy-input
+                  root="categories"
+                  :value.sync="form.category_taxonomies"
+                  @input="$emit('update:category_taxonomies', $event)"
+                  :error="form.$errors.get('category_taxonomies')"
+                  @clear="form.$errors.clear($event)"
+                />
+                <gov-error-message
+                  v-if="form.$errors.has('category_taxonomies')"
+                  v-text="form.$errors.get('category_taxonomies')"
+                  :for="category_taxonomies"
+                />
+              </gov-form-group>
+            </organisation-tab>
+          </gov-tabs>
 
           <gov-section-break size="l" />
 
@@ -43,11 +91,13 @@
 
 <script>
 import Form from "@/classes/Form";
-import OrganisationForm from "@/views/organisations/forms/OrganisationForm";
+import OrganisationTab from "./OrganisationTab";
+import OrganisationForm from "./forms/OrganisationForm";
+import CkTaxonomyInput from "@/components/Ck/CkTaxonomyInput";
 
 export default {
   name: "CreateOrganisation",
-  components: { OrganisationForm },
+  components: { OrganisationForm, OrganisationTab, CkTaxonomyInput },
   data() {
     return {
       form: new Form({
@@ -58,8 +108,13 @@ export default {
         email: "",
         phone: "",
         logo_file_id: null,
-        social_medias: []
-      })
+        social_medias: [],
+        category_taxonomies: []
+      }),
+      tabs: [
+        { id: "details", heading: "Details", active: true },
+        { id: "taxonomies", heading: "Taxonomies", active: false }
+      ]
     };
   },
   watch: {
@@ -75,6 +130,16 @@ export default {
         name: "organisations-show",
         params: { organisation: organisationId }
       });
+    },
+    onTabChange({ index }) {
+      this.tabs.forEach(tab => (tab.active = false));
+      const tabId = this.tabs[index].id;
+      this.tabs.find(tab => tab.id === tabId).active = true;
+    },
+    isTabActive(id) {
+      const tab = this.tabs.find(tab => tab.id === id);
+
+      return tab === undefined ? false : tab.active;
     }
   }
 };

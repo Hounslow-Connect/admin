@@ -50,19 +50,58 @@
           </gov-list>
         </gov-table-cell>
       </gov-table-row>
+      <gov-table-row>
+        <gov-table-header scope="row" top>Taxonomies</gov-table-header>
+        <gov-table-cell break>
+          <gov-grid-row
+            v-for="rootTaxonomy in taxonomies"
+            :key="rootTaxonomy.id"
+          >
+            <gov-grid-column width="two-thirds">
+              <gov-heading size="m">{{ rootTaxonomy.name }}</gov-heading>
+              <ck-taxonomy-list
+                :taxonomies="rootTaxonomy.children"
+                :filteredTaxonomyIds="organisationTaxonomyIds"
+              />
+            </gov-grid-column>
+          </gov-grid-row>
+        </gov-table-cell>
+      </gov-table-row>
     </template>
   </gov-table>
 </template>
 
 <script>
+import http from "@/http";
+import CkTaxonomyList from "@/components/Ck/CkTaxonomyList.vue";
+
 export default {
   name: "CkOrganisationDetails",
+
+  components: {
+    CkTaxonomyList
+  },
+
   props: {
     organisation: {
       type: Object,
       required: true
     }
   },
+
+  data() {
+    return {
+      loading: false,
+      taxonomies: []
+    };
+  },
+
+  computed: {
+    organisationTaxonomyIds() {
+      return this.organisation.category_taxonomies.map(taxonomy => taxonomy.id);
+    }
+  },
+
   methods: {
     humanReadableSocialMedia(type) {
       switch (type) {
@@ -77,7 +116,17 @@ export default {
         case "other":
           return "Other";
       }
+    },
+    async fetchTaxonomies() {
+      this.loading = true;
+      const { data: taxonomies } = await http.get("/taxonomies/categories");
+      this.taxonomies = taxonomies.data;
+      this.loading = false;
     }
+  },
+
+  created() {
+    this.fetchTaxonomies();
   }
 };
 </script>

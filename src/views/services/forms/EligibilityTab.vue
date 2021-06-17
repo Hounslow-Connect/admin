@@ -33,82 +33,80 @@
 </template>
 
 <script>
-  import http from '@/http';
-  import ServiceEligibilityInput from '../inputs/ServiceEligibilityInput';
+import http from "@/http";
+import ServiceEligibilityInput from "../inputs/ServiceEligibilityInput";
 
-  export default {
-    name: 'EligibilityTab',
-    components: { ServiceEligibilityInput },
+export default {
+  name: "EligibilityTab",
+  components: { ServiceEligibilityInput },
 
-    props: {
-      serviceEligibilityTypes: {
-        required: true,
-        type: Object,
-      },
-      type: {
-        required: true,
-        type: String,
-      },
-      errors: {
-        required: true,
-      },
+  props: {
+    serviceEligibilityTypes: {
+      required: true,
+      type: Object
     },
+    type: {
+      required: true,
+      type: String
+    },
+    errors: {
+      required: true
+    }
+  },
 
-    data() {
-      return {
-        loading: false,
-        eligibilityTypes: [],
+  data() {
+    return {
+      loading: false,
+      eligibilityTypes: []
+    };
+  },
+
+  methods: {
+    async fetchServiceEligibilites() {
+      this.loading = true;
+      const { data: eligibilityTypes } = await http.get(
+        "/taxonomies/service-eligibilities"
+      );
+      this.eligibilityTypes = eligibilityTypes.data;
+      this.loading = false;
+    },
+    updateServiceEligibilityTaxonomies({ taxonomy, enabled }) {
+      const updatedServiceEligibilityTypes = {
+        ...this.serviceEligibilityTypes
       };
-    },
 
-    methods: {
-      async fetchServiceEligibilites() {
-        this.loading = true;
-        const { data: eligibilityTypes } = await http.get(
-          '/taxonomies/service-eligibilities'
-        );
-        this.eligibilityTypes = eligibilityTypes.data;
-        this.loading = false;
-      },
-      updateServiceEligibilityTaxonomies({ taxonomy, enabled }) {
-        const updatedServiceEligibilityTypes = {
-          ...this.serviceEligibilityTypes,
-        };
-
-        if (enabled) {
-          if (
-            !updatedServiceEligibilityTypes.taxonomies.includes(taxonomy.id)
-          ) {
-            updatedServiceEligibilityTypes.taxonomies.push(taxonomy.id);
-          }
-        } else if (
-          updatedServiceEligibilityTypes.taxonomies.includes(taxonomy.id)
-        ) {
-          const index = updatedServiceEligibilityTypes.taxonomies.indexOf(
-            taxonomy.id
-          );
-          updatedServiceEligibilityTypes.taxonomies.splice(index, 1);
+      if (enabled) {
+        if (!updatedServiceEligibilityTypes.taxonomies.includes(taxonomy.id)) {
+          updatedServiceEligibilityTypes.taxonomies.push(taxonomy.id);
         }
-
-        this.$emit(
-          'update:serviceEligibilityTypes',
-          updatedServiceEligibilityTypes
+      } else if (
+        updatedServiceEligibilityTypes.taxonomies.includes(taxonomy.id)
+      ) {
+        const index = updatedServiceEligibilityTypes.taxonomies.indexOf(
+          taxonomy.id
         );
-      },
-      updateServiceEligibilityCustom({ customTaxonomy, customValue }) {
-        const updatedServiceEligibilityTypes = {
-          ...this.serviceEligibilityTypes,
-        };
-        updatedServiceEligibilityTypes.custom[customTaxonomy] = customValue;
-        this.$emit(
-          'update:serviceEligibilityTypes',
-          updatedServiceEligibilityTypes
-        );
-      },
-    },
+        updatedServiceEligibilityTypes.taxonomies.splice(index, 1);
+      }
 
-    created() {
-      this.fetchServiceEligibilites();
+      this.$emit(
+        "update:serviceEligibilityTypes",
+        updatedServiceEligibilityTypes
+      );
     },
-  };
+    updateServiceEligibilityCustom({ customTaxonomy, customValue }) {
+      const updatedServiceEligibilityTypes = {
+        ...this.serviceEligibilityTypes
+      };
+      updatedServiceEligibilityTypes.custom[customTaxonomy] = customValue;
+      this.$emit(
+        "update:serviceEligibilityTypes",
+        updatedServiceEligibilityTypes
+      );
+    }
+  },
+
+  created() {
+    this.fetchServiceEligibilites();
+  }
+};
 </script>
