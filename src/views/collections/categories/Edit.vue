@@ -31,6 +31,7 @@
               :intro.sync="form.intro"
               :icon.sync="form.icon"
               :order.sync="form.order"
+              :enabled.sync="form.enabled"
               :sideboxes.sync="form.sideboxes"
               :category_taxonomies.sync="form.category_taxonomies"
               @clear="form.$errors.clear($event)"
@@ -86,6 +87,7 @@ export default {
         intro: this.collection.intro,
         icon: this.collection.icon,
         order: this.collection.order,
+        enabled: this.collection.enabled,
         sideboxes: this.collection.sideboxes,
         category_taxonomies: this.collection.category_taxonomies.map(
           taxonomy => taxonomy.id

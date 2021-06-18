@@ -33,27 +33,15 @@
       <gov-grid-column width="two-thirds">
         <ck-loader v-if="loading" />
         <gov-list v-else bullet>
-          <li v-for="collection in collections" :key="collection.id">
-            {{ collection.name }}&nbsp;
-            <gov-link
-              v-if="auth.isGlobalAdmin"
-              :to="{
-                name: 'collections-categories-edit',
-                params: { collection: collection.id }
-              }"
-            >
-              Edit
-            </gov-link>
-            <br />
-            <gov-link @click="onMoveUp(collection)" v-if="collection.order > 1"
-              >(Move up)</gov-link
-            >
-            <gov-link
-              @click="onMoveDown(collection)"
-              v-if="collection.order < collections.length"
-              >(Move down)</gov-link
-            >
-          </li>
+          <collection-list-item
+            v-for="collection in collections"
+            :key="collection.id"
+            :collection="collection"
+            :collections="collections"
+            type="category"
+            @move-up="onMoveUp"
+            @move-down="onMoveDown"
+          />
         </gov-list>
       </gov-grid-column>
     </gov-grid-row>
@@ -62,9 +50,13 @@
 
 <script>
 import http from "@/http";
+import CollectionListItem from "./CollectionListItem";
 
 export default {
   name: "ListCollectionCategories",
+
+  components: { CollectionListItem },
+
   data() {
     return {
       loading: false,
@@ -103,6 +95,7 @@ export default {
         intro: collection.intro,
         icon: collection.icon,
         order: collection.order,
+        enabled: collection.enabled,
         sideboxes: collection.sideboxes,
         category_taxonomies: collection.category_taxonomies.map(
           taxonomy => taxonomy.id
