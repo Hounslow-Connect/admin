@@ -310,6 +310,12 @@ let router = new Router({
               name: "admin-index-taxonomies-organisations",
               component: () =>
                 import("@/views/admin/index/taxonomies/Organisations")
+            },
+            {
+              path: "service-eligibilities",
+              name: "admin-index-taxonomies-service-eligibilities",
+              component: () =>
+                import("@/views/admin/index/taxonomies/ServiceEligibilities")
             }
           ]
         },
@@ -452,6 +458,19 @@ let router = new Router({
       path: "/taxonomies/organisations/:taxonomy/edit",
       name: "taxonomies-organisations-edit",
       component: () => import("@/views/taxonomies/organisations/Edit"),
+      meta: { auth: true }
+    },
+    {
+      path: "/taxonomies/service-eligibilities/create",
+      name: "taxonomies-service-eligibilities-create",
+      component: () =>
+        import("@/views/taxonomies/service-eligibilities/Create"),
+      meta: { auth: true }
+    },
+    {
+      path: "/taxonomies/service-eligibilities/:taxonomy/edit",
+      name: "taxonomies-service-eligibilities-edit",
+      component: () => import("@/views/taxonomies/service-eligibilities/Edit"),
       meta: { auth: true }
     },
     {

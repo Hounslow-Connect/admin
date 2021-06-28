@@ -18,6 +18,10 @@ export default {
         {
           heading: "Organisations",
           to: { name: "admin-index-taxonomies-organisations" }
+        },
+        {
+          heading: "Service Eligibilities",
+          to: { name: "admin-index-taxonomies-service-eligibilities" }
         }
       ]
     };
