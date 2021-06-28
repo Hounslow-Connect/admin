@@ -75,6 +75,7 @@
                   :contact_name.sync="form.contact_name"
                   :contact_phone.sync="form.contact_phone"
                   :contact_email.sync="form.contact_email"
+                  :social_medias.sync="form.social_medias"
                 >
                   <gov-button @click="onNext" start>Next</gov-button>
                 </additional-info-tab>
@@ -308,6 +309,7 @@ export default {
         referral_url: this.service.referral_url || "",
         useful_infos: this.service.useful_infos,
         offerings: this.service.offerings,
+        social_medias: this.service.social_medias,
         gallery_items: this.service.gallery_items.map(galleryItem => ({
           file_id: galleryItem.file_id,
           image: null
@@ -415,6 +417,12 @@ export default {
             JSON.stringify(this.service.offerings)
           ) {
             delete data.offerings;
+          }
+          if (
+            JSON.stringify(data.social_medias) ===
+            JSON.stringify(this.service.social_medias)
+          ) {
+            delete data.social_medias;
           }
           if (
             JSON.stringify(data.category_taxonomies) ===

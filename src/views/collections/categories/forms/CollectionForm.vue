@@ -46,15 +46,6 @@
       />
     </ck-select-input>
 
-    <collection-enabled-input
-      :value="enabled"
-      @input="onInput('enabled', $event)"
-      id="status"
-      type="category"
-      label="Status of Category"
-      :error="errors.get('enabled')"
-    />
-
     <gov-heading size="m">Sideboxes</gov-heading>
 
     <gov-body>
@@ -85,11 +76,10 @@
 import icons from "@/storage/icons";
 import CkTaxonomyInput from "@/components/Ck/CkTaxonomyInput";
 import CkSideboxesInput from "@/views/collections/inputs/SideboxesInput";
-import CollectionEnabledInput from "@/views/collections/inputs/CollectionEnabledInput";
 
 export default {
   name: "CollectionForm",
-  components: { CollectionEnabledInput, CkTaxonomyInput, CkSideboxesInput },
+  components: { CkTaxonomyInput, CkSideboxesInput },
   props: {
     errors: {
       required: true,
@@ -105,9 +95,6 @@ export default {
       required: true
     },
     order: {
-      required: true
-    },
-    enabled: {
       required: true
     },
     sideboxes: {

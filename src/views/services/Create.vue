@@ -87,6 +87,7 @@
               :contact_name.sync="form.contact_name"
               :contact_phone.sync="form.contact_phone"
               :contact_email.sync="form.contact_email"
+              :social_medias.sync="form.social_medias"
             >
               <gov-button @click="onNext" start>Next</gov-button>
             </additional-info-tab>
@@ -242,6 +243,7 @@ export default {
           }
         ],
         offerings: [],
+        social_medias: [],
         gallery_items: [],
         category_taxonomies: [],
         eligibility_types: {

@@ -25,7 +25,6 @@
             :subtitle.sync="form.subtitle"
             :intro.sync="form.intro"
             :order.sync="form.order"
-            :enabled.sync="form.enabled"
             :sideboxes.sync="form.sideboxes"
             :category_taxonomies.sync="form.category_taxonomies"
             @update:image_file_id="form.image_file_id = $event"
@@ -59,7 +58,6 @@ export default {
         intro: "",
         subtitle: "",
         order: 1,
-        enabled: true,
         sideboxes: [],
         category_taxonomies: [],
         image_file_id: null
