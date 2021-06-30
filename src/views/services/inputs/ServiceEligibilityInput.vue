@@ -1,7 +1,18 @@
 <template>
   <gov-form-group>
     <slot />
+
+    <ck-radio-input
+      :value="access"
+      @input="onUpdateAccess"
+      :id="`${customEligibilitySlug}_access`"
+      label="Access to the service"
+      :options="accessOptions"
+      :error="null"
+    />
+
     <ck-taxonomy-tree
+      v-if="access === 'some'"
       :taxonomies="eligibilityTaxonomy.children"
       :checked="serviceEligibilityTypes.taxonomies"
       :error="errors"
@@ -9,7 +20,8 @@
       @update="onUpdateTaxonomies"
     />
     <ck-text-input
-      :value="serviceEligibilityTypes.custom[customEligibilitySlug] || ''"
+      v-if="access === 'some'"
+      :value="customEligibilityValue"
       @input="onUpdateCustom"
       id="custom"
       label="Custom value"
@@ -27,6 +39,16 @@ import CkTaxonomyTree from "@/components/Ck/CkTaxonomyTree";
 export default {
   components: {
     CkTaxonomyTree
+  },
+
+  data() {
+    return {
+      access: "all",
+      accessOptions: [
+        { label: "Access for all", value: "all" },
+        { label: "Access for some", value: "some" }
+      ]
+    };
   },
 
   props: {
@@ -51,6 +73,16 @@ export default {
     customEligibilitySlug() {
       // @todo This should not be guessed, it should be supplied by the API
       return this.eligibilityTaxonomy.name.toLowerCase().replaceAll(" ", "_");
+    },
+    customEligibilityValue() {
+      return (
+        this.serviceEligibilityTypes.custom[this.customEligibilitySlug] || ""
+      );
+    },
+    checkedEligibilities() {
+      return this.eligibilityTaxonomy.children.filter(taxonomy => {
+        return this.serviceEligibilityTypes.taxonomies.includes(taxonomy.id);
+      });
     }
   },
 
@@ -66,10 +98,28 @@ export default {
         customValue: customEligibity
       });
       this.$emit("clear");
+    },
+    onUpdateAccess(access) {
+      this.access = access;
+
+      if (this.access === "all") {
+        this.checkedEligibilities.forEach(taxonomy => {
+          this.$emit("update:taxonomies", { taxonomy, enabled: false });
+          this.$emit("update:custom", {
+            customTaxonomy: this.customEligibilitySlug,
+            customValue: null
+          });
+          this.$emit("clear");
+        });
+      }
     }
   },
   created() {
     this.serviceEligibilityTaxonomies = this.serviceEligibilityTypes.taxonomies.slice();
+    this.access =
+      this.checkedEligibilities.length || this.customEligibilityValue
+        ? "some"
+        : "all";
   }
 };
 </script>

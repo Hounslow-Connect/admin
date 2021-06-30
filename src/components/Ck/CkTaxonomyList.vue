@@ -1,5 +1,5 @@
 <template>
-  <gov-list v-if="filteredTaxonomies.length" :bullet="bullet">
+  <gov-list :bullet="bullet">
     <li v-for="taxonomy in filteredTaxonomies" :key="taxonomy.id">
       {{ taxonomy.name }}
       <span v-if="edit.length > 0 && auth.isGlobalAdmin">
@@ -36,9 +36,6 @@
       </ck-taxonomy-list>
     </li>
   </gov-list>
-  <div v-else>
-    <slot name="empty"></slot>
-  </div>
 </template>
 
 <script>
