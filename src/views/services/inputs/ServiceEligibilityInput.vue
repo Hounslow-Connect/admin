@@ -7,6 +7,11 @@
       @input="onUpdateAccess"
       :id="`${customEligibilitySlug}_access`"
       label="Access to the service"
+      :hint="
+        access == 'some'
+          ? 'Changing access to all will remove current selections and custom values'
+          : ''
+      "
       :options="accessOptions"
       :error="null"
     />
@@ -19,6 +24,9 @@
       :filteredTaxonomyIds="true"
       @update="onUpdateTaxonomies"
     />
+
+    <gov-section-break size="l" />
+
     <ck-text-input
       v-if="access === 'some'"
       :value="customEligibilityValue"
