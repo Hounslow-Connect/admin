@@ -10,7 +10,13 @@
         <ck-taxonomy-list
           :taxonomies="rootTaxonomy.children"
           :filteredTaxonomyIds="service.eligibility_types.taxonomies"
-        />
+        >
+          <template slot="empty">
+            <gov-body
+              >No specific {{ rootTaxonomy.name }} criteria specified</gov-body
+            >
+          </template>
+        </ck-taxonomy-list>
         <gov-body
           v-if="
             service.eligibility_types.hasOwnProperty('custom') &&

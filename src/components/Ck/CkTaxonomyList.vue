@@ -1,10 +1,6 @@
 <template>
-  <gov-list :bullet="bullet">
-    <li
-      v-for="taxonomy in taxonomies"
-      v-if="showListItem(taxonomy)"
-      :key="taxonomy.id"
-    >
+  <gov-list v-if="filteredTaxonomies.length" :bullet="bullet">
+    <li v-for="taxonomy in filteredTaxonomies" :key="taxonomy.id">
       {{ taxonomy.name }}
       <span v-if="edit.length > 0 && auth.isGlobalAdmin">
         <gov-link
@@ -36,9 +32,13 @@
         :checkbox="false"
         @moveUp="$emit('move-up', $event)"
         @moveDown="$emit('move-down', $event)"
-      />
+      >
+      </ck-taxonomy-list>
     </li>
   </gov-list>
+  <div v-else>
+    <slot name="empty"></slot>
+  </div>
 </template>
 
 <script>
@@ -72,11 +72,13 @@ export default {
     }
   },
 
-  methods: {
-    showListItem(taxonomy) {
+  computed: {
+    filteredTaxonomies() {
       return Array.isArray(this.filteredTaxonomyIds)
-        ? this.filteredTaxonomyIds.includes(taxonomy.id)
-        : this.filteredTaxonomyIds;
+        ? this.taxonomies.filter(taxonomy => {
+            return this.filteredTaxonomyIds.includes(taxonomy.id);
+          })
+        : [];
     }
   }
 };
