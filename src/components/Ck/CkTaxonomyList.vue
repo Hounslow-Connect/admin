@@ -1,10 +1,6 @@
 <template>
   <gov-list :bullet="bullet">
-    <li
-      v-for="taxonomy in taxonomies"
-      v-if="showListItem(taxonomy)"
-      :key="taxonomy.id"
-    >
+    <li v-for="taxonomy in filteredTaxonomies" :key="taxonomy.id">
       {{ taxonomy.name }}
       <span v-if="edit.length > 0 && auth.isGlobalAdmin">
         <gov-link
@@ -72,11 +68,13 @@ export default {
     }
   },
 
-  methods: {
-    showListItem(taxonomy) {
+  computed: {
+    filteredTaxonomies() {
       return Array.isArray(this.filteredTaxonomyIds)
-        ? this.filteredTaxonomyIds.includes(taxonomy.id)
-        : this.filteredTaxonomyIds;
+        ? this.taxonomies.filter(taxonomy => {
+            return this.filteredTaxonomyIds.includes(taxonomy.id);
+          })
+        : [];
     }
   }
 };

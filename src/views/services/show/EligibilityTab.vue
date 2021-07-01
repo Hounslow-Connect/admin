@@ -7,20 +7,19 @@
     >
       <gov-grid-column width="two-thirds">
         <gov-heading size="m">{{ rootTaxonomy.name }}</gov-heading>
-        <ck-taxonomy-list
-          :taxonomies="rootTaxonomy.children"
-          :filteredTaxonomyIds="service.eligibility_types.taxonomies"
-        />
-        <gov-body
-          v-if="
-            service.eligibility_types.hasOwnProperty('custom') &&
-              null !==
-                service.eligibility_types.custom[slugify(rootTaxonomy.name)]
-          "
-          >Custom Value:
-          {{
-            service.eligibility_types.custom[slugify(rootTaxonomy.name)]
-          }}</gov-body
+        <div v-if="serviceHasEligibilityCriteria(rootTaxonomy)">
+          <ck-taxonomy-list
+            :taxonomies="rootTaxonomy.children"
+            :filteredTaxonomyIds="service.eligibility_types.taxonomies"
+          />
+
+          <gov-body v-if="serviceEligibilityCustomValue(rootTaxonomy.name)"
+            >Custom Value:
+            {{ serviceEligibilityCustomValue(rootTaxonomy.name) }}</gov-body
+          >
+        </div>
+        <gov-body v-else
+          >No specific {{ rootTaxonomy.name }} criteria specified</gov-body
         >
       </gov-grid-column>
     </gov-grid-row>
@@ -60,6 +59,22 @@ export default {
       );
       this.eligibilityTypes = eligibilityTypes.data;
       this.loading = false;
+    },
+    serviceEligibilityCustomValue(name) {
+      const nameSlug = this.slugify(name);
+      return this.service.eligibility_types.hasOwnProperty("custom") &&
+        null !== this.service.eligibility_types.custom[nameSlug]
+        ? this.service.eligibility_types.custom[nameSlug]
+        : "";
+    },
+    serviceHasEligibilityCriteria(taxonomy) {
+      return (
+        taxonomy.children.some(childTaxonomy => {
+          return this.service.eligibility_types.taxonomies.includes(
+            childTaxonomy.id
+          );
+        }) || this.serviceEligibilityCustomValue(taxonomy.name) !== ""
+      );
     },
     slugify(name) {
       return name.toLowerCase().replaceAll(" ", "_");
