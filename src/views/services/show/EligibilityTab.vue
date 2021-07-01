@@ -11,6 +11,7 @@
           <ck-taxonomy-list
             :taxonomies="rootTaxonomy.children"
             :filteredTaxonomyIds="service.eligibility_types.taxonomies"
+            :bullet="true"
           />
 
           <gov-body v-if="serviceEligibilityCustomValue(rootTaxonomy.name)"
