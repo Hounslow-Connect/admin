@@ -7,11 +7,7 @@
       @input="onUpdateAccess"
       :id="`${customEligibilitySlug}_access`"
       label="Access to the service"
-      :hint="
-        access == 'some'
-          ? 'Changing access to all will remove current selections and custom values'
-          : ''
-      "
+      hint="Changing access to all will remove current selections and custom values"
       :options="accessOptions"
       :error="null"
     />

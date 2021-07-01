@@ -5,17 +5,14 @@
         <gov-heading size="l">Taxonomy: Service Eligibilities</gov-heading>
 
         <gov-body>
-          Taxonomies are the 'tags' that we assign to services, in order for
-          them to appear within search results and categories. They are pulled
-          from the
-          <gov-link href="https://about.auntbertha.com/openeligibility"
-            >Aunt Bertha Open Eligibility Standard</gov-link
-          >.
+          This page shows the list of service eligibility options a user can
+          select from when populating information about who is eligible to
+          access their service.
         </gov-body>
 
         <gov-body>
-          From this page, you can edit the taxonomies available to be applied to
-          a service, as well as add new ones.
+          From this page, you can edit, delete, and add to the options that
+          appear on the list.
         </gov-body>
       </gov-grid-column>
 

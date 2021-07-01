@@ -74,7 +74,7 @@ export default {
         ? this.taxonomies.filter(taxonomy => {
             return this.filteredTaxonomyIds.includes(taxonomy.id);
           })
-        : [];
+        : this.taxonomies;
     }
   }
 };
