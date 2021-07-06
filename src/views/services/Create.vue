@@ -35,142 +35,157 @@
                 >
               </li>
             </gov-list>
+
+            <div v-if="updateRequestCreated">
+              <gov-heading size="m" tag="h3"
+                >Create service request</gov-heading
+              >
+              <gov-body>{{ updateRequestMessage }}</gov-body>
+              <gov-back-link :to="{ name: 'services-index' }"
+                >Back to services</gov-back-link
+              >
+            </div>
           </template>
 
-          <gov-heading size="m">Add service</gov-heading>
+          <template v-if="!updateRequestCreated">
+            <gov-heading size="m">Add service</gov-heading>
 
-          <gov-error-summary v-if="form.$errors.any()" title="Check for errors">
-            <gov-list>
-              <li
-                v-for="(error, field) in form.$errors.all()"
-                :key="field"
-                v-text="error[0]"
-              />
-            </gov-list>
-          </gov-error-summary>
-
-          <gov-tabs @tab-changed="onTabChange" :tabs="allowedTabs" no-router>
-            <details-tab
-              v-show="isTabActive('details')"
-              @clear="
-                form.$errors.clear($event);
-                errors = {};
-              "
-              :errors="form.$errors"
-              :is-new="true"
-              :name.sync="form.name"
-              :slug.sync="form.slug"
-              :type.sync="form.type"
-              :organisation_id.sync="form.organisation_id"
-              :url.sync="form.url"
-              @update:logo_file_id="form.logo_file_id = $event"
-              :status.sync="form.status"
-              :gallery_items.sync="form.gallery_items"
+            <gov-error-summary
+              v-if="form.$errors.any()"
+              title="Check for errors"
             >
-              <gov-button @click="onNext" start>Next</gov-button>
-            </details-tab>
+              <gov-list>
+                <li
+                  v-for="(error, field) in form.$errors.all()"
+                  :key="field"
+                  v-text="error[0]"
+                />
+              </gov-list>
+            </gov-error-summary>
 
-            <additional-info-tab
-              v-if="isTabActive('additional-info')"
-              @clear="
-                form.$errors.clear($event);
-                errors = {};
-              "
-              :errors="form.$errors"
-              :type="form.type"
-              :wait_time.sync="form.wait_time"
-              :is_free.sync="form.is_free"
-              :fees_text.sync="form.fees_text"
-              :fees_url.sync="form.fees_url"
-              :testimonial.sync="form.testimonial"
-              :video_embed.sync="form.video_embed"
-              :contact_name.sync="form.contact_name"
-              :contact_phone.sync="form.contact_phone"
-              :contact_email.sync="form.contact_email"
-            >
-              <gov-button @click="onNext" start>Next</gov-button>
-            </additional-info-tab>
-
-            <useful-info-tab
-              v-if="isTabActive('useful-info')"
-              @clear="
-                form.$errors.clear($event);
-                errors = {};
-              "
-              :errors="form.$errors"
-              :type="form.type"
-              :useful_infos.sync="form.useful_infos"
-            >
-              <gov-button @click="onNext" start>Next</gov-button>
-            </useful-info-tab>
-
-            <eligibility-tab
-              v-if="isTabActive('eligibility')"
-              @clear="
-                form.$errors.clear($event);
-                errors = {};
-              "
-              :errors="form.$errors"
-              :type="form.type"
-              :serviceEligibilityTypes.sync="form.eligibility_types"
-            >
-              <gov-button @click="onNext" start>Next</gov-button>
-            </eligibility-tab>
-
-            <taxonomies-tab
-              v-if="isTabActive('taxonomies')"
-              @clear="
-                form.$errors.clear($event);
-                errors = {};
-              "
-              :errors="form.$errors"
-              :is-global-admin="auth.isGlobalAdmin"
-              :type="form.type"
-              :category_taxonomies.sync="form.category_taxonomies"
-            >
-              <gov-button @click="onNext" start>Next</gov-button>
-            </taxonomies-tab>
-
-            <description-tab
-              v-if="isTabActive('description')"
-              @clear="
-                form.$errors.clear($event);
-                errors = {};
-              "
-              :errors="form.$errors"
-              :type="form.type"
-              :intro.sync="form.intro"
-              :offerings.sync="form.offerings"
-              :description.sync="form.description"
-            >
-              <gov-button @click="onNext" start>Next</gov-button>
-            </description-tab>
-
-            <referral-tab
-              v-if="isTabActive('referral')"
-              @clear="
-                form.$errors.clear($event);
-                errors = {};
-              "
-              :errors="form.$errors"
-              :is-global-admin="auth.isGlobalAdmin"
-              :is-super-admin="auth.isSuperAdmin"
-              :type="form.type"
-              :show_referral_disclaimer.sync="form.show_referral_disclaimer"
-              :referral_method.sync="form.referral_method"
-              :referral_button_text.sync="form.referral_button_text"
-              :referral_email.sync="form.referral_email"
-              :referral_url.sync="form.referral_url"
-            >
-              <gov-button v-if="form.$submitting" disabled type="submit"
-                >Creating...</gov-button
+            <gov-tabs @tab-changed="onTabChange" :tabs="allowedTabs" no-router>
+              <details-tab
+                v-show="isTabActive('details')"
+                @clear="
+                  form.$errors.clear($event);
+                  errors = {};
+                "
+                :errors="form.$errors"
+                :is-new="true"
+                :name.sync="form.name"
+                :slug.sync="form.slug"
+                :type.sync="form.type"
+                :organisation_id.sync="form.organisation_id"
+                :url.sync="form.url"
+                @update:logo_file_id="form.logo_file_id = $event"
+                :status.sync="form.status"
+                :gallery_items.sync="form.gallery_items"
               >
-              <gov-button v-else @click="onSubmit" type="submit"
-                >Create</gov-button
+                <gov-button @click="onNext" start>Next</gov-button>
+              </details-tab>
+
+              <additional-info-tab
+                v-if="isTabActive('additional-info')"
+                @clear="
+                  form.$errors.clear($event);
+                  errors = {};
+                "
+                :errors="form.$errors"
+                :type="form.type"
+                :wait_time.sync="form.wait_time"
+                :is_free.sync="form.is_free"
+                :fees_text.sync="form.fees_text"
+                :fees_url.sync="form.fees_url"
+                :testimonial.sync="form.testimonial"
+                :video_embed.sync="form.video_embed"
+                :contact_name.sync="form.contact_name"
+                :contact_phone.sync="form.contact_phone"
+                :contact_email.sync="form.contact_email"
               >
-              <ck-submit-error v-if="form.$errors.any()" />
-            </referral-tab>
-          </gov-tabs>
+                <gov-button @click="onNext" start>Next</gov-button>
+              </additional-info-tab>
+
+              <useful-info-tab
+                v-if="isTabActive('useful-info')"
+                @clear="
+                  form.$errors.clear($event);
+                  errors = {};
+                "
+                :errors="form.$errors"
+                :type="form.type"
+                :useful_infos.sync="form.useful_infos"
+              >
+                <gov-button @click="onNext" start>Next</gov-button>
+              </useful-info-tab>
+
+              <eligibility-tab
+                v-if="isTabActive('eligibility')"
+                @clear="
+                  form.$errors.clear($event);
+                  errors = {};
+                "
+                :errors="form.$errors"
+                :type="form.type"
+                :serviceEligibilityTypes.sync="form.eligibility_types"
+              >
+                <gov-button @click="onNext" start>Next</gov-button>
+              </eligibility-tab>
+
+              <taxonomies-tab
+                v-if="isTabActive('taxonomies')"
+                @clear="
+                  form.$errors.clear($event);
+                  errors = {};
+                "
+                :errors="form.$errors"
+                :is-global-admin="auth.isGlobalAdmin"
+                :type="form.type"
+                :category_taxonomies.sync="form.category_taxonomies"
+              >
+                <gov-button @click="onNext" start>Next</gov-button>
+              </taxonomies-tab>
+
+              <description-tab
+                v-if="isTabActive('description')"
+                @clear="
+                  form.$errors.clear($event);
+                  errors = {};
+                "
+                :errors="form.$errors"
+                :type="form.type"
+                :intro.sync="form.intro"
+                :offerings.sync="form.offerings"
+                :description.sync="form.description"
+              >
+                <gov-button @click="onNext" start>Next</gov-button>
+              </description-tab>
+
+              <referral-tab
+                v-if="isTabActive('referral')"
+                @clear="
+                  form.$errors.clear($event);
+                  errors = {};
+                "
+                :errors="form.$errors"
+                :is-global-admin="auth.isGlobalAdmin"
+                :is-super-admin="auth.isSuperAdmin"
+                :type="form.type"
+                :show_referral_disclaimer.sync="form.show_referral_disclaimer"
+                :referral_method.sync="form.referral_method"
+                :referral_button_text.sync="form.referral_button_text"
+                :referral_email.sync="form.referral_email"
+                :referral_url.sync="form.referral_url"
+              >
+                <gov-button v-if="form.$submitting" disabled type="submit"
+                  >Creating...</gov-button
+                >
+                <gov-button v-else @click="onSubmit" type="submit"
+                  >Create</gov-button
+                >
+                <ck-submit-error v-if="form.$errors.any()" />
+              </referral-tab>
+            </gov-tabs>
+          </template>
         </gov-grid-column>
       </gov-grid-row>
     </gov-main-wrapper>
@@ -259,7 +274,9 @@ export default {
         { id: "taxonomies", heading: "Taxonomies", active: false },
         { id: "description", heading: "Description", active: false },
         { id: "referral", heading: "Referral", active: false }
-      ]
+      ],
+      updateRequestCreated: false,
+      updateRequestMessage: null
     };
   },
   computed: {
@@ -294,10 +311,15 @@ export default {
       // Refetch the user as new permissions added for the new service.
       await this.auth.fetchUser();
 
-      this.$router.push({
-        name: "services-post-create",
-        params: { service: serviceId }
-      });
+      if (this.auth.isGlobalAdmin && serviceId) {
+        this.$router.push({
+          name: "services-post-create",
+          params: { service: serviceId }
+        });
+      } else if (!this.form.$errors.any()) {
+        this.updateRequestCreated = true;
+        this.updateRequestMessage = data.message;
+      }
     },
     onTabChange({ index }) {
       this.tabs.forEach(tab => (tab.active = false));
