@@ -111,7 +111,10 @@
             <div
               v-for="rootTaxonomy in eligibilityTypes"
               :key="rootTaxonomy.id"
-              v-if="eligibilityChanged(rootTaxonomy)"
+              v-if="
+                eligibilityTaxonomyChanged(rootTaxonomy) ||
+                  eligibilityCustomChanged(rootTaxonomy)
+              "
             >
               <span class="govuk-!-font-weight-bold">{{
                 rootTaxonomy.name
@@ -119,21 +122,12 @@
               <ck-taxonomy-tree
                 v-if="Array.isArray(service.eligibility_types.taxonomies)"
                 :taxonomies="rootTaxonomy.children"
-                :checked="original.eligibility_types.taxonomies"
+                :checked="original ? original.eligibility_types.taxonomies : []"
                 :error="false"
                 :filteredTaxonomyIds="updatedServiceEligibilities"
                 :disabled="true"
               />
-              <gov-body
-                v-if="
-                  original.eligibility_types.hasOwnProperty('custom') &&
-                    original.eligibility_types.custom[
-                      slugify(rootTaxonomy.name)
-                    ] !==
-                      service.eligibility_types.custom[
-                        slugify(rootTaxonomy.name)
-                      ]
-                "
+              <gov-body v-if="eligibilityCustomChanged(rootTaxonomy)"
                 >Custom Value:
                 {{
                   original.eligibility_types.custom[slugify(rootTaxonomy.name)]
@@ -145,7 +139,10 @@
             <div
               v-for="rootTaxonomy in eligibilityTypes"
               :key="rootTaxonomy.id"
-              v-if="eligibilityChanged(rootTaxonomy)"
+              v-if="
+                eligibilityTaxonomyChanged(rootTaxonomy) ||
+                  eligibilityCustomChanged(rootTaxonomy)
+              "
             >
               <span class="govuk-!-font-weight-bold">{{
                 rootTaxonomy.name
@@ -158,16 +155,7 @@
                 :filteredTaxonomyIds="updatedServiceEligibilities"
                 :disabled="true"
               />
-              <gov-body
-                v-if="
-                  service.eligibility_types.hasOwnProperty('custom') &&
-                    original.eligibility_types.custom[
-                      slugify(rootTaxonomy.name)
-                    ] !==
-                      service.eligibility_types.custom[
-                        slugify(rootTaxonomy.name)
-                      ]
-                "
+              <gov-body v-if="eligibilityCustomChanged(rootTaxonomy)"
                 >Custom Value:
                 {{
                   service.eligibility_types.custom[slugify(rootTaxonomy.name)]
@@ -544,20 +532,22 @@ export default {
 
   computed: {
     updatedServiceEligibilities() {
-      const originalTaxonomies = this.original.eligibility_types.taxonomies.reduce(
-        (taxonomyIds, taxonomyId) => {
-          const taxonomy = this.flattenedEligibilityTypes.find(
-            taxonomy => taxonomy.id === taxonomyId
-          );
-          return taxonomyIds.concat(
-            this.getTaxonomyAndAncestorsIds(
-              taxonomy,
-              this.flattenedEligibilityTypes
-            )
-          );
-        },
-        []
-      );
+      const originalTaxonomies = this.original
+        ? this.original.eligibility_types.taxonomies.reduce(
+            (taxonomyIds, taxonomyId) => {
+              const taxonomy = this.flattenedEligibilityTypes.find(
+                taxonomy => taxonomy.id === taxonomyId
+              );
+              return taxonomyIds.concat(
+                this.getTaxonomyAndAncestorsIds(
+                  taxonomy,
+                  this.flattenedEligibilityTypes
+                )
+              );
+            },
+            []
+          )
+        : [];
       const updatedTaxonomies = this.service.eligibility_types.taxonomies.reduce(
         (taxonomyIds, taxonomyId) => {
           const taxonomy = this.flattenedEligibilityTypes.find(
@@ -682,17 +672,23 @@ export default {
       return name.toLowerCase().replaceAll(" ", "_");
     },
 
-    eligibilityChanged(eligibilityRoot) {
+    eligibilityTaxonomyChanged(eligibilityRoot) {
       return (
         this.service.hasOwnProperty("eligibility_types") &&
-        (this.updatedServiceEligibilities.includes(eligibilityRoot.id) ||
-          (this.service.eligibility_types.hasOwnProperty("custom") &&
-            this.original.eligibility_types.custom[
-              this.slugify(eligibilityRoot.name)
-            ] !==
-              this.service.eligibility_types.custom[
-                this.slugify(eligibilityRoot.name)
-              ]))
+        this.updatedServiceEligibilities.includes(eligibilityRoot.id)
+      );
+    },
+    eligibilityCustomChanged(eligibilityRoot) {
+      const rootSlug = this.slugify(eligibilityRoot.name);
+
+      const customEligibility = this.original
+        ? this.original.eligibility_types.custom[rootSlug]
+        : "";
+
+      return (
+        this.service.eligibility_types.hasOwnProperty("custom") &&
+        typeof this.service.eligibility_types.custom[rootSlug] == "string" &&
+        this.service.eligibility_types.custom[rootSlug] !== customEligibility
       );
     }
   },
