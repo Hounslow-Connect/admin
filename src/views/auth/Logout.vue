@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Logout" />
+    <vue-headful title="Hounslow Connect - Logout" />
 
     <gov-main-wrapper>
       <gov-grid-row>

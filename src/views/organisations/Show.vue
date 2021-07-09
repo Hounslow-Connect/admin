@@ -7,7 +7,7 @@
       <ck-loader v-if="loading" />
       <gov-grid-row v-else>
         <vue-headful
-          :title="`One Hounslow Connect - Organisation: ${organisation.name}`"
+          :title="`Hounslow Connect - Organisation: ${organisation.name}`"
         />
 
         <gov-grid-column width="two-thirds">

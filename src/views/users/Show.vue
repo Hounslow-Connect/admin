@@ -6,7 +6,7 @@
       <gov-grid-row v-else>
         <vue-headful
           :title="
-            `One Hounslow Connect - User: ${user.first_name} ${user.last_name}`
+            `Hounslow Connect - User: ${user.first_name} ${user.last_name}`
           "
         />
 

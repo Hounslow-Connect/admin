@@ -13,8 +13,8 @@
     </gov-heading>
 
     <gov-body>
-      Before you register an account on One Hounslow Connect, we need to check
-      if your organisation is already registered in our database.
+      Before you register an account on Hounslow Connect, we need to check if
+      your organisation is already registered in our database.
     </gov-body>
     <gov-body
       >Type the name of your organisation below to check if it is already

@@ -4,7 +4,7 @@
     <template v-else>
       <vue-headful
         :title="
-          `One Hounslow Connect - Edit User: ${user.first_name} ${user.last_name}`
+          `Hounslow Connect - Edit User: ${user.first_name} ${user.last_name}`
         "
       />
 
@@ -17,7 +17,7 @@
             <gov-heading size="xl">Users</gov-heading>
             <gov-heading size="m">Edit user</gov-heading>
             <gov-body
-              >Edit users who can acces the back-end of the One Hounslow Connect
+              >Edit users who can acces the back-end of the Hounslow Connect
               service (deciding their permissions in what they have access
               to)</gov-body
             >

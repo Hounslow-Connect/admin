@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Add Taxonomy Category" />
+    <vue-headful title="Hounslow Connect - Add Taxonomy Category" />
 
     <gov-back-link :to="{ name: 'admin-index-taxonomies' }"
       >Back to taxonomy categories</gov-back-link

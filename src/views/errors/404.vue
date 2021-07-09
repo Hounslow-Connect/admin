@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Page Not Found" />
+    <vue-headful title="Hounslow Connect - Page Not Found" />
 
     <gov-main-wrapper>
       <gov-grid-row>

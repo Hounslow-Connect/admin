@@ -273,7 +273,7 @@ export default {
     videoEmbedHelpHref() {
       const to = "onehounslowconnect@hounslow.gov.uk";
       const subject = `Make a video for my ${this.type}`;
-      const body = `My ${this.type} is: xxx\n\nI am interested in making a video for my ${this.type} page on One Hounslow Connect.`;
+      const body = `My ${this.type} is: xxx\n\nI am interested in making a video for my ${this.type} page on Hounslow Connect.`;
 
       return `mailto:${to}?subject=${encodeURIComponent(
         subject

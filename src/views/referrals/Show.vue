@@ -6,9 +6,7 @@
     <gov-main-wrapper>
       <ck-loader v-if="loadingReferral" />
       <template v-else>
-        <vue-headful
-          :title="`One Hounslow Connect - Referral: ${referral.name}`"
-        />
+        <vue-headful :title="`Hounslow Connect - Referral: ${referral.name}`" />
 
         <gov-grid-row>
           <gov-grid-column width="two-thirds">

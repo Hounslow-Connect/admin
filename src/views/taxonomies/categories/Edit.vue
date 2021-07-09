@@ -3,9 +3,7 @@
     <ck-loader v-if="loading" />
     <template v-else>
       <vue-headful
-        :title="
-          `One Hounslow Connect - Edit Taxonomy Category: ${taxonomy.name}`
-        "
+        :title="`Hounslow Connect - Edit Taxonomy Category: ${taxonomy.name}`"
       />
 
       <gov-back-link :to="{ name: 'admin-index-taxonomies' }"

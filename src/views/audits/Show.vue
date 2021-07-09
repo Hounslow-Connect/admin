@@ -6,10 +6,7 @@
       <gov-grid-row v-else>
         <vue-headful
           :title="
-            `One Hounslow Connect - Audit: ${audit.description.substr(
-              0,
-              10
-            )}...`
+            `Hounslow Connect - Audit: ${audit.description.substr(0, 10)}...`
           "
         />
 

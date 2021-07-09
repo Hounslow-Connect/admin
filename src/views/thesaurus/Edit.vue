@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Edit Thesaurus" />
+    <vue-headful title="Hounslow Connect - Edit Thesaurus" />
 
     <gov-back-link :to="{ name: 'admin-index-search-engine' }"
       >Back to thesaurus</gov-back-link

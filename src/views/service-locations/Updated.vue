@@ -4,7 +4,7 @@
     <template v-else>
       <vue-headful
         :title="
-          `One Hounslow Connect - Service Location Updated: ${serviceLocation.name}`
+          `Hounslow Connect - Service Location Updated: ${serviceLocation.name}`
         "
       />
 

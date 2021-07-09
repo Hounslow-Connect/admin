@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - View Referral" />
+    <vue-headful title="Hounslow Connect - View Referral" />
 
     <gov-back-link :to="{ name: 'referrals-index' }"
       >Back to referrals</gov-back-link

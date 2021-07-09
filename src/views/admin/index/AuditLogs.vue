@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vue-headful title="One Hounslow Connect - Admin: Audits" />
+    <vue-headful title="Hounslow Connect - Admin: Audits" />
 
     <gov-heading size="l">Audit logs</gov-heading>
 

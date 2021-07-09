@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Add Location" />
+    <vue-headful title="Hounslow Connect - Add Location" />
 
     <gov-back-link :to="{ name: 'locations-index' }"
       >Back to locations</gov-back-link

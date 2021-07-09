@@ -6,9 +6,7 @@
     <gov-main-wrapper>
       <ck-loader v-if="loading" />
       <gov-grid-row v-else>
-        <vue-headful
-          :title="`One Hounslow Connect - Service: ${service.name}`"
-        />
+        <vue-headful :title="`Hounslow Connect - Service: ${service.name}`" />
 
         <gov-grid-column width="full">
           <gov-grid-row>

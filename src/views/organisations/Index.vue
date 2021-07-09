@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - List Organisations" />
+    <vue-headful title="Hounslow Connect - List Organisations" />
 
     <gov-back-link :to="{ name: 'dashboard' }">Back to dashboard</gov-back-link>
     <gov-main-wrapper>

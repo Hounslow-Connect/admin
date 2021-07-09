@@ -5,7 +5,7 @@
     </gov-heading>
 
     <gov-body>
-      Thank you for registering on One Hounslow Connect.
+      Thank you for registering on Hounslow Connect.
     </gov-body>
 
     <gov-body>

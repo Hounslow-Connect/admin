@@ -4,7 +4,7 @@
 
     <template v-else>
       <vue-headful
-        :title="`One Hounslow Connect - Refresh Service: ${service.name}`"
+        :title="`Hounslow Connect - Refresh Service: ${service.name}`"
       />
 
       <gov-back-link

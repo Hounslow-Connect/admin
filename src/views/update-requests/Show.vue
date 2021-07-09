@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - View Update Request" />
+    <vue-headful title="Hounslow Connect - View Update Request" />
 
     <gov-back-link :to="{ name: 'update-requests-index' }"
       >Back to update requests</gov-back-link

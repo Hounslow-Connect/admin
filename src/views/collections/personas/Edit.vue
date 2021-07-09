@@ -4,7 +4,7 @@
     <template v-else>
       <vue-headful
         :title="
-          `One Hounslow Connect - Edit Collection Persona: ${collection.name}`
+          `Hounslow Connect - Edit Collection Persona: ${collection.name}`
         "
       />
 

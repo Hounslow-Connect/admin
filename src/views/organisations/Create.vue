@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Add Organisation" />
+    <vue-headful title="Hounslow Connect - Add Organisation" />
 
     <gov-back-link :to="{ name: 'organisations-index' }"
       >Back to organisations</gov-back-link

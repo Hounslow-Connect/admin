@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vue-headful title="One Hounslow Connect - Admin: Search Engine" />
+    <vue-headful title="Hounslow Connect - Admin: Search Engine" />
 
     <gov-tabs :tabs="tabs">
       <router-view />

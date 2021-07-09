@@ -18,7 +18,7 @@
           "
           id="type"
           label="What is it?"
-          hint="This option changes how your page is described on One Hounslow Connect"
+          hint="This option changes how your page is described on Hounslow Connect"
           :options="typeOptions"
           :error="errors.get('type')"
         />

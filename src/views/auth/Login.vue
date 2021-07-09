@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Login" />
+    <vue-headful title="Hounslow Connect - Login" />
 
     <gov-back-link :to="{ name: 'dashboard' }">Back to dashboard</gov-back-link>
     <gov-main-wrapper>
@@ -10,7 +10,7 @@
 
           <template v-if="!validateRequest">
             <gov-body size="l">
-              Click below to login to the One Hounslow Connect admin portal:
+              Click below to login to the Hounslow Connect admin portal:
             </gov-body>
 
             <gov-button :href="loginUrl">Login</gov-button>

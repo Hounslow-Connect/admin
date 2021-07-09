@@ -1,6 +1,6 @@
 <template>
   <gov-width-container>
-    <vue-headful title="One Hounslow Connect - Add Service Eligibility" />
+    <vue-headful title="Hounslow Connect - Add Service Eligibility" />
 
     <gov-back-link
       :to="{ name: 'admin-index-taxonomies-service-eligibilities' }"

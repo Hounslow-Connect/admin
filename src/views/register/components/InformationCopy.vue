@@ -4,7 +4,7 @@
       Important information
     </gov-heading>
     <gov-body>
-      Once your organisation is listed on One Hounslow Connect, it is really
+      Once your organisation is listed on Hounslow Connect, it is really
       important that you keep your organisation and service information
       up-to-date. For example:
     </gov-body>
