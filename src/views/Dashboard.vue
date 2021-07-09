@@ -16,6 +16,8 @@
             <gov-link href="mailto:onehounslowconnect@hounslow.gov.uk">
               onehounslowconnect@hounslow.gov.uk
             </gov-link>
+            or view our
+            <gov-link :to="{ name: 'help-index' }">help videos</gov-link>
           </gov-body>
         </gov-grid-column>
       </gov-grid-row>

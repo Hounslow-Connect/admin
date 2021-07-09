@@ -77,6 +77,10 @@ export default {
           text: "Update requests",
           to: { name: "update-requests-index" },
           hide: !Auth.isGlobalAdmin
+        },
+        {
+          text: "Help",
+          to: { name: "help-index" }
         }
       ];
     },
