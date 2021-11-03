@@ -97,7 +97,7 @@ bucket_resource = template.add_resource(
 
 bucket_301_resource = template.add_resource(
     Bucket(
-        'Bucket',
+        'Bucket301',
         BucketName=bucket_301_name_variable,
         AccessControl=PublicRead,
         WebsiteConfiguration=WebsiteConfiguration(
@@ -161,7 +161,7 @@ distribution_resource = template.add_resource(
 
 distribution_301_resource = template.add_resource(
     cloudfront.Distribution(
-        'Distribution',
+        'Distribution301',
         DistributionConfig=cloudfront.DistributionConfig(
             Aliases=[
                 Ref(cname_301_parameter)
@@ -179,7 +179,7 @@ distribution_301_resource = template.add_resource(
                 cloudfront.Origin(
                     DomainName=GetAtt(bucket_301_resource, 'DomainName'),
                     Id=Join('-', ['S3', Ref(bucket_301_resource)]),
-                    CustomOriginConfig=cloudfront.CustomOriginConfig(
+                    CustomOriginConfig=cloudfront.CustomOrigin(
                         OriginProtocolPolicy='http-only'
                     )
                 )
