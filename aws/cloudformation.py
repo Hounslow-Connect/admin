@@ -98,7 +98,7 @@ bucket_resource = template.add_resource(
 bucket_301_resource = template.add_resource(
     Bucket(
         'Bucket301',
-        BucketName=bucket_301_name_variable,
+        BucketName=Ref(cname_301_parameter),
         AccessControl=PublicRead,
         WebsiteConfiguration=WebsiteConfiguration(
             RedirectAllRequestsTo=RedirectAllRequestsTo(
@@ -177,7 +177,7 @@ distribution_301_resource = template.add_resource(
             IPV6Enabled=True,
             Origins=[
                 cloudfront.Origin(
-                    DomainName=GetAtt(bucket_301_resource, 'DomainName'),
+                    DomainName=Join('.', [Ref(cname_301_parameter), 's3-website', Ref('AWS::Region'),'amazonaws.com']),
                     Id=Join('-', ['S3', Ref(bucket_301_resource)]),
                     CustomOriginConfig=cloudfront.CustomOrigin(
                         OriginProtocolPolicy='http-only'
