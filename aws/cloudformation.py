@@ -185,7 +185,7 @@ distribution_301_resource = template.add_resource(
                 )
             ],
             ViewerCertificate=cloudfront.ViewerCertificate(
-                AcmCertificateArn=Ref(certificate_arn_parameter),
+                AcmCertificateArn=Ref(certificate_301_arn_parameter),
                 SslSupportMethod='sni-only',
                 MinimumProtocolVersion='TLSv1.2_2019'
             )
