@@ -80,8 +80,6 @@ certificate_301_arn_parameter = template.add_parameter(
 # ==================================================
 bucket_name_variable = Join(
     '-', ['backend', Ref(environment_parameter), Ref(uuid_parameter)])
-bucket_301_name_variable = Join(
-'-', ['backend', '301', Ref(environment_parameter), Ref(uuid_parameter)])
 ci_user_name_variable = Join('-', ['ci-backend', Ref(environment_parameter)])
 
 # ==================================================

@@ -32,7 +32,7 @@
           <gov-hint slot="hint" for="name">
             The name of your {{ service.type }} must be unique. The URL of your
             page will be: <br />
-            onehounslowconnect.london/services/{{ service.slug }}
+            hounslowconnect.com/services/{{ service.slug }}
           </gov-hint>
         </ck-text-input>
 
