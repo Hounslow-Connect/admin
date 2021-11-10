@@ -12,7 +12,7 @@
           <gov-heading size="xl">Add a new Service Page</gov-heading>
 
           <gov-body>
-            You’re about to add a service/club/activity/group to One Hounslow
+            You’re about to add a service/club/activity/group to Hounslow
             Connect. Here are some things you should know:
           </gov-body>
 

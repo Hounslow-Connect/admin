@@ -17,7 +17,7 @@
 
             <gov-body size="s">
               For security reasons, you will be automatically logged out after
-              20 minutes.
+              {{ sessionMinutes }} minutes.
             </gov-body>
           </template>
         </gov-grid-column>

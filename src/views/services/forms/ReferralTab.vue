@@ -4,7 +4,7 @@
     <gov-grid-row>
       <gov-grid-column width="one-half">
         <gov-body>
-          Your {{ type }} can be set up to accept referrals through One Hounslow
+          Your {{ type }} can be set up to accept referrals through Hounslow
           Connect. These referrals directly connect your {{ type }} to
           residents.
         </gov-body>
@@ -174,7 +174,7 @@ export default {
       return this.referral_method !== null && this.referral_method !== "none";
     },
     contactAdminTeamEmail() {
-      const to = "onehounslowconnect@hounslow.gov.uk";
+      const to = this.contactEmail;
       const subject = `Turn referrals on for my ${this.type}`;
       const body = `${this.$options.filters.ucfirst(
         this.type

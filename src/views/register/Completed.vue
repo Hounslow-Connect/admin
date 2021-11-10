@@ -23,8 +23,8 @@
     <gov-body>
       If you haven't heard back from us within 5 working days please email the
       team at
-      <gov-link href="mailto:onehounslowconnect@hounslow.gov.uk"
-        >onehounslowconnect@hounslow.gov.uk</gov-link
+      <gov-link :href="`mailto:${contactEmail}`"
+        >{{ contactEmail }}</gov-link
       >
     </gov-body>
 

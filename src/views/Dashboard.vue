@@ -12,8 +12,8 @@
           <gov-body size="l">
             From here, you can add and edit your pages on Hounslow Connect, as
             well as manage referrals into your service. For any support, contact
-            <gov-link href="mailto:onehounslowconnect@hounslow.gov.uk">
-              onehounslowconnect@hounslow.gov.uk
+            <gov-link :href="`mailto:${contactEmail}`">
+              {{ contactEmail }}
             </gov-link>
             or view our
             <gov-link :to="{ name: 'help-index' }">help videos</gov-link>
