@@ -23,9 +23,7 @@
     <gov-body>
       If you haven't heard back from us within 5 working days please email the
       team at
-      <gov-link :href="`mailto:${contactEmail}`"
-        >{{ contactEmail }}</gov-link
-      >
+      <gov-link :href="`mailto:${contactEmail}`">{{ contactEmail }}</gov-link>
     </gov-body>
 
     <gov-button :to="{ name: 'dashboard' }" start>Home</gov-button>
