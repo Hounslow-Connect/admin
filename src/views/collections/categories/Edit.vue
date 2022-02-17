@@ -27,13 +27,14 @@
 
             <collection-form
               :errors="form.$errors"
+              :id="collection.id"
               :name.sync="form.name"
               :intro.sync="form.intro"
-              :icon.sync="form.icon"
               :order.sync="form.order"
               :enabled.sync="form.enabled"
               :sideboxes.sync="form.sideboxes"
               :category_taxonomies.sync="form.category_taxonomies"
+              @update:image_file_id="form.image_file_id = $event"
               @clear="form.$errors.clear($event)"
             />
 
@@ -85,7 +86,7 @@ export default {
       this.form = new Form({
         name: this.collection.name,
         intro: this.collection.intro,
-        icon: this.collection.icon,
+        image_file_id: null,
         order: this.collection.order,
         enabled: this.collection.enabled,
         sideboxes: this.collection.sideboxes,

@@ -23,11 +23,11 @@
             :errors="form.$errors"
             :name.sync="form.name"
             :intro.sync="form.intro"
-            :icon.sync="form.icon"
             :order.sync="form.order"
             :enabled.sync="form.enabled"
             :sideboxes.sync="form.sideboxes"
             :category_taxonomies.sync="form.category_taxonomies"
+            @update:image_file_id="form.image_file_id = $event"
             @clear="form.$errors.clear($event)"
           />
 
@@ -54,7 +54,7 @@ export default {
       form: new Form({
         name: "",
         intro: "",
-        icon: "",
+        image_file_id: null,
         order: 1,
         enabled: true,
         sideboxes: [],
