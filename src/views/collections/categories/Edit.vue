@@ -86,7 +86,7 @@ export default {
       this.form = new Form({
         name: this.collection.name,
         intro: this.collection.intro,
-        image_file_id: null,
+        image_file_id: this.collection.image_file_id,
         order: this.collection.order,
         enabled: this.collection.enabled,
         sideboxes: this.collection.sideboxes,
