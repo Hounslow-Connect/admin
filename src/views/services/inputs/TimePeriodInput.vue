@@ -1,6 +1,6 @@
 <template>
   <gov-form-group :invalid="error !== null">
-    <gov-label>Opening time</gov-label>
+    <gov-label>{{ opens_at_label }} / {{ closes_at_label }}</gov-label>
     <gov-select
       :value="opens_at"
       @input="$emit('update:opens_at', $event)"
@@ -22,38 +22,44 @@
 </template>
 
 <script>
-export default {
-  name: "TimePeriodInput",
-  props: {
-    id: {
-      required: true,
-      type: String
+  export default {
+    name: 'TimePeriodInput',
+    props: {
+      id: {
+        required: true,
+        type: String,
+      },
+      opens_at: {
+        required: true,
+      },
+      closes_at: {
+        required: true,
+      },
+      opens_at_label: {
+        required: true,
+      },
+      closes_at_label: {
+        required: true,
+      },
+      error: {
+        required: true,
+      },
     },
-    opens_at: {
-      required: true
+    data() {
+      return {
+        hours: [{ text: '--:--', value: null, disabled: true }],
+      };
     },
-    closes_at: {
-      required: true
+    created() {
+      for (let hour = 0; hour < 24; hour += 0.5) {
+        const text =
+          ('0' + (Math.floor(hour) % 24)).slice(-2) +
+          ':' +
+          ((hour % 1) * 60 + '0').slice(0, 2);
+        const value = `${text}:00`;
+        this.hours.push({ text, value });
+      }
+      this.hours.push({ text: '24:00', value: '23:59:59' });
     },
-    error: {
-      required: true
-    }
-  },
-  data() {
-    return {
-      hours: [{ text: "--:--", value: null, disabled: true }]
-    };
-  },
-  created() {
-    for (let hour = 0; hour < 24; hour += 0.5) {
-      const text =
-        ("0" + (Math.floor(hour) % 24)).slice(-2) +
-        ":" +
-        ((hour % 1) * 60 + "0").slice(0, 2);
-      const value = `${text}:00`;
-      this.hours.push({ text, value });
-    }
-    this.hours.push({ text: "24:00", value: "23:59:59" });
-  }
-};
+  };
 </script>
