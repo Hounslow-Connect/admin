@@ -269,7 +269,7 @@
   import CkImageInput from '@/components/Ck/CkImageInput';
 
   export default {
-    name: 'OrganisationEventFormView',
+    name: 'OrganisationEventForm',
 
     components: {
       CkDateInput,

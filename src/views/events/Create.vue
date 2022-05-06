@@ -55,7 +55,7 @@
   import EventForm from '@/views/events/forms/EventForm';
 
   export default {
-    name: 'OrganisationEventCreateView',
+    name: 'OrganisationEventCreate',
 
     components: { EventForm },
     data() {

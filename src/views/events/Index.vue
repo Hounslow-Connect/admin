@@ -84,7 +84,7 @@
   import CkTableFilters from '@/components/Ck/CkTableFilters.vue';
 
   export default {
-    name: 'OrganisationEventIndexView',
+    name: 'OrganisationEventIndex',
 
     components: { CkResourceListingTable, CkTableFilters },
     data() {
