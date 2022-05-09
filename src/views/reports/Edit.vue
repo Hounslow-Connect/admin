@@ -73,7 +73,7 @@
 <script>
 import http from "@/http";
 import Form from "@/classes/Form";
-import CkDateInput from "@/views/services/inputs/DateInput";
+import CkDateInput from "@/components/Ck/CkDateInput";
 
 export default {
   name: "EditReportsPage",

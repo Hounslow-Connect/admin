@@ -38,7 +38,7 @@
 import moment from "moment";
 
 export default {
-  name: "StartsAtInput",
+  name: "CkDateInput",
   props: {
     value: {
       required: true
@@ -87,8 +87,15 @@ export default {
       }
 
       this.$emit("input", date);
+    },
+    parseDate(dateString) {
+      const date = moment(dateString, moment.HTML5_FMT.DATE);
+      this.year = date.year().toString();
+      this.month = (date.month() + 1).toString();
+      this.day = date.date().toString();
     }
   },
+
   watch: {
     value(newValue, oldValue) {
       if (newValue === oldValue) {
@@ -96,11 +103,14 @@ export default {
       }
 
       if (newValue !== "") {
-        const date = moment(newValue, moment.HTML5_FMT.DATE);
-        this.year = date.year().toString();
-        this.month = (date.month() + 1).toString();
-        this.day = date.date().toString();
+        this.parseDate(newValue);
       }
+    }
+  },
+
+  created() {
+    if (this.value) {
+      this.parseDate(this.value);
     }
   }
 };

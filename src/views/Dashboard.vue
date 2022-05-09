@@ -110,15 +110,15 @@
 </template>
 
 <script>
-  import Auth from '@/classes/Auth';
+import Auth from "@/classes/Auth";
 
-  export default {
-    name: 'Dashboard',
+export default {
+  name: "Dashboard",
 
-    data() {
-      return {
-        auth: Auth,
-      };
-    },
-  };
+  data() {
+    return {
+      auth: Auth
+    };
+  }
+};
 </script>

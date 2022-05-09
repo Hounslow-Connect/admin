@@ -51,49 +51,49 @@
 </template>
 
 <script>
-  import http from '@/http';
-  import EventDetails from '@/views/events/show/EventDetails';
+import http from "@/http";
+import EventDetails from "@/views/events/show/EventDetails";
 
-  export default {
-    name: 'OrganisationEventShow',
+export default {
+  name: "OrganisationEventShow",
 
-    components: {
-      EventDetails,
+  components: {
+    EventDetails
+  },
+
+  data() {
+    return {
+      loading: false,
+      event: null,
+      updated: false
+    };
+  },
+
+  methods: {
+    async fetchEvent() {
+      this.loading = true;
+
+      // Fetch the event.
+      const eventResponse = await http.get(
+        `/organisation-events/${this.$route.params.event}`,
+        { params: { include: "organisation,location" } }
+      );
+      this.event = eventResponse.data.data;
+
+      this.loading = false;
     },
-
-    data() {
-      return {
-        loading: false,
-        event: null,
-        updated: false,
-      };
+    onEdit() {
+      alert("Edit");
     },
-
-    methods: {
-      async fetchEvent() {
-        this.loading = true;
-
-        // Fetch the event.
-        const eventResponse = await http.get(
-          `/organisation-events/${this.$route.params.event}`,
-          { params: { include: 'organisation' } }
-        );
-        this.event = eventResponse.data.data;
-
-        this.loading = false;
-      },
-      onEdit() {
-        alert('Edit');
-      },
-      onDelete() {
-        this.$router.push({ name: 'events-index' });
-      },
-    },
-    created() {
-      this.updated = this.$route.query.updated || false;
-      this.fetchEvent();
-    },
-  };
+    onDelete() {
+      this.$router.push({ name: "events-index" });
+    }
+  },
+  created() {
+    this.updated = this.$route.query.updated || false;
+    this.fetchEvent();
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

@@ -41,34 +41,34 @@
               {
                 heading: 'Title',
                 sort: 'title',
-                render: (event) => event.title,
+                render: event => event.title
               },
               {
                 heading: 'Start',
                 sort: 'start_date',
-                render: (event) => event.start_date,
+                render: event => event.start_date
               },
               {
                 heading: 'End',
                 sort: 'end_date',
-                render: (event) => event.end_date,
+                render: event => event.end_date
               },
               {
                 heading: 'Summary',
                 sort: 'intro',
-                render: (event) => event.intro,
+                render: event => event.intro
               },
               {
                 heading: 'Free',
                 sort: 'is_free',
-                render: (event) => event.is_free,
-              },
+                render: event => event.is_free
+              }
             ]"
             :view-route="
-              (event) => {
+              event => {
                 return {
                   name: 'events-show',
-                  params: { event: event.id },
+                  params: { event: event.id }
                 };
               }
             "
@@ -80,41 +80,41 @@
 </template>
 
 <script>
-  import CkResourceListingTable from '@/components/Ck/CkResourceListingTable.vue';
-  import CkTableFilters from '@/components/Ck/CkTableFilters.vue';
+import CkResourceListingTable from "@/components/Ck/CkResourceListingTable.vue";
+import CkTableFilters from "@/components/Ck/CkTableFilters.vue";
 
-  export default {
-    name: 'OrganisationEventIndex',
+export default {
+  name: "OrganisationEventIndex",
 
-    components: { CkResourceListingTable, CkTableFilters },
-    data() {
-      return {
-        filters: {
-          organisation: '',
-        },
-      };
+  components: { CkResourceListingTable, CkTableFilters },
+  data() {
+    return {
+      filters: {
+        organisation: ""
+      }
+    };
+  },
+  computed: {
+    params() {
+      let params = {};
+
+      if (this.filters.organisation !== "") {
+        params["filter[organisation]"] = this.filters.organisation;
+      }
+
+      return params;
+    }
+  },
+  methods: {
+    onSearch() {
+      this.$refs.eventsTable.currentPage = 1;
+      this.$refs.eventsTable.fetchResources();
     },
-    computed: {
-      params() {
-        let params = {};
-
-        if (this.filters.organisation !== '') {
-          params['filter[organisation]'] = this.filters.organisation;
-        }
-
-        return params;
-      },
-    },
-    methods: {
-      onSearch() {
-        this.$refs.eventsTable.currentPage = 1;
-        this.$refs.eventsTable.fetchResources();
-      },
-      onAddEvent() {
-        this.$router.push({ name: 'events-create' });
-      },
-    },
-  };
+    onAddEvent() {
+      this.$router.push({ name: "events-create" });
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>
