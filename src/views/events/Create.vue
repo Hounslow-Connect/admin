@@ -33,6 +33,7 @@
             :booking_url.sync="form.booking_url"
             :booking_cta.sync="form.booking_cta"
             :is_virtual.sync="form.is_virtual"
+            :homepage.sync="form.homepage"
             :organisations="organisations"
             @update:organisation_id="form.organisation_id = $event"
             @update:location_id="form.location_id = $event"
@@ -51,71 +52,72 @@
 </template>
 
 <script>
-import Form from "@/classes/Form";
-import EventForm from "@/views/events/forms/EventForm";
+  import Form from '@/classes/Form';
+  import EventForm from '@/views/events/forms/EventForm';
 
-export default {
-  name: "OrganisationEventCreate",
+  export default {
+    name: 'OrganisationEventCreate',
 
-  components: { EventForm },
+    components: { EventForm },
 
-  data() {
-    return {
-      form: new Form({
-        title: "",
-        start_date: "",
-        end_date: "",
-        start_time: "",
-        end_time: "",
-        intro: "",
-        description: "",
-        is_free: true,
-        fees_text: "",
-        fees_url: "",
-        organiser_name: "",
-        organiser_phone: "",
-        organiser_email: "",
-        organiser_url: "",
-        booking_title: "",
-        booking_summary: "",
-        booking_url: "",
-        booking_cta: "",
-        is_virtual: true,
-        location_id: null,
-        organisation_id: null,
-        image_file_id: null
-      }),
+    data() {
+      return {
+        form: new Form({
+          title: '',
+          start_date: '',
+          end_date: '',
+          start_time: '',
+          end_time: '',
+          intro: '',
+          description: '',
+          is_free: true,
+          fees_text: '',
+          fees_url: '',
+          organiser_name: '',
+          organiser_phone: '',
+          organiser_email: '',
+          organiser_url: '',
+          booking_title: '',
+          booking_summary: '',
+          booking_url: '',
+          booking_cta: '',
+          is_virtual: true,
+          location_id: null,
+          organisation_id: null,
+          image_file_id: null,
+          homepage: false,
+        }),
 
-      organisations: [{ text: "Please select", value: null, disabled: true }],
-      loading: false
-    };
-  },
-  methods: {
-    async fetchOrganisations() {
-      this.loading = true;
-      let fetchedOrganisations = await this.fetchAll("/organisations", {
-        "filter[has_permission]": true
-      });
-      fetchedOrganisations = fetchedOrganisations.map(organisation => {
-        return { text: organisation.name, value: organisation.id };
-      });
-      this.organisations = [...this.organisations, ...fetchedOrganisations];
-      this.loading = false;
+        organisations: [{ text: 'Please select', value: null, disabled: true }],
+        loading: false,
+      };
     },
-    async onSubmit() {
-      const { data } = await this.form.post("/organisation-events");
+    methods: {
+      async fetchOrganisations() {
+        this.loading = true;
+        let fetchedOrganisations = await this.fetchAll('/organisations', {
+          'filter[has_permission]': true,
+        });
+        fetchedOrganisations = fetchedOrganisations.map((organisation) => {
+          return { text: organisation.name, value: organisation.id };
+        });
+        this.organisations = [...this.organisations, ...fetchedOrganisations];
+        this.loading = false;
+      },
+      async onSubmit() {
+        const { data } = await this.form.post('/organisation-events');
 
-      this.$router.push({
-        name: "events-show",
-        params: { event: data.id }
-      });
-    }
-  },
+        this.$router.push({
+          name: 'events-show',
+          params: { event: data.id },
+        });
+      },
+    },
 
-  created() {
-    this.fetchOrganisations();
-  }
-};
+    created() {
+      this.fetchOrganisations();
+    },
+  };
 </script>
 
 <style lang="scss" scoped></style>
