@@ -28,30 +28,30 @@
 </template>
 
 <script>
-  export default {
-    name: 'EventHomepageInput',
+export default {
+  name: "EventHomepageInput",
 
-    props: {
-      value: {
-        required: true,
-      },
-      error: {
-        required: true,
-      },
-      id: {
-        type: String,
-        required: true,
-      },
-      label: {
-        required: true,
-        type: String,
-      },
-      hint: {
-        required: false,
-        type: String,
-      },
+  props: {
+    value: {
+      required: true
     },
-  };
+    error: {
+      required: true
+    },
+    id: {
+      type: String,
+      required: true
+    },
+    label: {
+      required: true,
+      type: String
+    },
+    hint: {
+      required: false,
+      type: String
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

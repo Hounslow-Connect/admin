@@ -32,48 +32,48 @@
       <gov-table-row>
         <gov-table-header scope="row" top>Fees text</gov-table-header>
         <gov-table-cell>{{
-          event.is_free ? '-' : event.fees_text
+          event.is_free ? "-" : event.fees_text
         }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Fees web address</gov-table-header>
         <gov-table-cell>{{
-          event.is_free ? '-' : event.fees_url
+          event.is_free ? "-" : event.fees_url
         }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Organiser name</gov-table-header>
-        <gov-table-cell>{{ event.organiser_name || '-' }}</gov-table-cell>
+        <gov-table-cell>{{ event.organiser_name || "-" }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Organiser phone</gov-table-header>
-        <gov-table-cell>{{ event.organiser_phone || '-' }}</gov-table-cell>
+        <gov-table-cell>{{ event.organiser_phone || "-" }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Organiser email</gov-table-header>
-        <gov-table-cell>{{ event.organiser_email || '-' }}</gov-table-cell>
+        <gov-table-cell>{{ event.organiser_email || "-" }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top
           >Organiser web address</gov-table-header
         >
-        <gov-table-cell>{{ event.organiser_url || '-' }}</gov-table-cell>
+        <gov-table-cell>{{ event.organiser_url || "-" }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Booking title</gov-table-header>
-        <gov-table-cell>{{ event.booking_title || '-' }}</gov-table-cell>
+        <gov-table-cell>{{ event.booking_title || "-" }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Booking summary</gov-table-header>
-        <gov-table-cell>{{ event.booking_summary || '-' }}</gov-table-cell>
+        <gov-table-cell>{{ event.booking_summary || "-" }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Booking url</gov-table-header>
-        <gov-table-cell>{{ event.booking_url || '-' }}</gov-table-cell>
+        <gov-table-cell>{{ event.booking_url || "-" }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Booking button text</gov-table-header>
-        <gov-table-cell>{{ event.booking_cta || '-' }}</gov-table-cell>
+        <gov-table-cell>{{ event.booking_cta || "-" }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Show on home page</gov-table-header>
@@ -118,7 +118,7 @@
                   >Address line 2</gov-table-header
                 >
                 <gov-table-cell>{{
-                  event.location.address_line_2 || '-'
+                  event.location.address_line_2 || "-"
                 }}</gov-table-cell>
               </gov-table-row>
               <gov-table-row>
@@ -126,7 +126,7 @@
                   >Address line 3</gov-table-header
                 >
                 <gov-table-cell>{{
-                  event.location.address_line_3 || '-'
+                  event.location.address_line_3 || "-"
                 }}</gov-table-cell>
               </gov-table-row>
               <gov-table-row>
@@ -153,11 +153,11 @@
                   <gov-list>
                     <li>
                       Wheelchair access:
-                      {{ event.location.has_wheelchair_access ? 'Yes' : 'No' }}
+                      {{ event.location.has_wheelchair_access ? "Yes" : "No" }}
                     </li>
                     <li>
                       Induction loop system:
-                      {{ event.location.has_induction_loop ? 'Yes' : 'No' }}
+                      {{ event.location.has_induction_loop ? "Yes" : "No" }}
                     </li>
                   </gov-list>
                 </gov-table-cell>
@@ -203,28 +203,28 @@
 </template>
 
 <script>
-  export default {
-    name: 'OrganisationEventDetails',
+export default {
+  name: "OrganisationEventDetails",
 
-    props: {
-      event: {
-        required: true,
-        type: Object,
-      },
-    },
+  props: {
+    event: {
+      required: true,
+      type: Object
+    }
+  },
 
-    computed: {
-      isFree() {
-        return this.event.is_free ? 'Yes' : 'No';
-      },
-      isVirtual() {
-        return this.event.is_virtual ? 'Yes' : 'No';
-      },
-      onHomepage() {
-        return this.event.homepage ? 'Yes' : 'No';
-      },
+  computed: {
+    isFree() {
+      return this.event.is_free ? "Yes" : "No";
     },
-  };
+    isVirtual() {
+      return this.event.is_virtual ? "Yes" : "No";
+    },
+    onHomepage() {
+      return this.event.homepage ? "Yes" : "No";
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>
