@@ -278,165 +278,165 @@
 </template>
 
 <script>
-  import CkDateInput from '@/components/Ck/CkDateInput';
-  import CkImageInput from '@/components/Ck/CkImageInput';
-  import CkLocationInput from '@/components/Ck/CkLocationInput';
-  import CkTimePeriodInput from '@/components/Ck/CkTimePeriodInput';
-  import EventHomepageInput from '@/views/events/inputs/EventHomepageInput';
+import CkDateInput from "@/components/Ck/CkDateInput";
+import CkImageInput from "@/components/Ck/CkImageInput";
+import CkLocationInput from "@/components/Ck/CkLocationInput";
+import CkTimePeriodInput from "@/components/Ck/CkTimePeriodInput";
+import EventHomepageInput from "@/views/events/inputs/EventHomepageInput";
 
-  export default {
-    name: 'OrganisationEventDetailsTab',
+export default {
+  name: "OrganisationEventDetailsTab",
 
-    components: {
-      CkDateInput,
-      CkImageInput,
-      CkLocationInput,
-      CkTimePeriodInput,
-      EventHomepageInput,
+  components: {
+    CkDateInput,
+    CkImageInput,
+    CkLocationInput,
+    CkTimePeriodInput,
+    EventHomepageInput
+  },
+
+  props: {
+    errors: {
+      required: true,
+      type: Object
     },
-
-    props: {
-      errors: {
-        required: true,
-        type: Object,
-      },
-      title: {
-        required: true,
-        type: String,
-      },
-      intro: {
-        required: true,
-        type: String,
-      },
-      description: {
-        required: true,
-        type: String,
-      },
-      start_date: {
-        required: true,
-        type: String,
-      },
-      end_date: {
-        required: true,
-        type: String,
-      },
-      start_time: {
-        required: true,
-        type: String,
-      },
-      end_time: {
-        required: true,
-        type: String,
-      },
-      is_free: {
-        required: true,
-        type: Boolean,
-      },
-      fees_text: {
-        required: false,
-        type: String,
-      },
-      fees_url: {
-        required: false,
-        type: String,
-      },
-      organiser_name: {
-        required: false,
-        type: String,
-      },
-      organiser_phone: {
-        required: false,
-        type: String,
-      },
-      organiser_email: {
-        required: false,
-        type: String,
-      },
-      organiser_url: {
-        required: false,
-        type: String,
-      },
-      booking_title: {
-        required: false,
-        type: String,
-      },
-      booking_summary: {
-        required: false,
-        type: String,
-      },
-      booking_url: {
-        required: false,
-        type: String,
-      },
-      booking_cta: {
-        required: false,
-        type: String,
-      },
-      is_virtual: {
-        required: true,
-        type: Boolean,
-      },
-      organisation_id: {
-        required: false,
-        default: null,
-      },
-      location_id: {
-        required: false,
-      },
-      image_file_id: {
-        required: false,
-      },
-      homepage: {
-        required: true,
-        type: Boolean,
-      },
-      id: {
-        required: false,
-        type: String,
-      },
-      organisations: {
-        type: Array,
-        required: false,
-      },
+    title: {
+      required: true,
+      type: String
     },
-
-    computed: {
-      isFreeOptions() {
-        return [
-          { value: true, label: `Yes - The event is free` },
-          {
-            value: false,
-            label: `No - there are elements of this event that must be paid for`,
-          },
-        ];
-      },
-      isVirtualOptions() {
-        return [
-          { value: true, label: `Yes - The event is virtual` },
-          {
-            value: false,
-            label: `No - the event occurs at a location`,
-          },
-        ];
-      },
+    intro: {
+      required: true,
+      type: String
     },
-
-    methods: {
-      onInput(field, value) {
-        this.$emit(`update:${field}`, value);
-        this.$emit('clear', field);
-      },
+    description: {
+      required: true,
+      type: String
     },
+    start_date: {
+      required: true,
+      type: String
+    },
+    end_date: {
+      required: true,
+      type: String
+    },
+    start_time: {
+      required: true,
+      type: String
+    },
+    end_time: {
+      required: true,
+      type: String
+    },
+    is_free: {
+      required: true,
+      type: Boolean
+    },
+    fees_text: {
+      required: false,
+      type: String
+    },
+    fees_url: {
+      required: false,
+      type: String
+    },
+    organiser_name: {
+      required: false,
+      type: String
+    },
+    organiser_phone: {
+      required: false,
+      type: String
+    },
+    organiser_email: {
+      required: false,
+      type: String
+    },
+    organiser_url: {
+      required: false,
+      type: String
+    },
+    booking_title: {
+      required: false,
+      type: String
+    },
+    booking_summary: {
+      required: false,
+      type: String
+    },
+    booking_url: {
+      required: false,
+      type: String
+    },
+    booking_cta: {
+      required: false,
+      type: String
+    },
+    is_virtual: {
+      required: true,
+      type: Boolean
+    },
+    organisation_id: {
+      required: false,
+      default: null
+    },
+    location_id: {
+      required: false
+    },
+    image_file_id: {
+      required: false
+    },
+    homepage: {
+      required: true,
+      type: Boolean
+    },
+    id: {
+      required: false,
+      type: String
+    },
+    organisations: {
+      type: Array,
+      required: false
+    }
+  },
 
-    watch: {
-      is_free(newIsFree) {
-        if (newIsFree) {
-          this.$emit('update:fees_text', '');
-          this.$emit('update:fees_url', '');
+  computed: {
+    isFreeOptions() {
+      return [
+        { value: true, label: `Yes - The event is free` },
+        {
+          value: false,
+          label: `No - there are elements of this event that must be paid for`
         }
-      },
+      ];
     },
-  };
+    isVirtualOptions() {
+      return [
+        { value: true, label: `Yes - The event is virtual` },
+        {
+          value: false,
+          label: `No - the event occurs at a location`
+        }
+      ];
+    }
+  },
+
+  methods: {
+    onInput(field, value) {
+      this.$emit(`update:${field}`, value);
+      this.$emit("clear", field);
+    }
+  },
+
+  watch: {
+    is_free(newIsFree) {
+      if (newIsFree) {
+        this.$emit("update:fees_text", "");
+        this.$emit("update:fees_url", "");
+      }
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

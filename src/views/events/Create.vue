@@ -77,106 +77,106 @@
 </template>
 
 <script>
-  import Form from '@/classes/Form';
-  import DetailsTab from '@/views/events/forms/DetailsTab';
-  import TaxonomiesTab from '@/views/events/forms/TaxonomiesTab';
+import Form from "@/classes/Form";
+import DetailsTab from "@/views/events/forms/DetailsTab";
+import TaxonomiesTab from "@/views/events/forms/TaxonomiesTab";
 
-  export default {
-    name: 'OrganisationEventCreate',
+export default {
+  name: "OrganisationEventCreate",
 
-    components: { DetailsTab, TaxonomiesTab },
+  components: { DetailsTab, TaxonomiesTab },
 
-    data() {
-      return {
-        form: new Form({
-          title: '',
-          start_date: '',
-          end_date: '',
-          start_time: '',
-          end_time: '',
-          intro: '',
-          description: '',
-          is_free: true,
-          fees_text: '',
-          fees_url: '',
-          organiser_name: '',
-          organiser_phone: '',
-          organiser_email: '',
-          organiser_url: '',
-          booking_title: '',
-          booking_summary: '',
-          booking_url: '',
-          booking_cta: '',
-          is_virtual: true,
-          location_id: null,
-          organisation_id: null,
-          image_file_id: null,
-          homepage: false,
-          category_taxonomies: [],
-        }),
+  data() {
+    return {
+      form: new Form({
+        title: "",
+        start_date: "",
+        end_date: "",
+        start_time: "",
+        end_time: "",
+        intro: "",
+        description: "",
+        is_free: true,
+        fees_text: "",
+        fees_url: "",
+        organiser_name: "",
+        organiser_phone: "",
+        organiser_email: "",
+        organiser_url: "",
+        booking_title: "",
+        booking_summary: "",
+        booking_url: "",
+        booking_cta: "",
+        is_virtual: true,
+        location_id: null,
+        organisation_id: null,
+        image_file_id: null,
+        homepage: false,
+        category_taxonomies: []
+      }),
 
-        tabs: [
-          { id: 'details', heading: 'Details', active: true },
-          { id: 'taxonomies', heading: 'Taxonomies', active: false },
-        ],
+      tabs: [
+        { id: "details", heading: "Details", active: true },
+        { id: "taxonomies", heading: "Taxonomies", active: false }
+      ],
 
-        organisations: [{ text: 'Please select', value: null, disabled: true }],
-        loading: false,
-      };
+      organisations: [{ text: "Please select", value: null, disabled: true }],
+      loading: false
+    };
+  },
+
+  computed: {
+    allowedTabs() {
+      if (!this.auth.isGlobalAdmin) {
+        const taxonomiesTabIndex = this.tabs.findIndex(
+          tab => tab.id === "taxonomies"
+        );
+        const tabs = this.tabs.slice();
+        tabs.splice(taxonomiesTabIndex, 1);
+
+        return tabs;
+      }
+
+      return this.tabs;
+    }
+  },
+
+  methods: {
+    async fetchOrganisations() {
+      this.loading = true;
+      let fetchedOrganisations = await this.fetchAll("/organisations", {
+        "filter[has_permission]": true
+      });
+      fetchedOrganisations = fetchedOrganisations.map(organisation => {
+        return { text: organisation.name, value: organisation.id };
+      });
+      this.organisations = [...this.organisations, ...fetchedOrganisations];
+      this.loading = false;
     },
+    async onSubmit() {
+      const { data } = await this.form.post("/organisation-events");
 
-    computed: {
-      allowedTabs() {
-        if (!this.auth.isGlobalAdmin) {
-          const taxonomiesTabIndex = this.tabs.findIndex(
-            (tab) => tab.id === 'taxonomies'
-          );
-          const tabs = this.tabs.slice();
-          tabs.splice(taxonomiesTabIndex, 1);
-
-          return tabs;
-        }
-
-        return this.tabs;
-      },
+      this.$router.push({
+        name: "events-show",
+        params: { event: data.id }
+      });
     },
-
-    methods: {
-      async fetchOrganisations() {
-        this.loading = true;
-        let fetchedOrganisations = await this.fetchAll('/organisations', {
-          'filter[has_permission]': true,
-        });
-        fetchedOrganisations = fetchedOrganisations.map((organisation) => {
-          return { text: organisation.name, value: organisation.id };
-        });
-        this.organisations = [...this.organisations, ...fetchedOrganisations];
-        this.loading = false;
-      },
-      async onSubmit() {
-        const { data } = await this.form.post('/organisation-events');
-
-        this.$router.push({
-          name: 'events-show',
-          params: { event: data.id },
-        });
-      },
-      onTabChange({ index }) {
-        this.tabs.forEach((tab) => (tab.active = false));
-        const tabId = this.allowedTabs[index].id;
-        this.tabs.find((tab) => tab.id === tabId).active = true;
-      },
-      isTabActive(id) {
-        const tab = this.allowedTabs.find((tab) => tab.id === id);
-
-        return tab === undefined ? false : tab.active;
-      },
+    onTabChange({ index }) {
+      this.tabs.forEach(tab => (tab.active = false));
+      const tabId = this.allowedTabs[index].id;
+      this.tabs.find(tab => tab.id === tabId).active = true;
     },
+    isTabActive(id) {
+      const tab = this.allowedTabs.find(tab => tab.id === id);
 
-    created() {
-      this.fetchOrganisations();
-    },
-  };
+      return tab === undefined ? false : tab.active;
+    }
+  },
+
+  created() {
+    this.fetchOrganisations();
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>
