@@ -36,20 +36,9 @@ export default {
       type: Object,
       required: true
     },
-    type: {
+    editCollectionRoute: {
       type: String,
-      required: true,
-      validator: function(value) {
-        return ["category", "persona"].indexOf(value) !== -1;
-      }
-    }
-  },
-
-  computed: {
-    editCollectionRoute() {
-      return this.type === "category"
-        ? "collections-categories-edit"
-        : "collections-personas-edit";
+      required: true
     }
   }
 };

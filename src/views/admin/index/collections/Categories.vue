@@ -38,7 +38,7 @@
             :key="collection.id"
             :collection="collection"
             :collections="collections"
-            type="category"
+            edit-collection-route="collections-categories-edit"
             @move-up="onMoveUp"
             @move-down="onMoveDown"
           />

@@ -2,31 +2,32 @@
   <div>
     <gov-grid-row>
       <gov-grid-column width="two-thirds">
-        <gov-heading size="l">Collection: Personas</gov-heading>
+        <gov-heading size="l">Collection: Events</gov-heading>
 
         <gov-body>
-          On this page, you can select which taxonomies apply for each persona
-          group on the front page. You can also add persona groups using the
+          On this page, you can select which taxonomies apply for each event
+          collection on the front page. You can also add taxonomies using the
           button above.
         </gov-body>
 
         <gov-body>
-          You can move persona groups up and down. This denotes the order in
-          which the categories appear on the home page. The category at the top
-          of the list will appear on the upper-leftmost corner.
+          You can move event collections up and down. This denotes the order in
+          which the event collections appear on the home page. The event
+          collection at the top of the list will appear on the upper-leftmost
+          corner.
         </gov-body>
       </gov-grid-column>
 
       <gov-grid-column v-if="auth.isSuperAdmin" width="one-third">
-        <gov-button :to="{ name: 'collections-personas-create' }" success expand
-          >Add a new persona</gov-button
+        <gov-button :to="{ name: 'collections-events-create' }" success expand
+          >Add a new event collection</gov-button
         >
       </gov-grid-column>
     </gov-grid-row>
 
     <gov-section-break size="l" />
 
-    <!-- Loop through each persona -->
+    <!-- Loop through each category -->
     <gov-grid-row>
       <gov-grid-column width="two-thirds">
         <ck-loader v-if="loading" />
@@ -36,7 +37,7 @@
             :key="collection.id"
             :collection="collection"
             :collections="collections"
-            edit-collection-route="collections-personas-edit"
+            edit-collection-route="collections-events-edit"
             @move-up="onMoveUp"
             @move-down="onMoveDown"
           />
@@ -51,7 +52,7 @@ import http from "@/http";
 import CollectionListItem from "./CollectionListItem";
 
 export default {
-  name: "ListCollectionPersonas",
+  name: "ListCollectionEvents",
 
   components: { CollectionListItem },
 
@@ -64,13 +65,15 @@ export default {
   methods: {
     async fetchCollections() {
       this.loading = true;
-      this.collections = await this.fetchAll("/collections/personas");
+      this.collections = await this.fetchAll(
+        "/collections/organisation-events"
+      );
       this.loading = false;
     },
     async onMoveUp(collection) {
       this.loading = true;
 
-      await http.put(`/collections/personas/${collection.id}`, {
+      await http.put(`/collections/organisation-events/${collection.id}`, {
         ...this.parseCollectionForUpdate(collection),
         order: collection.order - 1
       });
@@ -80,7 +83,7 @@ export default {
     async onMoveDown(collection) {
       this.loading = true;
 
-      await http.put(`/collections/personas/${collection.id}`, {
+      await http.put(`/collections/organisation-events/${collection.id}`, {
         ...this.parseCollectionForUpdate(collection),
         order: collection.order + 1
       });
@@ -91,7 +94,7 @@ export default {
       return {
         name: collection.name,
         intro: collection.intro,
-        subtitle: collection.subtitle,
+        icon: collection.icon,
         order: collection.order,
         enabled: collection.enabled,
         sideboxes: collection.sideboxes,

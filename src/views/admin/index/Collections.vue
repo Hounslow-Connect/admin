@@ -18,6 +18,10 @@ export default {
         {
           heading: "Personas",
           to: { name: "admin-index-collections-personas" }
+        },
+        {
+          heading: "Events",
+          to: { name: "admin-index-collections-events" }
         }
       ]
     };
