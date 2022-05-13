@@ -5,7 +5,7 @@
         :value="organisation_id"
         @input="onInput('organisation_id', $event)"
         id="organisation_id"
-        label="Organisation"
+        label="Organisation*"
         hint="Which organisation hosts this event?"
         :options="organisations"
         :error="errors.get('organisation_id')"
@@ -15,7 +15,7 @@
       :value="title"
       @input="onInput('title', $event)"
       id="title"
-      label="Event title"
+      label="Event title*"
       type="text"
       :error="errors.get('title')"
     />
@@ -25,7 +25,7 @@
       :value="start_date"
       :error="errors.get('start_date')"
       @input="onInput('start_date', $event)"
-      label="Start date"
+      label="Start date*"
     />
 
     <ck-date-input
@@ -33,15 +33,15 @@
       :value="end_date"
       :error="errors.get('end_date')"
       @input="onInput('end_date', $event)"
-      label="End date"
+      label="End date*"
     />
 
     <ck-time-period-input
       id="event_times"
       :opens_at="start_time"
       :closes_at="end_time"
-      opens_at_label="Starting time"
-      closes_at_label="Ending time"
+      opens_at_label="Starting time*"
+      closes_at_label="Ending time*"
       @update:opens_at="onInput('start_time', $event)"
       @update:closes_at="onInput('end_time', $event)"
       :error="errors.get(['start_time', 'end_time'])"
@@ -51,7 +51,7 @@
       :value="intro"
       @input="onInput('intro', $event)"
       id="intro"
-      label="Event summary"
+      label="Event summary*"
       type="text"
       :error="errors.get('intro')"
     />
@@ -60,7 +60,7 @@
       :value="description"
       @input="onInput('description', $event)"
       id="description"
-      label="Event description"
+      label="Event description*"
       :hint="
         `Describe the event with any details that attendees will need to decide on, find and attend your event. Use headers, bullets and formatting for the maximum effect.`
       "
@@ -73,7 +73,7 @@
       :value="is_free"
       @input="onInput('is_free', $event)"
       id="is_free"
-      label="Is the event free?"
+      label="Is the event free?*"
       :options="isFreeOptions"
       :error="errors.get('is_free')"
     >
@@ -152,9 +152,8 @@
           you on.
         </gov-hint>
         <gov-hint for="organiser_phone">
-          Please use the following formatting:
-          <br />
-          020 8XXX XXXX for landline or 07XXX XXXXXX for mobile.
+          Please enter your phone number without any spaces, prefixes or special
+          characters
         </gov-hint>
       </template>
     </ck-text-input>
@@ -235,7 +234,7 @@
       :value="is_virtual"
       @input="onInput('is_virtual', $event)"
       id="is_virtual"
-      label="Is the event virtual?"
+      label="Is the event virtual?*"
       :options="isVirtualOptions"
       :error="errors.get('is_virtual')"
     >
@@ -268,175 +267,176 @@
     />
 
     <event-homepage-input
+      v-if="auth.isGlobalAdmin"
       :value="homepage"
       @input="onInput('homepage', $event)"
       id="homepage"
-      label="Show the Event on the homepage"
+      label="Show the Event on the homepage*"
       :error="errors.get('homepage')"
     />
   </div>
 </template>
 
 <script>
-import CkDateInput from "@/components/Ck/CkDateInput";
-import CkImageInput from "@/components/Ck/CkImageInput";
-import CkLocationInput from "@/components/Ck/CkLocationInput";
-import CkTimePeriodInput from "@/components/Ck/CkTimePeriodInput";
-import EventHomepageInput from "@/views/events/inputs/EventHomepageInput";
+  import CkDateInput from '@/components/Ck/CkDateInput';
+  import CkImageInput from '@/components/Ck/CkImageInput';
+  import CkLocationInput from '@/components/Ck/CkLocationInput';
+  import CkTimePeriodInput from '@/components/Ck/CkTimePeriodInput';
+  import EventHomepageInput from '@/views/events/inputs/EventHomepageInput';
 
-export default {
-  name: "OrganisationEventDetailsTab",
+  export default {
+    name: 'OrganisationEventDetailsTab',
 
-  components: {
-    CkDateInput,
-    CkImageInput,
-    CkLocationInput,
-    CkTimePeriodInput,
-    EventHomepageInput
-  },
+    components: {
+      CkDateInput,
+      CkImageInput,
+      CkLocationInput,
+      CkTimePeriodInput,
+      EventHomepageInput,
+    },
 
-  props: {
-    errors: {
-      required: true,
-      type: Object
+    props: {
+      errors: {
+        required: true,
+        type: Object,
+      },
+      title: {
+        required: true,
+        type: String,
+      },
+      intro: {
+        required: true,
+        type: String,
+      },
+      description: {
+        required: true,
+        type: String,
+      },
+      start_date: {
+        required: true,
+        type: String,
+      },
+      end_date: {
+        required: true,
+        type: String,
+      },
+      start_time: {
+        required: true,
+        type: String,
+      },
+      end_time: {
+        required: true,
+        type: String,
+      },
+      is_free: {
+        required: true,
+        type: Boolean,
+      },
+      fees_text: {
+        required: false,
+        type: String,
+      },
+      fees_url: {
+        required: false,
+        type: String,
+      },
+      organiser_name: {
+        required: false,
+        type: String,
+      },
+      organiser_phone: {
+        required: false,
+        type: String,
+      },
+      organiser_email: {
+        required: false,
+        type: String,
+      },
+      organiser_url: {
+        required: false,
+        type: String,
+      },
+      booking_title: {
+        required: false,
+        type: String,
+      },
+      booking_summary: {
+        required: false,
+        type: String,
+      },
+      booking_url: {
+        required: false,
+        type: String,
+      },
+      booking_cta: {
+        required: false,
+        type: String,
+      },
+      is_virtual: {
+        required: true,
+        type: Boolean,
+      },
+      organisation_id: {
+        required: false,
+        default: null,
+      },
+      location_id: {
+        required: false,
+      },
+      image_file_id: {
+        required: false,
+      },
+      homepage: {
+        required: true,
+        type: Boolean,
+      },
+      id: {
+        required: false,
+        type: String,
+      },
+      organisations: {
+        type: Array,
+        required: false,
+      },
     },
-    title: {
-      required: true,
-      type: String
-    },
-    intro: {
-      required: true,
-      type: String
-    },
-    description: {
-      required: true,
-      type: String
-    },
-    start_date: {
-      required: true,
-      type: String
-    },
-    end_date: {
-      required: true,
-      type: String
-    },
-    start_time: {
-      required: true,
-      type: String
-    },
-    end_time: {
-      required: true,
-      type: String
-    },
-    is_free: {
-      required: true,
-      type: Boolean
-    },
-    fees_text: {
-      required: false,
-      type: String
-    },
-    fees_url: {
-      required: false,
-      type: String
-    },
-    organiser_name: {
-      required: false,
-      type: String
-    },
-    organiser_phone: {
-      required: false,
-      type: String
-    },
-    organiser_email: {
-      required: false,
-      type: String
-    },
-    organiser_url: {
-      required: false,
-      type: String
-    },
-    booking_title: {
-      required: false,
-      type: String
-    },
-    booking_summary: {
-      required: false,
-      type: String
-    },
-    booking_url: {
-      required: false,
-      type: String
-    },
-    booking_cta: {
-      required: false,
-      type: String
-    },
-    is_virtual: {
-      required: true,
-      type: Boolean
-    },
-    organisation_id: {
-      required: false,
-      default: null
-    },
-    location_id: {
-      required: false
-    },
-    image_file_id: {
-      required: false
-    },
-    homepage: {
-      required: true,
-      type: Boolean
-    },
-    id: {
-      required: false,
-      type: String
-    },
-    organisations: {
-      type: Array,
-      required: false
-    }
-  },
 
-  computed: {
-    isFreeOptions() {
-      return [
-        { value: true, label: `Yes - The event is free` },
-        {
-          value: false,
-          label: `No - there are elements of this event that must be paid for`
+    computed: {
+      isFreeOptions() {
+        return [
+          { value: true, label: `Yes - The event is free` },
+          {
+            value: false,
+            label: `No - there are elements of this event that must be paid for`,
+          },
+        ];
+      },
+      isVirtualOptions() {
+        return [
+          { value: true, label: `Yes - The event is virtual` },
+          {
+            value: false,
+            label: `No - the event occurs at a location`,
+          },
+        ];
+      },
+    },
+
+    methods: {
+      onInput(field, value) {
+        this.$emit(`update:${field}`, value);
+        this.$emit('clear', field);
+      },
+    },
+
+    watch: {
+      is_free(newIsFree) {
+        if (newIsFree) {
+          this.$emit('update:fees_text', '');
+          this.$emit('update:fees_url', '');
         }
-      ];
+      },
     },
-    isVirtualOptions() {
-      return [
-        { value: true, label: `Yes - The event is virtual` },
-        {
-          value: false,
-          label: `No - the event occurs at a location`
-        }
-      ];
-    }
-  },
-
-  methods: {
-    onInput(field, value) {
-      this.$emit(`update:${field}`, value);
-      this.$emit("clear", field);
-    }
-  },
-
-  watch: {
-    is_free(newIsFree) {
-      if (newIsFree) {
-        this.$emit("update:fees_text", "");
-        this.$emit("update:fees_url", "");
-      }
-    }
-  }
-};
+  };
 </script>
 
 <style lang="scss" scoped></style>
