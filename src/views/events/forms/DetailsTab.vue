@@ -285,7 +285,7 @@ import CkTimePeriodInput from "@/components/Ck/CkTimePeriodInput";
 import EventHomepageInput from "@/views/events/inputs/EventHomepageInput";
 
 export default {
-  name: "OrganisationEventForm",
+  name: "OrganisationEventDetailsTab",
 
   components: {
     CkDateInput,

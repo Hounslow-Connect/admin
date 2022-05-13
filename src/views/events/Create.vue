@@ -5,41 +5,65 @@
     <gov-back-link :to="{ name: 'events-index' }">Back to events</gov-back-link>
     <gov-main-wrapper>
       <gov-grid-row>
-        <gov-grid-column width="one-half">
+        <gov-grid-column width="full">
           <gov-heading size="xl">Events</gov-heading>
           <gov-heading size="m">Add event</gov-heading>
           <gov-body
             >The events will appear on their own page, and will be featured on
             the home page</gov-body
           >
-          <event-form
-            :errors="form.$errors"
-            :title.sync="form.title"
-            :start_date.sync="form.start_date"
-            :end_date.sync="form.end_date"
-            :start_time.sync="form.start_time"
-            :end_time.sync="form.end_time"
-            :intro.sync="form.intro"
-            :description.sync="form.description"
-            :is_free.sync="form.is_free"
-            :fees_text.sync="form.fees_text"
-            :fees_url.sync="form.fees_url"
-            :organiser_name.sync="form.organiser_name"
-            :organiser_phone.sync="form.organiser_phone"
-            :organiser_email.sync="form.organiser_email"
-            :organiser_url.sync="form.organiser_url"
-            :booking_title.sync="form.booking_title"
-            :booking_summary.sync="form.booking_summary"
-            :booking_url.sync="form.booking_url"
-            :booking_cta.sync="form.booking_cta"
-            :is_virtual.sync="form.is_virtual"
-            :homepage.sync="form.homepage"
-            :organisations="organisations"
-            @update:organisation_id="form.organisation_id = $event"
-            @update:location_id="form.location_id = $event"
-            @update:image_file_id="form.image_file_id = $event"
-            @clear="form.$errors.clear($event)"
-          />
+          <gov-error-summary v-if="form.$errors.any()" title="Check for errors">
+            <gov-list>
+              <li
+                v-for="(error, field) in form.$errors.all()"
+                :key="field"
+                v-text="error[0]"
+              />
+            </gov-list>
+          </gov-error-summary>
+          <gov-tabs @tab-changed="onTabChange" :tabs="allowedTabs" no-router>
+            <details-tab
+              v-show="isTabActive('details')"
+              :errors="form.$errors"
+              :title.sync="form.title"
+              :start_date.sync="form.start_date"
+              :end_date.sync="form.end_date"
+              :start_time.sync="form.start_time"
+              :end_time.sync="form.end_time"
+              :intro.sync="form.intro"
+              :description.sync="form.description"
+              :is_free.sync="form.is_free"
+              :fees_text.sync="form.fees_text"
+              :fees_url.sync="form.fees_url"
+              :organiser_name.sync="form.organiser_name"
+              :organiser_phone.sync="form.organiser_phone"
+              :organiser_email.sync="form.organiser_email"
+              :organiser_url.sync="form.organiser_url"
+              :booking_title.sync="form.booking_title"
+              :booking_summary.sync="form.booking_summary"
+              :booking_url.sync="form.booking_url"
+              :booking_cta.sync="form.booking_cta"
+              :is_virtual.sync="form.is_virtual"
+              :homepage.sync="form.homepage"
+              :organisations="organisations"
+              @update:organisation_id="form.organisation_id = $event"
+              @update:location_id="form.location_id = $event"
+              @update:image_file_id="form.image_file_id = $event"
+              @clear="form.$errors.clear($event)"
+            />
+            <taxonomies-tab
+              v-if="isTabActive('taxonomies')"
+              @clear="
+                form.$errors.clear($event);
+                errors = {};
+              "
+              :errors="form.$errors"
+              :is-global-admin="auth.isGlobalAdmin"
+              :type="form.type"
+              :category_taxonomies.sync="form.category_taxonomies"
+            >
+            </taxonomies-tab>
+          </gov-tabs>
           <gov-button v-if="form.$submitting" disabled type="submit"
             >Creating...</gov-button
           >
@@ -53,12 +77,13 @@
 
 <script>
 import Form from "@/classes/Form";
-import EventForm from "@/views/events/forms/EventForm";
+import DetailsTab from "@/views/events/forms/DetailsTab";
+import TaxonomiesTab from "@/views/events/forms/TaxonomiesTab";
 
 export default {
   name: "OrganisationEventCreate",
 
-  components: { EventForm },
+  components: { DetailsTab, TaxonomiesTab },
 
   data() {
     return {
@@ -85,8 +110,14 @@ export default {
         location_id: null,
         organisation_id: null,
         image_file_id: null,
-        homepage: false
+        homepage: false,
+        category_taxonomies: []
       }),
+
+      tabs: [
+        { id: "details", heading: "Details", active: true },
+        { id: "taxonomies", heading: "Taxonomies", active: false }
+      ],
 
       organisations: [{ text: "Please select", value: null, disabled: true }],
       loading: false
@@ -111,6 +142,16 @@ export default {
         name: "events-show",
         params: { event: data.id }
       });
+    },
+    onTabChange({ index }) {
+      this.tabs.forEach(tab => (tab.active = false));
+      const tabId = this.allowedTabs[index].id;
+      this.tabs.find(tab => tab.id === tabId).active = true;
+    },
+    isTabActive(id) {
+      const tab = this.allowedTabs.find(tab => tab.id === id);
+
+      return tab === undefined ? false : tab.active;
     }
   },
 
