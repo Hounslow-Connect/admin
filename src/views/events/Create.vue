@@ -9,8 +9,9 @@
           <gov-heading size="xl">Events</gov-heading>
           <gov-heading size="m">Add event</gov-heading>
           <gov-body
-            >The events will appear on their own page, and will be featured on
-            the home page</gov-body
+            >The events will appear on their own page will be discoverable and
+            filterable by visitors based on the information you
+            provide</gov-body
           >
           <gov-error-summary v-if="form.$errors.any()" title="Check for errors">
             <gov-list>
@@ -119,10 +120,27 @@ export default {
         { id: "taxonomies", heading: "Taxonomies", active: false }
       ],
 
-      organisations: [{ text: "Please select", value: null, disabled: true }],
+      organisations: [{ text: "Please select", value: null }],
       loading: false
     };
   },
+
+  computed: {
+    allowedTabs() {
+      if (!this.auth.isGlobalAdmin) {
+        const taxonomiesTabIndex = this.tabs.findIndex(
+          tab => tab.id === "taxonomies"
+        );
+        const tabs = this.tabs.slice();
+        tabs.splice(taxonomiesTabIndex, 1);
+
+        return tabs;
+      }
+
+      return this.tabs;
+    }
+  },
+
   methods: {
     async fetchOrganisations() {
       this.loading = true;

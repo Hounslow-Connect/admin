@@ -5,7 +5,7 @@
         :value="organisation_id"
         @input="onInput('organisation_id', $event)"
         id="organisation_id"
-        label="Organisation"
+        label="Organisation*"
         hint="Which organisation hosts this event?"
         :options="organisations"
         :error="errors.get('organisation_id')"
@@ -15,7 +15,7 @@
       :value="title"
       @input="onInput('title', $event)"
       id="title"
-      label="Event title"
+      label="Event title*"
       type="text"
       :error="errors.get('title')"
     />
@@ -25,7 +25,7 @@
       :value="start_date"
       :error="errors.get('start_date')"
       @input="onInput('start_date', $event)"
-      label="Start date"
+      label="Start date*"
     />
 
     <ck-date-input
@@ -33,15 +33,15 @@
       :value="end_date"
       :error="errors.get('end_date')"
       @input="onInput('end_date', $event)"
-      label="End date"
+      label="End date*"
     />
 
     <ck-time-period-input
       id="event_times"
       :opens_at="start_time"
       :closes_at="end_time"
-      opens_at_label="Starting time"
-      closes_at_label="Ending time"
+      opens_at_label="Starting time*"
+      closes_at_label="Ending time*"
       @update:opens_at="onInput('start_time', $event)"
       @update:closes_at="onInput('end_time', $event)"
       :error="errors.get(['start_time', 'end_time'])"
@@ -51,7 +51,7 @@
       :value="intro"
       @input="onInput('intro', $event)"
       id="intro"
-      label="Event summary"
+      label="Event summary*"
       type="text"
       :error="errors.get('intro')"
     />
@@ -60,7 +60,7 @@
       :value="description"
       @input="onInput('description', $event)"
       id="description"
-      label="Event description"
+      label="Event description*"
       :hint="
         `Describe the event with any details that attendees will need to decide on, find and attend your event. Use headers, bullets and formatting for the maximum effect.`
       "
@@ -73,7 +73,7 @@
       :value="is_free"
       @input="onInput('is_free', $event)"
       id="is_free"
-      label="Is the event free?"
+      label="Is the event free?*"
       :options="isFreeOptions"
       :error="errors.get('is_free')"
     >
@@ -152,9 +152,8 @@
           you on.
         </gov-hint>
         <gov-hint for="organiser_phone">
-          Please use the following formatting:
-          <br />
-          020 8XXX XXXX for landline or 07XXX XXXXXX for mobile.
+          Please enter your phone number without any spaces, prefixes or special
+          characters
         </gov-hint>
       </template>
     </ck-text-input>
@@ -235,7 +234,7 @@
       :value="is_virtual"
       @input="onInput('is_virtual', $event)"
       id="is_virtual"
-      label="Is the event virtual?"
+      label="Is the event virtual?*"
       :options="isVirtualOptions"
       :error="errors.get('is_virtual')"
     >
@@ -268,10 +267,11 @@
     />
 
     <event-homepage-input
+      v-if="auth.isGlobalAdmin"
       :value="homepage"
       @input="onInput('homepage', $event)"
       id="homepage"
-      label="Show the Event on the homepage"
+      label="Show the Event on the homepage*"
       :error="errors.get('homepage')"
     />
   </div>

@@ -61,7 +61,7 @@
               {
                 heading: 'Free',
                 sort: 'is_free',
-                render: event => event.is_free
+                render: event => (event.is_free ? 'Yes' : 'No')
               }
             ]"
             :view-route="

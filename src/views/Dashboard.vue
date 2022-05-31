@@ -60,7 +60,7 @@
           <gov-section-break size="m" />
         </gov-grid-column>
 
-        <gov-grid-column width="one-half" v-if="auth.isGlobalAdmin">
+        <gov-grid-column width="one-half" v-if="auth.isOrganisationAdmin">
           <gov-heading size="l">Events</gov-heading>
           <gov-body>Add or edit events on Hounslow Connect.</gov-body>
           <gov-button start :to="{ name: 'events-index' }">

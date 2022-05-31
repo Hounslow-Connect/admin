@@ -12,6 +12,11 @@
           <gov-grid-column width="full">
             <gov-heading size="xl">Events</gov-heading>
             <gov-heading size="m">Edit event</gov-heading>
+            <gov-body
+              >The events will appear on their own page will be discoverable and
+              filterable by visitors based on the information you
+              provide</gov-body
+            >
             <gov-error-summary
               v-if="form.$errors.any()"
               title="Check for errors"
