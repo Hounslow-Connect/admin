@@ -4,6 +4,10 @@
     <gov-table>
       <template slot="body">
         <gov-table-row>
+          <gov-table-header scope="row" top>Organisation</gov-table-header>
+          <gov-table-cell>{{ event.organisation.name }}</gov-table-cell>
+        </gov-table-row>
+        <gov-table-row>
           <gov-table-header scope="row" top>Title</gov-table-header>
           <gov-table-cell>{{ event.title }}</gov-table-cell>
         </gov-table-row>

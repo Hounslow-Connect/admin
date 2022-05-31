@@ -120,7 +120,7 @@ export default {
         { id: "taxonomies", heading: "Taxonomies", active: false }
       ],
 
-      organisations: [{ text: "Please select", value: null, disabled: true }],
+      organisations: [{ text: "Please select", value: null }],
       loading: false
     };
   },
