@@ -8,48 +8,56 @@
     :id="id"
     :name="name"
     :type="type"
+    :max="max"
+    :min="min"
     :aria-describedby="ariaDescribedBy"
   />
 </template>
 
 <script>
-export default {
-  name: "GovInput",
-  props: {
-    value: {
-      type: String,
-      required: true
+  export default {
+    name: 'GovInput',
+    props: {
+      value: {
+        type: String,
+        required: true,
+      },
+      id: {
+        type: String,
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      type: {
+        type: String,
+        required: false,
+        default: 'text',
+      },
+      width: {
+        type: Number,
+        required: false,
+      },
+      min: {
+        type: [String, Number],
+      },
+      max: {
+        type: [String, Number],
+      },
     },
-    id: {
-      type: String,
-      required: true
+    computed: {
+      computedClass() {
+        return this.width ? `govuk-input--width-${this.width}` : null;
+      },
+      ariaDescribedBy() {
+        return `${this.name}-hint`;
+      },
     },
-    name: {
-      type: String,
-      required: true
+    methods: {
+      onEnter() {
+        this.$emit('enter');
+      },
     },
-    type: {
-      type: String,
-      required: false,
-      default: "text"
-    },
-    width: {
-      type: Number,
-      required: false
-    }
-  },
-  computed: {
-    computedClass() {
-      return this.width ? `govuk-input--width-${this.width}` : null;
-    },
-    ariaDescribedBy() {
-      return `${this.name}-hint`;
-    }
-  },
-  methods: {
-    onEnter() {
-      this.$emit("enter");
-    }
-  }
-};
+  };
 </script>

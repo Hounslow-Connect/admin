@@ -12,6 +12,7 @@
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
+    "@duetds/date-picker": "^1.4.0",
     "axios": "^0.18.0",
     "bugsnag-js": "^4.7.3",
     "bugsnag-vue": "^1.0.1",
