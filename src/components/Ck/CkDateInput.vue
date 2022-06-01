@@ -35,83 +35,83 @@
 </template>
 
 <script>
-  import moment from 'moment';
+import moment from "moment";
 
-  export default {
-    name: 'CkDateInput',
-    props: {
-      value: {
-        required: true,
-      },
-      error: {
-        required: true,
-      },
-      id: {
-        type: String,
-        required: true,
-      },
-      label: {
-        type: String,
-        required: true,
-      },
+export default {
+  name: "CkDateInput",
+  props: {
+    value: {
+      required: true
     },
-    data() {
-      return {
-        year: '',
-        month: '',
-        day: '',
-      };
+    error: {
+      required: true
     },
-    methods: {
-      onInput() {
-        let year = parseInt(this.year);
-        let month = parseInt(this.month);
-        let day = parseInt(this.day);
+    id: {
+      type: String,
+      required: true
+    },
+    label: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      year: "",
+      month: "",
+      day: ""
+    };
+  },
+  methods: {
+    onInput() {
+      let year = parseInt(this.year);
+      let month = parseInt(this.month);
+      let day = parseInt(this.day);
 
-        // Only parse the date if the inputs are all valid.
-        for (let value of [year, month, day]) {
-          if (isNaN(value)) {
-            this.$emit('input', '');
-            return;
-          }
-        }
-
-        let date = moment({ year, month: month - 1, day }).format(
-          moment.HTML5_FMT.DATE
-        );
-
-        // Only return the date if it's vaild.
-        if (date === 'Invalid date') {
-          this.$emit('input', '');
+      // Only parse the date if the inputs are all valid.
+      for (let value of [year, month, day]) {
+        if (isNaN(value)) {
+          this.$emit("input", "");
           return;
         }
-
-        this.$emit('input', date);
-      },
-      parseDate(dateString) {
-        const date = moment(dateString, moment.HTML5_FMT.DATE);
-        this.year = date.year().toString();
-        this.month = (date.month() + 1).toString();
-        this.day = date.date().toString();
-      },
-    },
-
-    watch: {
-      value(newValue, oldValue) {
-        if (newValue === oldValue) {
-          return;
-        }
-
-        if (newValue !== '') {
-          this.parseDate(newValue);
-        }
-      },
-    },
-
-    created() {
-      if (this.value) {
-        this.parseDate(this.value);
       }
+
+      let date = moment({ year, month: month - 1, day }).format(
+        moment.HTML5_FMT.DATE
+      );
+
+      // Only return the date if it's vaild.
+      if (date === "Invalid date") {
+        this.$emit("input", "");
+        return;
+      }
+
+      this.$emit("input", date);
     },
-  };
+    parseDate(dateString) {
+      const date = moment(dateString, moment.HTML5_FMT.DATE);
+      this.year = date.year().toString();
+      this.month = (date.month() + 1).toString();
+      this.day = date.date().toString();
+    }
+  },
+
+  watch: {
+    value(newValue, oldValue) {
+      if (newValue === oldValue) {
+        return;
+      }
+
+      if (newValue !== "") {
+        this.parseDate(newValue);
+      }
+    }
+  },
+
+  created() {
+    if (this.value) {
+      this.parseDate(this.value);
+    }
+  }
+};
 </script>
