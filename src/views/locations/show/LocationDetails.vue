@@ -7,11 +7,11 @@
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Address line 2</gov-table-header>
-        <gov-table-cell>{{ location.address_line_2 || "-" }}</gov-table-cell>
+        <gov-table-cell>{{ location.address_line_2 || '-' }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>Address line 3</gov-table-header>
-        <gov-table-cell>{{ location.address_line_3 || "-" }}</gov-table-cell>
+        <gov-table-cell>{{ location.address_line_3 || '-' }}</gov-table-cell>
       </gov-table-row>
       <gov-table-row>
         <gov-table-header scope="row" top>City</gov-table-header>
@@ -35,11 +35,15 @@
           <gov-list>
             <li>
               Wheelchair access:
-              {{ location.has_wheelchair_access ? "Yes" : "No" }}
+              {{ location.has_wheelchair_access ? 'Yes' : 'No' }}
             </li>
             <li>
               Induction loop system:
-              {{ location.has_induction_loop ? "Yes" : "No" }}
+              {{ location.has_induction_loop ? 'Yes' : 'No' }}
+            </li>
+            <li>
+              Accessible toilet:
+              {{ location.has_accessible_toilet ? 'Yes' : 'No' }}
             </li>
           </gov-list>
         </gov-table-cell>
@@ -80,13 +84,13 @@
 </template>
 
 <script>
-export default {
-  name: "LocationDetails",
-  props: {
-    location: {
-      required: true,
-      type: Object
-    }
-  }
-};
+  export default {
+    name: 'LocationDetails',
+    props: {
+      location: {
+        required: true,
+        type: Object,
+      },
+    },
+  };
 </script>

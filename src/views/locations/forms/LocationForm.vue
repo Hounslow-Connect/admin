@@ -108,6 +108,19 @@
           v-text="errors.get('has_wheelchair_access')"
           for="has_wheelchair_access"
         />
+
+        <gov-checkbox
+          :value="has_accessible_toilet"
+          @input="onInput('has_accessible_toilet', $event)"
+          id="has_accessible_toilet"
+          name="has_accessible_toilet"
+          label="Accessible toilet"
+        />
+        <gov-error-message
+          v-if="errors.has('has_accessible_toilet')"
+          v-text="errors.get('has_accessible_toilet')"
+          for="has_accessible_toilet"
+        />
       </gov-checkboxes>
     </gov-form-group>
 
@@ -124,68 +137,72 @@
 </template>
 
 <script>
-import countries from "@/storage/countries";
-import CkImageInput from "@/components/Ck/CkImageInput";
+  import countries from '@/storage/countries';
+  import CkImageInput from '@/components/Ck/CkImageInput';
 
-export default {
-  name: "CreateLocationForm",
-  components: { CkImageInput },
-  data() {
-    return {
-      countries
-    };
-  },
-  props: {
-    errors: {
-      required: true,
-      type: Object
+  export default {
+    name: 'CreateLocationForm',
+    components: { CkImageInput },
+    data() {
+      return {
+        countries,
+      };
     },
-    address_line_1: {
-      required: true,
-      type: String
+    props: {
+      errors: {
+        required: true,
+        type: Object,
+      },
+      address_line_1: {
+        required: true,
+        type: String,
+      },
+      address_line_2: {
+        required: true,
+        type: String,
+      },
+      address_line_3: {
+        required: true,
+        type: String,
+      },
+      city: {
+        required: true,
+        type: String,
+      },
+      county: {
+        required: true,
+        type: String,
+      },
+      postcode: {
+        required: true,
+        type: String,
+      },
+      country: {
+        required: true,
+        type: String,
+      },
+      has_induction_loop: {
+        required: true,
+        type: Boolean,
+      },
+      has_wheelchair_access: {
+        required: true,
+        type: Boolean,
+      },
+      has_accessible_toilet: {
+        required: true,
+        type: Boolean,
+      },
+      id: {
+        required: false,
+        type: String,
+      },
     },
-    address_line_2: {
-      required: true,
-      type: String
+    methods: {
+      onInput(field, value) {
+        this.$emit(`update:${field}`, value);
+        this.$emit('clear', field);
+      },
     },
-    address_line_3: {
-      required: true,
-      type: String
-    },
-    city: {
-      required: true,
-      type: String
-    },
-    county: {
-      required: true,
-      type: String
-    },
-    postcode: {
-      required: true,
-      type: String
-    },
-    country: {
-      required: true,
-      type: String
-    },
-    has_induction_loop: {
-      required: true,
-      type: Boolean
-    },
-    has_wheelchair_access: {
-      required: true,
-      type: Boolean
-    },
-    id: {
-      required: false,
-      type: String
-    }
-  },
-  methods: {
-    onInput(field, value) {
-      this.$emit(`update:${field}`, value);
-      this.$emit("clear", field);
-    }
-  }
-};
+  };
 </script>
