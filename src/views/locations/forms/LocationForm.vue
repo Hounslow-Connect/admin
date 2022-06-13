@@ -137,72 +137,72 @@
 </template>
 
 <script>
-  import countries from '@/storage/countries';
-  import CkImageInput from '@/components/Ck/CkImageInput';
+import countries from "@/storage/countries";
+import CkImageInput from "@/components/Ck/CkImageInput";
 
-  export default {
-    name: 'CreateLocationForm',
-    components: { CkImageInput },
-    data() {
-      return {
-        countries,
-      };
+export default {
+  name: "CreateLocationForm",
+  components: { CkImageInput },
+  data() {
+    return {
+      countries
+    };
+  },
+  props: {
+    errors: {
+      required: true,
+      type: Object
     },
-    props: {
-      errors: {
-        required: true,
-        type: Object,
-      },
-      address_line_1: {
-        required: true,
-        type: String,
-      },
-      address_line_2: {
-        required: true,
-        type: String,
-      },
-      address_line_3: {
-        required: true,
-        type: String,
-      },
-      city: {
-        required: true,
-        type: String,
-      },
-      county: {
-        required: true,
-        type: String,
-      },
-      postcode: {
-        required: true,
-        type: String,
-      },
-      country: {
-        required: true,
-        type: String,
-      },
-      has_induction_loop: {
-        required: true,
-        type: Boolean,
-      },
-      has_wheelchair_access: {
-        required: true,
-        type: Boolean,
-      },
-      has_accessible_toilet: {
-        required: true,
-        type: Boolean,
-      },
-      id: {
-        required: false,
-        type: String,
-      },
+    address_line_1: {
+      required: true,
+      type: String
     },
-    methods: {
-      onInput(field, value) {
-        this.$emit(`update:${field}`, value);
-        this.$emit('clear', field);
-      },
+    address_line_2: {
+      required: true,
+      type: String
     },
-  };
+    address_line_3: {
+      required: true,
+      type: String
+    },
+    city: {
+      required: true,
+      type: String
+    },
+    county: {
+      required: true,
+      type: String
+    },
+    postcode: {
+      required: true,
+      type: String
+    },
+    country: {
+      required: true,
+      type: String
+    },
+    has_induction_loop: {
+      required: true,
+      type: Boolean
+    },
+    has_wheelchair_access: {
+      required: true,
+      type: Boolean
+    },
+    has_accessible_toilet: {
+      required: true,
+      type: Boolean
+    },
+    id: {
+      required: false,
+      type: String
+    }
+  },
+  methods: {
+    onInput(field, value) {
+      this.$emit(`update:${field}`, value);
+      this.$emit("clear", field);
+    }
+  }
+};
 </script>

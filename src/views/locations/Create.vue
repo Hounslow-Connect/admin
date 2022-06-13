@@ -43,39 +43,39 @@
 </template>
 
 <script>
-  import Form from '@/classes/Form';
-  import LocationForm from '@/views/locations/forms/LocationForm';
+import Form from "@/classes/Form";
+import LocationForm from "@/views/locations/forms/LocationForm";
 
-  export default {
-    name: 'CreateLocation',
-    components: { LocationForm },
-    data() {
-      return {
-        form: new Form({
-          address_line_1: '',
-          address_line_2: '',
-          address_line_3: '',
-          city: '',
-          county: '',
-          postcode: '',
-          country: 'United Kingdom',
-          accessibility_info: '',
-          has_wheelchair_access: false,
-          has_induction_loop: false,
-          has_accessible_toilet: false,
-          image_file_id: null,
-        }),
-      };
-    },
-    methods: {
-      onSubmit() {
-        this.form.post('/locations').then(({ data }) =>
-          this.$router.push({
-            name: 'locations-show',
-            params: { location: data.id },
-          })
-        );
-      },
-    },
-  };
+export default {
+  name: "CreateLocation",
+  components: { LocationForm },
+  data() {
+    return {
+      form: new Form({
+        address_line_1: "",
+        address_line_2: "",
+        address_line_3: "",
+        city: "",
+        county: "",
+        postcode: "",
+        country: "United Kingdom",
+        accessibility_info: "",
+        has_wheelchair_access: false,
+        has_induction_loop: false,
+        has_accessible_toilet: false,
+        image_file_id: null
+      })
+    };
+  },
+  methods: {
+    onSubmit() {
+      this.form.post("/locations").then(({ data }) =>
+        this.$router.push({
+          name: "locations-show",
+          params: { location: data.id }
+        })
+      );
+    }
+  }
+};
 </script>
