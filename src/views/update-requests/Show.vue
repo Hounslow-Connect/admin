@@ -63,6 +63,13 @@
             :service-location="updateRequest.data"
           />
 
+          <organisation-event-details
+            v-else-if="updateRequest.updateable_type === 'organisation_events'"
+            :update-request-id="updateRequest.id"
+            :requested-at="updateRequest.created_at"
+            :event="updateRequest.data"
+          />
+
           <gov-body v-else>Update request is invalid</gov-body>
 
           <gov-section-break size="xl" />
@@ -107,6 +114,7 @@
 <script>
 import http from "@/http";
 import OrganisationDetails from "@/views/update-requests/show/OrganisationDetails";
+import OrganisationEventDetails from "@/views/update-requests/show/OrganisationEventDetails";
 import OrganisationSignUpFormDetails from "@/views/update-requests/show/OrganisationSignUpFormDetails";
 import ServiceDetails from "@/views/update-requests/show/ServiceDetails";
 import LocationDetails from "@/views/update-requests/show/LocationDetails";
@@ -116,6 +124,7 @@ export default {
   name: "ShowUpdateRequest",
   components: {
     OrganisationDetails,
+    OrganisationEventDetails,
     OrganisationSignUpFormDetails,
     ServiceDetails,
     LocationDetails,
