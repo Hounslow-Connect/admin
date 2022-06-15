@@ -96,7 +96,10 @@ export default {
   },
   computed: {
     params() {
-      let params = {};
+      let params = {
+        include: "organisation",
+        "filter[has_permission]": true
+      };
 
       if (this.filters.organisation !== "") {
         params["filter[organisation]"] = this.filters.organisation;
