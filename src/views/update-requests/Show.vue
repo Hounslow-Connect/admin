@@ -70,6 +70,16 @@
             :event="updateRequest.data"
           />
 
+          <organisation-event-details
+            v-else-if="
+              updateRequest.updateable_type ===
+                'new_organisation_event_created_by_org_admin'
+            "
+            :update-request-id="updateRequest.id"
+            :requested-at="updateRequest.created_at"
+            :event="updateRequest.data"
+          />
+
           <gov-body v-else>Update request is invalid</gov-body>
 
           <gov-section-break size="xl" />
@@ -155,6 +165,10 @@ export default {
           this.updateRequest.updateable_type ===
             "new_service_created_by_org_admin") &&
           this.updateRequest.data.hasOwnProperty("organisation_id")) ||
+        ((this.updateRequest.updateable_type === "organisation_events" ||
+          this.updateRequest.updateable_type ===
+            "new_organisation_event_created_by_org_admin") &&
+          this.updateRequest.data.hasOwnProperty("organisation_id")) ||
         (this.updateRequest.updateable_type === "organisation_sign_up_form" &&
           this.updateRequest.data.hasOwnProperty("organisation") &&
           this.updateRequest.data.organisation.id)
@@ -182,6 +196,12 @@ export default {
               this.$router.push({
                 name: "services-show",
                 params: { service: this.updateRequest.updateable_id }
+              });
+              break;
+            case "organisation_events":
+              this.$router.push({
+                name: "events-show",
+                params: { event: this.updateRequest.updateable_id }
               });
               break;
             case "organisations":

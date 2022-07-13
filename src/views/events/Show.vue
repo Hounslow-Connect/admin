@@ -31,12 +31,13 @@
 
           <event-details :event="event" />
 
-          <gov-body
-            >Please be certain of the action before deleting an event</gov-body
-          >
-
           <template v-if="auth.isGlobalAdmin">
             <gov-section-break size="l" />
+
+            <gov-body
+              >Please be certain of the action before deleting an
+              event</gov-body
+            >
 
             <ck-delete-button
               resource="event"

@@ -359,7 +359,7 @@ export default {
     },
 
     async fetchOriginal() {
-      // If this is an update request for a NEW service, then there's no original to check for.
+      // If this is an update request for a NEW event, then there's no original to check for.
       if (this.event.id !== null) {
         this.loading = true;
         const {

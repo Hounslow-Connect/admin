@@ -7,69 +7,102 @@
       <gov-grid-row>
         <gov-grid-column width="full">
           <gov-heading size="xl">Events</gov-heading>
-          <gov-heading size="m">Add event</gov-heading>
-          <gov-body
-            >The events will appear on their own page will be discoverable and
-            filterable by visitors based on the information you
-            provide</gov-body
-          >
-          <gov-error-summary v-if="form.$errors.any()" title="Check for errors">
-            <gov-list>
-              <li
-                v-for="(error, field) in form.$errors.all()"
-                :key="field"
-                v-text="error[0]"
-              />
+
+          <template v-if="!auth.isGlobalAdmin">
+            <gov-body class="govuk-!-font-weight-bold">
+              Please review the process below on how to create an event.
+            </gov-body>
+
+            <gov-list bullet>
+              <li>To create an event, fill in the form below.</li>
+              <li>
+                The event won't be visible until an admin has reviewed it.
+              </li>
+              <li>
+                If there are any issues upon review, an admin will get directly
+                in touch with you.
+              </li>
             </gov-list>
-          </gov-error-summary>
-          <gov-tabs @tab-changed="onTabChange" :tabs="allowedTabs" no-router>
-            <details-tab
-              v-show="isTabActive('details')"
-              :errors="form.$errors"
-              :title.sync="form.title"
-              :start_date.sync="form.start_date"
-              :end_date.sync="form.end_date"
-              :start_time.sync="form.start_time"
-              :end_time.sync="form.end_time"
-              :intro.sync="form.intro"
-              :description.sync="form.description"
-              :is_free.sync="form.is_free"
-              :fees_text.sync="form.fees_text"
-              :fees_url.sync="form.fees_url"
-              :organiser_name.sync="form.organiser_name"
-              :organiser_phone.sync="form.organiser_phone"
-              :organiser_email.sync="form.organiser_email"
-              :organiser_url.sync="form.organiser_url"
-              :booking_title.sync="form.booking_title"
-              :booking_summary.sync="form.booking_summary"
-              :booking_url.sync="form.booking_url"
-              :booking_cta.sync="form.booking_cta"
-              :is_virtual.sync="form.is_virtual"
-              :homepage.sync="form.homepage"
-              :organisations="organisations"
-              @update:organisation_id="form.organisation_id = $event"
-              @update:location_id="form.location_id = $event"
-              @update:image_file_id="form.image_file_id = $event"
-              @clear="form.$errors.clear($event)"
-            />
-            <taxonomies-tab
-              v-if="isTabActive('taxonomies')"
-              @clear="
-                form.$errors.clear($event);
-                errors = {};
-              "
-              :errors="form.$errors"
-              :is-global-admin="auth.isGlobalAdmin"
-              :type="form.type"
-              :category_taxonomies.sync="form.category_taxonomies"
+
+            <div v-if="updateRequestCreated">
+              <gov-heading size="m" tag="h3">Create event request</gov-heading>
+              <gov-body>{{ updateRequestMessage }}</gov-body>
+              <gov-back-link :to="{ name: 'events-index' }"
+                >Back to events</gov-back-link
+              >
+            </div>
+          </template>
+
+          <template v-if="!updateRequestCreated">
+            <gov-heading size="m">Add event</gov-heading>
+            <gov-body
+              >The events will appear on their own page will be discoverable and
+              filterable by visitors based on the information you
+              provide</gov-body
             >
-            </taxonomies-tab>
-          </gov-tabs>
-          <gov-button v-if="form.$submitting" disabled type="submit"
-            >Creating...</gov-button
-          >
-          <gov-button v-else @click="onSubmit" type="submit">Create</gov-button>
-          <ck-submit-error v-if="form.$errors.any()" />
+            <gov-error-summary
+              v-if="form.$errors.any()"
+              title="Check for errors"
+            >
+              <gov-list>
+                <li
+                  v-for="(error, field) in form.$errors.all()"
+                  :key="field"
+                  v-text="error[0]"
+                />
+              </gov-list>
+            </gov-error-summary>
+            <gov-tabs @tab-changed="onTabChange" :tabs="allowedTabs" no-router>
+              <details-tab
+                v-show="isTabActive('details')"
+                :errors="form.$errors"
+                :title.sync="form.title"
+                :start_date.sync="form.start_date"
+                :end_date.sync="form.end_date"
+                :start_time.sync="form.start_time"
+                :end_time.sync="form.end_time"
+                :intro.sync="form.intro"
+                :description.sync="form.description"
+                :is_free.sync="form.is_free"
+                :fees_text.sync="form.fees_text"
+                :fees_url.sync="form.fees_url"
+                :organiser_name.sync="form.organiser_name"
+                :organiser_phone.sync="form.organiser_phone"
+                :organiser_email.sync="form.organiser_email"
+                :organiser_url.sync="form.organiser_url"
+                :booking_title.sync="form.booking_title"
+                :booking_summary.sync="form.booking_summary"
+                :booking_url.sync="form.booking_url"
+                :booking_cta.sync="form.booking_cta"
+                :is_virtual.sync="form.is_virtual"
+                :homepage.sync="form.homepage"
+                :organisations="organisations"
+                @update:organisation_id="form.organisation_id = $event"
+                @update:location_id="form.location_id = $event"
+                @update:image_file_id="form.image_file_id = $event"
+                @clear="form.$errors.clear($event)"
+              />
+              <taxonomies-tab
+                v-if="isTabActive('taxonomies')"
+                @clear="
+                  form.$errors.clear($event);
+                  errors = {};
+                "
+                :errors="form.$errors"
+                :is-global-admin="auth.isGlobalAdmin"
+                :type="form.type"
+                :category_taxonomies.sync="form.category_taxonomies"
+              >
+              </taxonomies-tab>
+            </gov-tabs>
+            <gov-button v-if="form.$submitting" disabled type="submit"
+              >Creating...</gov-button
+            >
+            <gov-button v-else @click="onSubmit" type="submit"
+              >Create</gov-button
+            >
+            <ck-submit-error v-if="form.$errors.any()" />
+          </template>
         </gov-grid-column>
       </gov-grid-row>
     </gov-main-wrapper>
@@ -121,6 +154,8 @@ export default {
       ],
 
       organisations: [{ text: "Please select", value: null }],
+      updateRequestCreated: false,
+      updateRequestMessage: null,
       loading: false
     };
   },
@@ -154,12 +189,19 @@ export default {
       this.loading = false;
     },
     async onSubmit() {
-      const { data } = await this.form.post("/organisation-events");
+      const response = await this.form.post("/organisation-events");
 
-      this.$router.push({
-        name: "events-show",
-        params: { event: data.id }
-      });
+      const eventId = response.data.id;
+
+      if (this.auth.isGlobalAdmin && eventId) {
+        this.$router.push({
+          name: "events-show",
+          params: { event: eventId }
+        });
+      } else if (!this.form.$errors.any()) {
+        this.updateRequestCreated = true;
+        this.updateRequestMessage = response.message;
+      }
     },
     onTabChange({ index }) {
       this.tabs.forEach(tab => (tab.active = false));

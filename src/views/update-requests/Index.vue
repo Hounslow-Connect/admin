@@ -117,6 +117,8 @@ export default {
           return "New Service";
         case "organisation_events":
           return "Event";
+        case "new_organisation_event_created_by_org_admin":
+          return "New Event";
         default:
           return "Invalid type";
       }
