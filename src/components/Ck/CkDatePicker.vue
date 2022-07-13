@@ -7,6 +7,7 @@
       :value="value"
       :max="max"
       :min="min"
+      :dateAdapter.prop="{ parse: parseDate, format: formatDate }"
       @duetChange="dateSelected"
     >
     </duet-date-picker>
@@ -99,7 +100,16 @@ export default {
 
   methods: {
     dateSelected(e) {
+      console.debug(e.detail);
       this.$emit("input", e.detail.value);
+    },
+    parseDate(dateStr) {
+      return new Date(dateStr);
+    },
+    formatDate(dateObj) {
+      return `${String(dateObj.getDate()).padStart(2, "0")}/${String(
+        dateObj.getMonth() + 1
+      ).padStart(2, "0")}/${dateObj.getFullYear()}`;
     }
   }
 };

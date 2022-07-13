@@ -13,15 +13,11 @@
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Start</gov-table-header>
-          <gov-table-cell
-            >{{ event.start_date }} {{ event.start_time }}</gov-table-cell
-          >
+          <gov-table-cell>{{ startDateTimeStr }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>End</gov-table-header>
-          <gov-table-cell
-            >{{ event.end_date }} {{ event.end_time }}</gov-table-cell
-          >
+          <gov-table-cell>{{ endDateTimeStr }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Summary</gov-table-header>
@@ -147,6 +143,26 @@ export default {
     },
     onHomepage() {
       return this.event.homepage ? "Yes" : "No";
+    },
+    startDateTimeStr() {
+      const startDate = new Date(
+        `${this.event.start_date} ${this.event.start_time}`
+      );
+      console.debug("Start Date:", startDate);
+      return `${String(startDate.getDate()).padStart(2, "0")}/${String(
+        startDate.getMonth() + 1
+      ).padStart(2, "0")}/${startDate.getFullYear()} ${String(
+        startDate.getHours()
+      ).padStart(2, "0")}:${String(startDate.getMinutes()).padStart(2, "0")}`;
+    },
+    endDateTimeStr() {
+      const endDate = new Date(`${this.event.end_date} ${this.event.end_time}`);
+      console.debug("End Date:", endDate);
+      return `${String(endDate.getDate()).padStart(2, "0")}/${String(
+        endDate.getMonth() + 1
+      ).padStart(2, "0")}/${endDate.getFullYear()} ${String(
+        endDate.getHours()
+      ).padStart(2, "0")}:${String(endDate.getMinutes()).padStart(2, "0")}`;
     }
   }
 };

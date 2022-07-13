@@ -46,12 +46,12 @@
               {
                 heading: 'Start',
                 sort: 'start_date',
-                render: event => event.start_date
+                render: event => startDateTimeStr(event)
               },
               {
                 heading: 'End',
                 sort: 'end_date',
-                render: event => event.end_date
+                render: event => endDateTimeStr(event)
               },
               {
                 heading: 'Summary',
@@ -115,6 +115,24 @@ export default {
     },
     onAddEvent() {
       this.$router.push({ name: "events-create" });
+    },
+    startDateTimeStr(event) {
+      const startDate = new Date(`${event.start_date} ${event.start_time}`);
+      console.debug("Start Date:", startDate);
+      return `${String(startDate.getDate()).padStart(2, "0")}/${String(
+        startDate.getMonth() + 1
+      ).padStart(2, "0")}/${startDate.getFullYear()} ${String(
+        startDate.getHours()
+      ).padStart(2, "0")}:${String(startDate.getMinutes()).padStart(2, "0")}`;
+    },
+    endDateTimeStr(event) {
+      const endDate = new Date(`${event.end_date} ${event.end_time}`);
+      console.debug("End Date:", endDate);
+      return `${String(endDate.getDate()).padStart(2, "0")}/${String(
+        endDate.getMonth() + 1
+      ).padStart(2, "0")}/${endDate.getFullYear()} ${String(
+        endDate.getHours()
+      ).padStart(2, "0")}:${String(endDate.getMinutes()).padStart(2, "0")}`;
     }
   }
 };
