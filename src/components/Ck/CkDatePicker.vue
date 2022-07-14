@@ -7,11 +7,12 @@
       :value="value"
       :max="max"
       :min="min"
+      :required="required"
       :dateAdapter.prop="{ parse: parseDate, format: formatDate }"
       @duetChange="dateSelected"
     >
     </duet-date-picker>
-    <gov-error-message v-if="error" v-text="error" :for="id" />
+    <gov-error-message v-if="dateError" v-text="dateError" :for="id" />
   </gov-form-group>
 </template>
 
@@ -42,6 +43,10 @@ export default {
     min: {
       type: String,
       default: ""
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -94,17 +99,43 @@ export default {
           "Nov",
           "Dec"
         ]
-      }
+      },
+      formatError: null
     };
+  },
+
+  computed: {
+    dateError() {
+      return this.formatError ? this.formatError : this.error;
+    }
   },
 
   methods: {
     dateSelected(e) {
-      console.debug(e.detail);
-      this.$emit("input", e.detail.value);
+      if (!isNaN(Date.parse(e.detail.value))) {
+        this.$emit("input", e.detail.value);
+      }
     },
     parseDate(dateStr) {
-      return new Date(dateStr);
+      this.formatError = null;
+      const ukDate = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+      const isoDate = /^\d{4}-\d{1,2}-\d{1,2}$/;
+
+      if (dateStr.match(ukDate)) {
+        // UK date convert to ISO-8601 format
+        const dateArr = dateStr.split("/");
+        dateStr = `${dateArr[2]}-${String(dateArr[1]).padStart(
+          2,
+          "0"
+        )}-${String(dateArr[0]).padStart(2, "0")}`;
+      }
+      if (dateStr.match(isoDate)) {
+        // Valid ISO-8601 date return new Date object
+        return new Date(dateStr);
+      }
+      // Not a valid date string, set error message and return null
+      this.formatError = "Invalid date format. Use dd/mm/yyyy";
+      return null;
     },
     formatDate(dateObj) {
       return `${String(dateObj.getDate()).padStart(2, "0")}/${String(
