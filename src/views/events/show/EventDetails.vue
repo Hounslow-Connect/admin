@@ -36,50 +36,50 @@
         <gov-table-row>
           <gov-table-header scope="row" top>Fees text</gov-table-header>
           <gov-table-cell>{{
-            event.is_free ? '-' : event.fees_text
+            event.is_free ? "-" : event.fees_text
           }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Fees web address</gov-table-header>
           <gov-table-cell>{{
-            event.is_free ? '-' : event.fees_url
+            event.is_free ? "-" : event.fees_url
           }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Organiser name</gov-table-header>
-          <gov-table-cell>{{ event.organiser_name || '-' }}</gov-table-cell>
+          <gov-table-cell>{{ event.organiser_name || "-" }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Organiser phone</gov-table-header>
-          <gov-table-cell>{{ event.organiser_phone || '-' }}</gov-table-cell>
+          <gov-table-cell>{{ event.organiser_phone || "-" }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Organiser email</gov-table-header>
-          <gov-table-cell>{{ event.organiser_email || '-' }}</gov-table-cell>
+          <gov-table-cell>{{ event.organiser_email || "-" }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top
             >Organiser web address</gov-table-header
           >
-          <gov-table-cell>{{ event.organiser_url || '-' }}</gov-table-cell>
+          <gov-table-cell>{{ event.organiser_url || "-" }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Booking title</gov-table-header>
-          <gov-table-cell>{{ event.booking_title || '-' }}</gov-table-cell>
+          <gov-table-cell>{{ event.booking_title || "-" }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Booking summary</gov-table-header>
-          <gov-table-cell>{{ event.booking_summary || '-' }}</gov-table-cell>
+          <gov-table-cell>{{ event.booking_summary || "-" }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Booking url</gov-table-header>
-          <gov-table-cell>{{ event.booking_url || '-' }}</gov-table-cell>
+          <gov-table-cell>{{ event.booking_url || "-" }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top
             >Booking button text</gov-table-header
           >
-          <gov-table-cell>{{ event.booking_cta || '-' }}</gov-table-cell>
+          <gov-table-cell>{{ event.booking_cta || "-" }}</gov-table-cell>
         </gov-table-row>
         <gov-table-row>
           <gov-table-header scope="row" top>Show on home page</gov-table-header>
@@ -118,54 +118,52 @@
 </template>
 
 <script>
-  import LocationDetails from '@/views/locations/show/LocationDetails';
+import LocationDetails from "@/views/locations/show/LocationDetails";
 
-  export default {
-    name: 'OrganisationEventDetails',
+export default {
+  name: "OrganisationEventDetails",
 
-    components: {
-      LocationDetails,
+  components: {
+    LocationDetails
+  },
+
+  props: {
+    event: {
+      required: true,
+      type: Object
+    }
+  },
+
+  computed: {
+    isFree() {
+      return this.event.is_free ? "Yes" : "No";
     },
-
-    props: {
-      event: {
-        required: true,
-        type: Object,
-      },
+    isVirtual() {
+      return this.event.is_virtual ? "Yes" : "No";
     },
-
-    computed: {
-      isFree() {
-        return this.event.is_free ? 'Yes' : 'No';
-      },
-      isVirtual() {
-        return this.event.is_virtual ? 'Yes' : 'No';
-      },
-      onHomepage() {
-        return this.event.homepage ? 'Yes' : 'No';
-      },
-      startDateTimeStr() {
-        const startDate = new Date(
-          `${this.event.start_date} ${this.event.start_time}`
-        );
-        return `${String(startDate.getDate()).padStart(2, '0')}/${String(
-          startDate.getMonth() + 1
-        ).padStart(2, '0')}/${startDate.getFullYear()} ${String(
-          startDate.getHours()
-        ).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}`;
-      },
-      endDateTimeStr() {
-        const endDate = new Date(
-          `${this.event.end_date} ${this.event.end_time}`
-        );
-        return `${String(endDate.getDate()).padStart(2, '0')}/${String(
-          endDate.getMonth() + 1
-        ).padStart(2, '0')}/${endDate.getFullYear()} ${String(
-          endDate.getHours()
-        ).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
-      },
+    onHomepage() {
+      return this.event.homepage ? "Yes" : "No";
     },
-  };
+    startDateTimeStr() {
+      const startDate = new Date(
+        `${this.event.start_date} ${this.event.start_time}`
+      );
+      return `${String(startDate.getDate()).padStart(2, "0")}/${String(
+        startDate.getMonth() + 1
+      ).padStart(2, "0")}/${startDate.getFullYear()} ${String(
+        startDate.getHours()
+      ).padStart(2, "0")}:${String(startDate.getMinutes()).padStart(2, "0")}`;
+    },
+    endDateTimeStr() {
+      const endDate = new Date(`${this.event.end_date} ${this.event.end_time}`);
+      return `${String(endDate.getDate()).padStart(2, "0")}/${String(
+        endDate.getMonth() + 1
+      ).padStart(2, "0")}/${endDate.getFullYear()} ${String(
+        endDate.getHours()
+      ).padStart(2, "0")}:${String(endDate.getMinutes()).padStart(2, "0")}`;
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>
