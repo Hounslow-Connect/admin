@@ -8,32 +8,31 @@
         <gov-grid-column width="full">
           <gov-heading size="xl">Events</gov-heading>
 
-          <template v-if="!auth.isGlobalAdmin">
-            <gov-body class="govuk-!-font-weight-bold">
-              Please review the process below on how to create an event.
-            </gov-body>
-
-            <gov-list bullet>
-              <li>To create an event, fill in the form below.</li>
-              <li>
-                The event won't be visible until an admin has reviewed it.
-              </li>
-              <li>
-                If there are any issues upon review, an admin will get directly
-                in touch with you.
-              </li>
-            </gov-list>
-
-            <div v-if="updateRequestCreated">
-              <gov-heading size="m" tag="h3">Create event request</gov-heading>
-              <gov-body>{{ updateRequestMessage }}</gov-body>
-              <gov-back-link :to="{ name: 'events-index' }"
-                >Back to events</gov-back-link
-              >
-            </div>
+          <template v-if="updateRequestCreated">
+            <gov-heading size="m" tag="h3">Create event request</gov-heading>
+            <gov-body>{{ updateRequestMessage }}</gov-body>
+            <gov-back-link :to="{ name: 'events-index' }"
+              >Back to events</gov-back-link
+            >
           </template>
 
-          <template v-if="!updateRequestCreated">
+          <template v-else>
+            <div v-if="!auth.isGlobalAdmin">
+              <gov-body class="govuk-!-font-weight-bold">
+                Please review the process below on how to create an event.
+              </gov-body>
+
+              <gov-list bullet>
+                <li>To create an event, fill in the form below.</li>
+                <li>
+                  The event won't be visible until an admin has reviewed it.
+                </li>
+                <li>
+                  If there are any issues upon review, an admin will get
+                  directly in touch with you.
+                </li>
+              </gov-list>
+            </div>
             <gov-heading size="m">Add event</gov-heading>
             <gov-body
               >The events will appear on their own page will be discoverable and
