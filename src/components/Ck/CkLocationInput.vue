@@ -38,7 +38,6 @@
         :country.sync="form.country"
         :has_induction_loop.sync="form.has_induction_loop"
         :has_wheelchair_access.sync="form.has_wheelchair_access"
-        :has_accessible_toilet.sync="form.has_accessible_toilet"
         @update:image_file_id="form.image_file_id = $event"
         @clear="form.$errors.clear($event)"
       />
@@ -108,10 +107,6 @@ export default {
     has_wheelchair_access: {
       required: false,
       type: Boolean
-    },
-    has_accessible_toilet: {
-      required: false,
-      type: Boolean
     }
   },
 
@@ -131,7 +126,6 @@ export default {
         accessibility_info: "",
         has_wheelchair_access: false,
         has_induction_loop: false,
-        has_accessible_toilet: false,
         image_file_id: null
       }),
       countries: [
