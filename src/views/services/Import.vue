@@ -103,6 +103,7 @@ export default {
       fields: {
         index: "Index",
         id: "ID",
+        organisation_id: "Organisation ID",
         name: "Name",
         type: "Type",
         status: "Status",
