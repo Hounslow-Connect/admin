@@ -43,7 +43,10 @@ export default {
   computed: {
     headAttributes() {
       return {
-        "meta[name=theme-color]": { content: this.themeColor }
+        "meta[name=theme-color]": {
+          content: this.themeColor
+        },
+        "meta[name=robots]": { content: "noindex" }
       };
     },
     htmlAttributes() {
