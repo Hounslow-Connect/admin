@@ -10,6 +10,7 @@
     />
 
     <ck-text-input
+      v-if="auth.isGlobalAdmin"
       :value="slug"
       @input="onInput('slug', $event)"
       id="slug"
