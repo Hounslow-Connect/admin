@@ -36,12 +36,12 @@
             <router-view :service="service" />
           </gov-tabs>
 
-          <gov-body
-            >Please be certain of the action before deleting a
-            {{ service.type }}</gov-body
-          >
-
           <template v-if="auth.isGlobalAdmin">
+            <gov-body
+              >Please be certain of the action before deleting a
+              {{ service.type }}</gov-body
+            >
+
             <gov-section-break size="l" />
 
             <ck-delete-button
