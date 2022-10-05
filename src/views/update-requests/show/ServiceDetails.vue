@@ -445,10 +445,22 @@
           </gov-table-cell>
           <gov-table-cell>
             <img
+              v-if="service.id"
               :src="
                 logoDataUri ||
                   apiUrl(
                     `/services/${service.id}/logo.png?update_request_id=${updateRequestId}`
+                  )
+              "
+              alt="Service logo"
+              class="ck-logo"
+            />
+            <img
+              v-else
+              :src="
+                logoDataUri ||
+                  apiUrl(
+                    `/services/new/logo.png?update_request_id=${updateRequestId}`
                   )
               "
               alt="Service logo"

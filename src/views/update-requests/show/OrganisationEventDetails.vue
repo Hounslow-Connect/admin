@@ -274,9 +274,20 @@
           </gov-table-cell>
           <gov-table-cell>
             <img
+              v-if="event.id"
               :src="
                 apiUrl(
                   `/organisation-events/${event.id}/image.png?update_request_id=${updateRequestId}`
+                )
+              "
+              alt="Event image"
+              class="ck-logo"
+            />
+            <img
+              v-else
+              :src="
+                apiUrl(
+                  `/organisation-events/new/image.png?update_request_id=${updateRequestId}`
                 )
               "
               alt="Event image"
