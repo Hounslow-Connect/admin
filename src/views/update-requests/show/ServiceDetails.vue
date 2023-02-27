@@ -641,20 +641,22 @@ export default {
     },
 
     getServiceEligibilityIds(service) {
-      return service.eligibility_types.taxonomies.reduce(
-        (taxonomyIds, taxonomyId) => {
-          const taxonomy = this.flattenedEligibilityTypes.find(
-            taxonomy => taxonomy.id === taxonomyId
-          );
-          return taxonomyIds.concat(
-            this.getTaxonomyAndAncestorsIds(
-              taxonomy,
-              this.flattenedEligibilityTypes
-            )
-          );
-        },
-        []
-      );
+      return service.eligibility_types.taxonomies
+        ? service.eligibility_types.taxonomies.reduce(
+            (taxonomyIds, taxonomyId) => {
+              const taxonomy = this.flattenedEligibilityTypes.find(
+                taxonomy => taxonomy.id === taxonomyId
+              );
+              return taxonomyIds.concat(
+                this.getTaxonomyAndAncestorsIds(
+                  taxonomy,
+                  this.flattenedEligibilityTypes
+                )
+              );
+            },
+            []
+          )
+        : [];
     },
 
     updatedServiceEligibilities() {
