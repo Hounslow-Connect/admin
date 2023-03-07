@@ -641,7 +641,7 @@ export default {
     },
 
     getServiceEligibilityIds(service) {
-      // Return service eligibility IDs or empty array if taxonomies is null
+      // Return service eligibility IDs or empty array if taxonomies are null
       return service.eligibility_types.taxonomies
         ? service.eligibility_types.taxonomies.reduce(
             (taxonomyIds, taxonomyId) => {
