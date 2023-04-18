@@ -11,31 +11,6 @@
           <gov-heading size="xl">Services</gov-heading>
 
           <template v-if="!auth.isGlobalAdmin">
-            <gov-body class="govuk-!-font-weight-bold">
-              Please review the process below on how to create a
-              {{ form.type }}.
-            </gov-body>
-
-            <gov-list bullet>
-              <li>To create a {{ form.type }}, fill in the form below.</li>
-              <li>
-                The {{ form.type }} won't be made active until an admin has
-                reviewed it.
-              </li>
-              <li>
-                If there are any issues upon review, an admin will get directly
-                in touch with you.
-              </li>
-              <li>You can return to edit this {{ form.type }} at any time.</li>
-              <li>
-                If you would like your service to accept referrals through
-                Hounslow Connect, please contact the team at
-                <gov-link :href="`mailto:${contactEmail}`">
-                  {{ contactEmail }}
-                </gov-link>
-              </li>
-            </gov-list>
-
             <div v-if="updateRequestCreated">
               <gov-heading size="m" tag="h3"
                 >Create service request</gov-heading
@@ -44,6 +19,34 @@
               <gov-back-link :to="{ name: 'services-index' }"
                 >Back to services</gov-back-link
               >
+            </div>
+            <div v-else>
+              <gov-body class="govuk-!-font-weight-bold">
+                Please review the process below on how to create a
+                {{ form.type }}.
+              </gov-body>
+
+              <gov-list bullet>
+                <li>To create a {{ form.type }}, fill in the form below.</li>
+                <li>
+                  The {{ form.type }} won't be made active until an admin has
+                  reviewed it.
+                </li>
+                <li>
+                  If there are any issues upon review, an admin will get
+                  directly in touch with you.
+                </li>
+                <li>
+                  You can return to edit this {{ form.type }} at any time.
+                </li>
+                <li>
+                  If you would like your service to accept referrals through
+                  Hounslow Connect, please contact the team at
+                  <gov-link :href="`mailto:${contactEmail}`">
+                    {{ contactEmail }}
+                  </gov-link>
+                </li>
+              </gov-list>
             </div>
           </template>
 
