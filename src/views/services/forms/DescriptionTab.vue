@@ -19,7 +19,7 @@
           id="intro"
           :label="`Your ${type}, an overview?`"
           :hint="`Write a brief description of what your ${type} does.`"
-          :maxlength="300"
+          :maxlength="255"
           :error="errors.get('intro')"
         />
 

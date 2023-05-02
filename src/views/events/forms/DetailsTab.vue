@@ -52,12 +52,12 @@
       :error="errors.get(['start_time', 'end_time'])"
     />
 
-    <ck-text-input
+    <ck-textarea-input
       :value="intro"
       @input="onInput('intro', $event)"
       id="intro"
       label="Event summary*"
-      type="text"
+      :maxlength="255"
       :error="errors.get('intro')"
     />
 
