@@ -24,7 +24,6 @@
       id="logo"
       label="Add a logo"
       hint="Click 'Choose file' below to upload a logo to be displayed on the banner"
-      accept="image/x-png"
       :existing-url="
         banner.has_image
           ? apiUrl(`/settings/banner-image.png?v=${now}`)
@@ -59,12 +58,12 @@ import CkImageInput from "./CkImageInput";
 
 export default {
   components: {
-    CkImageInput
+    CkImageInput,
   },
 
   model: {
     prop: "banner",
-    event: "update"
+    event: "update",
   },
 
   props: {
@@ -75,20 +74,20 @@ export default {
           title: "",
           content: "",
           button_text: "",
-          button_url: ""
+          button_url: "",
         };
-      }
+      },
     },
     errors: {
       type: Object,
       default() {
         return {};
-      }
+      },
     },
     showImageInput: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   methods: {
@@ -99,8 +98,8 @@ export default {
 
       this.$emit("update", banner);
       this.$emit("clear", `banner.${field}`);
-    }
-  }
+    },
+  },
 };
 </script>
 

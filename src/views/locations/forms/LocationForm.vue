@@ -128,7 +128,6 @@
       @input="onInput('image_file_id', $event.file_id)"
       id="image"
       label="Location image"
-      accept="image/x-png"
       :existing-url="
         id ? apiUrl(`/locations/${id}/image.png?v=${now}`) : undefined
       "
@@ -145,64 +144,64 @@ export default {
   components: { CkImageInput },
   data() {
     return {
-      countries
+      countries,
     };
   },
   props: {
     errors: {
       required: true,
-      type: Object
+      type: Object,
     },
     address_line_1: {
       required: true,
-      type: String
+      type: String,
     },
     address_line_2: {
       required: true,
-      type: String
+      type: String,
     },
     address_line_3: {
       required: true,
-      type: String
+      type: String,
     },
     city: {
       required: true,
-      type: String
+      type: String,
     },
     county: {
       required: true,
-      type: String
+      type: String,
     },
     postcode: {
       required: true,
-      type: String
+      type: String,
     },
     country: {
       required: true,
-      type: String
+      type: String,
     },
     has_induction_loop: {
       required: true,
-      type: Boolean
+      type: Boolean,
     },
     has_wheelchair_access: {
       required: true,
-      type: Boolean
+      type: Boolean,
     },
     has_accessible_toilet: {
       required: true,
-      type: Boolean
+      type: Boolean,
     },
     id: {
       required: false,
-      type: String
-    }
+      type: String,
+    },
   },
   methods: {
     onInput(field, value) {
       this.$emit(`update:${field}`, value);
       this.$emit("clear", field);
-    }
-  }
+    },
+  },
 };
 </script>
